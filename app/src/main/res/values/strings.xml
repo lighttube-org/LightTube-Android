@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LightTube</string>
+    <string name="title_home">Home</string>
+    <string name="searchbar_hint">Search…</string>
+    <string name="title_library">Library</string>
+    <string name="title_subscriptions">Subscriptions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
