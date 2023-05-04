@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -23,6 +24,12 @@ class MainActivity : AppCompatActivity() {
 		val color = SurfaceColors.SURFACE_2.getColor(this)
 		window.statusBarColor = color
 		window.navigationBarColor = color
+
+		val sp = getSharedPreferences("main", MODE_PRIVATE)
+		if (!sp.contains("instanceHost")) {
+			startActivity(Intent(this, SetupActivity::class.java))
+			finish()
+		}
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
