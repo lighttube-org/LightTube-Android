@@ -14,6 +14,12 @@
     <string name="setup_login_body">Log into an account to sync your subscriptions &amp; playlists between devices.
 Your data is stored in the instance you chose (%s).</string>
 
+    <!-- Login -->
+    <string name="login_hint">Log into your LightTube account to continue</string>
+    <string name="login_token_received">Received token, logging in…</string>
+    <string name="login_token_received_desc">This should not take longer than a few seconds…</string>
+    <string name="login_complete">Logged in as %s</string>
+
     <!-- Actions -->
     <string name="action_next">Next</string>
     <string name="action_select">Select</string>

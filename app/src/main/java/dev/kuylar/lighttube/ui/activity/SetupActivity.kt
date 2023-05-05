@@ -66,6 +66,11 @@ class SetupActivity : AppCompatActivity() {
 		binding.setupButtonLoginSkip.setOnClickListener {
 			finishSetup()
 		}
+
+		binding.setupButtonLoginLogin.setOnClickListener {
+			startActivity(Intent(this, LoginActivity::class.java))
+			finish()
+		}
 	}
 
 	private fun finishSetup() {
