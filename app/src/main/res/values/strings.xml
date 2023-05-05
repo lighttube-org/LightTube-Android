@@ -27,4 +27,5 @@ Your data is stored in the instance you chose (%s).</string>
     <!-- General -->
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="search">Search</string>
 </resources>

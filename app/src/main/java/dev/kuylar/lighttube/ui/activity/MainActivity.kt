@@ -2,6 +2,7 @@ package dev.kuylar.lighttube.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -44,8 +45,13 @@ class MainActivity : AppCompatActivity() {
 			)
 		)
 
-		setSupportActionBar(binding.searchBar)
+		setSupportActionBar(binding.toolbar)
 		setupActionBarWithNavController(navController, appBarConfiguration)
 		navView.setupWithNavController(navController)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.top_app_bar, menu)
+		return true
 	}
 }
