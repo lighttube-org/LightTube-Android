@@ -11,12 +11,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.elevation.SurfaceColors
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
+	lateinit var api: LightTubeApi
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 			startActivity(Intent(this, SetupActivity::class.java))
 			finish()
 		}
+
+		api = LightTubeApi(this)
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)

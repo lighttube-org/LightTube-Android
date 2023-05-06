@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
+import dev.kuylar.lighttube.api.models.InstanceInfo
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -29,7 +30,11 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
-	private fun <T> get(token: TypeToken<ApiResponse<T>>, path: String, query: HashMap<String, String> = HashMap()): ApiResponse<T> {
+	private fun <T> get(
+		token: TypeToken<ApiResponse<T>>,
+		path: String,
+		query: HashMap<String, String> = HashMap()
+	): ApiResponse<T> {
 		val request: Request = Request.Builder().apply {
 			url("$host/api/$path${query.toUrl()}")
 			if (refreshToken != null) {
@@ -51,7 +56,25 @@ class LightTubeApi(context: Context) {
 	}
 
 	fun getCurrentUser(): ApiResponse<LightTubeUserInfo> {
-		return get<LightTubeUserInfo>(object : TypeToken<ApiResponse<LightTubeUserInfo>>() {}, "currentUser")
+		return get(
+			object : TypeToken<ApiResponse<LightTubeUserInfo>>() {},
+			"currentUser"
+		)
+	}
+
+	fun getInstanceInfo(): InstanceInfo {
+		val request: Request = Request.Builder()
+			.url("$host/api/info")
+			.build()
+
+		client.newCall(request).execute().use { response ->
+			if (response.code != 200)
+				throw Exception("HTTP ${response.code} while trying to get instance info")
+			return gson.fromJson(
+				response.body!!.string(),
+				InstanceInfo::class.java
+			)
+		}
 	}
 }
 
