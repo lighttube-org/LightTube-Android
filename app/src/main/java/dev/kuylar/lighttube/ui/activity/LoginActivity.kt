@@ -2,16 +2,21 @@ package dev.kuylar.lighttube.ui.activity
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.UtilityApi
 import dev.kuylar.lighttube.databinding.ActivityLoginBinding
 import dev.kuylar.lighttube.ui.LoginWebViewClient
 import kotlin.concurrent.thread
 
 
 class LoginActivity : AppCompatActivity() {
+	private lateinit var sp: SharedPreferences
 	private lateinit var binding: ActivityLoginBinding
 	private val scopes = listOf(
 		"playlists.read",
@@ -25,6 +30,8 @@ class LoginActivity : AppCompatActivity() {
 
 		binding = ActivityLoginBinding.inflate(layoutInflater)
 		setContentView(binding.root)
+
+		sp = getSharedPreferences("main", MODE_PRIVATE)
 
 		val client = LoginWebViewClient(this::onTokenReceived, this::showProgressBarLoading)
 		binding.loginWebView.webViewClient = client
@@ -62,14 +69,28 @@ class LoginActivity : AppCompatActivity() {
 			true
 		)
 		thread {
-			Thread.sleep(1000)
+			UtilityApi.authorizeToken(
+				sp.getString("instanceHost", "")!!,
+				token,
+				"lighttube://login"
+			)
+			sp.edit().apply {
+				putString("refreshToken", token)
+				apply()
+			}
+			val api = LightTubeApi(this)
+			val user = api.getCurrentUser()
+			val username = user.data!!.userID
 			runOnUiThread {
 				dialog.dismiss()
-				val username = "<|username|>"
-				Snackbar.make(binding.root, getString(R.string.login_complete, username), Snackbar.LENGTH_LONG).show()
+				Toast.makeText(
+					this,
+					getString(R.string.login_complete, username),
+					Toast.LENGTH_LONG
+				).show()
+				showProgressBarLoading(false)
 				startActivity(Intent(this, MainActivity::class.java))
 				finish()
-				showProgressBarLoading(false)
 			}
 		}
 	}
