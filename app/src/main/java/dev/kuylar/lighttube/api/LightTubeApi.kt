@@ -6,7 +6,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.InstanceInfo
+import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
+import dev.kuylar.lighttube.api.models.LightTubeVideo
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URLEncoder
@@ -17,7 +19,7 @@ class LightTubeApi(context: Context) {
 	private val client = OkHttpClient()
 	private val gson = Gson()
 
-	private val host: String
+	val host: String
 	private val refreshToken: String?
 
 	init {
@@ -76,6 +78,25 @@ class LightTubeApi(context: Context) {
 			)
 		}
 	}
+
+	fun getPlayer(id: String): ApiResponse<LightTubePlayer> {
+		return get(
+			object : TypeToken<ApiResponse<LightTubePlayer>>() {},
+			"player",
+			hashMapOf(Pair("id", id))
+		)
+	}
+
+	fun getVideo(id: String, playlistId: String?): ApiResponse<LightTubeVideo> {
+		val data = hashMapOf(Pair("id", id))
+		if (playlistId != null)
+			data["playlistId"] = playlistId
+		return get(
+			object : TypeToken<ApiResponse<LightTubeVideo>>() {},
+			"video",
+			data
+		)
+	}
 }
 
 private fun <K, V> HashMap<K, V>.toUrl(): String {
@@ -86,7 +107,7 @@ private fun <K, V> HashMap<K, V>.toUrl(): String {
 				it.key as String,
 				"utf8"
 			)
-		}=${URLEncoder.encode(it.value as String, "utf8")}"
+		}=${URLEncoder.encode(it.value as String, "utf8")}&"
 	}
-	return res
+	return res.trimEnd('&')
 }
