@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.elevation.SurfaceColors
 import dev.kuylar.lighttube.R
-import dev.kuylar.lighttube.api.InstanceListApi
+import dev.kuylar.lighttube.api.UtilityApi
 import dev.kuylar.lighttube.databinding.ActivitySetupBinding
 import kotlin.concurrent.thread
 
@@ -26,7 +26,7 @@ class SetupActivity : AppCompatActivity() {
 		setContentView(binding.root)
 
 		thread {
-			val instances = InstanceListApi.getInstances()
+			val instances = UtilityApi.getInstances()
 			runOnUiThread {
 				while (binding.instanceList.childCount > 0) {
 					binding.instanceList.removeViewAt(0)
