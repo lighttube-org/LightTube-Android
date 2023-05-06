@@ -38,10 +38,15 @@ class LightTubeApi(context: Context) {
 		}.build()
 
 		client.newCall(request).execute().use { response ->
-			return Gson().fromJson(
+			val r = gson.fromJson<ApiResponse<T>>(
 				response.body!!.string(),
 				token.type
 			)
+			if (r.error != null)
+				throw r.error.getException()
+			if (r.data == null)
+				throw Exception("[0] Received null data")
+			return r
 		}
 	}
 
