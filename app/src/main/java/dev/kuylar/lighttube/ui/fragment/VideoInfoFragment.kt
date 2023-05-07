@@ -37,12 +37,14 @@ class VideoInfoFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		thread {
-			val video = api.getVideo(id, playlistId)
-			activity?.runOnUiThread {
-				fillData(video.data!!)
+		if (id.isNotBlank())
+			thread {
+				val video = api.getVideo(id, playlistId)
+				activity?.runOnUiThread {
+					fillData(video.data!!)
+				}
 			}
-		}
+		//todo: placeholder shimmer thing?
 	}
 
 	private fun fillData(video: LightTubeVideo) {
