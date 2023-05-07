@@ -1,11 +1,14 @@
 package dev.kuylar.lighttube.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoInfoBinding
@@ -13,6 +16,7 @@ import dev.kuylar.lighttube.ui.activity.MainActivity
 import kotlin.concurrent.thread
 
 class VideoInfoFragment : Fragment() {
+	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var id: String
 	private var playlistId: String? = null
 	private lateinit var binding: FragmentVideoInfoBinding
@@ -44,6 +48,9 @@ class VideoInfoFragment : Fragment() {
 					fillData(video.data!!)
 				}
 			}
+
+		detailsSheet = BottomSheetBehavior.from(binding.sheetVideoDetails)
+
 		//todo: placeholder shimmer thing?
 	}
 
@@ -56,6 +63,15 @@ class VideoInfoFragment : Fragment() {
 		Glide
 			.with(this)
 			.load(video.channel.avatar)
-			.into(binding.channelAvatar);
+			.into(binding.channelAvatar)
+
+		requireActivity().supportFragmentManager.beginTransaction().apply {
+			val f = VideoDetailsFragment(video)
+			replace(R.id.video_info_fragment, f)
+		}.commit()
+
+		binding.videoDetails.setOnClickListener {
+			detailsSheet.state = BottomSheetBehavior.STATE_EXPANDED
+		}
 	}
 }

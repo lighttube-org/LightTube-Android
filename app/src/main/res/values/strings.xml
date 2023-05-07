@@ -43,4 +43,10 @@ Your data is stored in the instance you chose (%s).</string>
 
     <!-- Video info -->
     <string name="video_info_more">…more</string>
+    <string name="video_info_likes">Likes</string>
+    <string name="video_info_dislikes">Dislikes</string>
+    <string name="video_info_views">Views</string>
+    <string name="video_info_channel_about">About</string>
+    <string name="video_info_channel_videos">Videos</string>
+    <string name="video_info_description">Description</string>
 </resources>
