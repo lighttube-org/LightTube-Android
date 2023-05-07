@@ -26,6 +26,12 @@ Your data is stored in the instance you chose (%s).</string>
     <string name="action_login">Login</string>
     <string name="action_skip">Skip</string>
     <string name="action_later">Maybe later</string>
+    <string name="action_like">Like</string>
+    <string name="action_dislike">Dislike</string>
+    <string name="action_share">Share</string>
+    <string name="action_download">Download</string>
+    <string name="action_save">Save</string>
+    <string name="action_comments">Comments</string>
 
     <!-- Templates -->
     <string name="template_instance_info">API: %s | Accounts: %s</string>
@@ -34,12 +40,7 @@ Your data is stored in the instance you chose (%s).</string>
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
     <string name="search">Search</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="video_info_more">...more</string>
-    <string name="action_like">Like</string>
-    <string name="action_dislike">Dislike</string>
-    <string name="action_share">Share</string>
-    <string name="action_download">Download</string>
-    <string name="action_save">Save</string>
+
+    <!-- Video info -->
+    <string name="video_info_more">…more</string>
 </resources>

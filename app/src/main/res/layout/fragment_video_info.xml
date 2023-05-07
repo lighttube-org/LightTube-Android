@@ -110,6 +110,15 @@
                     </com.google.android.material.button.MaterialButtonToggleGroup>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_comments"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:text="@string/action_comments"
+                        app:icon="@drawable/ic_comments" />
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/button_share"
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="wrap_content"
