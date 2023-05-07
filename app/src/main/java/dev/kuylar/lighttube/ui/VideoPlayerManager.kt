@@ -8,6 +8,7 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import android.os.Handler
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import com.google.android.exoplayer2.Player
@@ -15,16 +16,36 @@ import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(activity: MainActivity) : Player.Listener {
+	private val playerHandler: Handler
 	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).build()
 	private val api: LightTubeApi = activity.api
 	private val fragmentManager = activity.supportFragmentManager
 	private val miniplayerTitle: TextView = activity.findViewById(R.id.miniplayer_video_title)
 	private val miniplayerSubtitle: TextView = activity.findViewById(R.id.miniplayer_video_subtitle)
+	private val miniplayerProgress: ProgressBar =
+		activity.findViewById(R.id.miniplayer_progress_bar)
 
 	init {
 		exoplayerView.player = player
 		player.addListener(this)
+		playerHandler = Handler(player.applicationLooper)
+
+		// im sorry for this monstrosity
+		var r = Runnable {}
+		r = Runnable {
+			val buffering = player.playbackState == Player.STATE_BUFFERING
+			miniplayerProgress.isIndeterminate = buffering
+			if (buffering) {
+				miniplayerProgress.max = 1
+				miniplayerProgress.progress = 0
+			} else {
+				miniplayerProgress.max = player.duration.toInt()
+				miniplayerProgress.setProgress(player.currentPosition.toInt(), true)
+			}
+			playerHandler.postDelayed(r, 100)
+		}
+		playerHandler.post(r)
 	}
 
 	fun playVideo(id: String) {
@@ -35,7 +56,7 @@ class VideoPlayerManager(activity: MainActivity) : Player.Listener {
 		}.commit()
 		thread {
 			val item = mediaItemFromVideoId(id)
-			Handler(player.applicationLooper).post {
+			playerHandler.post {
 				player.setMediaItem(item)
 				player.prepare()
 				player.play()

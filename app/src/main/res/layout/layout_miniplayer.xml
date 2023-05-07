@@ -6,9 +6,8 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/miniplayer_motion_scene">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/miniplayer_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="4dp"
         app:layout_constraintEnd_toEndOf="parent"
