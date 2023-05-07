@@ -73,5 +73,8 @@ class VideoInfoFragment : Fragment() {
 		binding.videoDetails.setOnClickListener {
 			detailsSheet.state = BottomSheetBehavior.STATE_EXPANDED
 		}
+		binding.sheetVideoDetailsClose.setOnClickListener{
+			detailsSheet.state = BottomSheetBehavior.STATE_HIDDEN
+		}
 	}
 }
