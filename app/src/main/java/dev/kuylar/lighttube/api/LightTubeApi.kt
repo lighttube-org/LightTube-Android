@@ -2,13 +2,14 @@ package dev.kuylar.lighttube.api
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.InstanceInfo
 import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
+import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URLEncoder
@@ -17,7 +18,9 @@ import java.net.URLEncoder
 class LightTubeApi(context: Context) {
 	private val tag = "LightTubeApi"
 	private val client = OkHttpClient()
-	private val gson = Gson()
+	private val gson = GsonBuilder().apply {
+		setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+	}.create()
 
 	val host: String
 	private val refreshToken: String?
@@ -95,6 +98,17 @@ class LightTubeApi(context: Context) {
 			object : TypeToken<ApiResponse<LightTubeVideo>>() {},
 			"video",
 			data
+		)
+	}
+
+	fun getSubscriptionFeed(
+		skip: Int = 0,
+		limit: Int = 50
+	): ApiResponse<List<SubscriptionFeedItem>> {
+		return get(
+			object : TypeToken<ApiResponse<List<SubscriptionFeedItem>>>() {},
+			"feed",
+			hashMapOf(Pair("skip", skip.toString()), Pair("limit", limit.toString()))
 		)
 	}
 }
