@@ -49,4 +49,7 @@ Your data is stored in the instance you chose (%s).</string>
     <string name="video_info_channel_about">About</string>
     <string name="video_info_channel_videos">Videos</string>
     <string name="video_info_description">Description</string>
+    <string name="autoplay">Autoplay</string>
+    <string name="player_more_videos">More videos</string>
+    <string name="player_more_videos_hint">Tap to see all</string>
 </resources>

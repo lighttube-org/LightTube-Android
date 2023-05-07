@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.navigation.findNavController
@@ -64,6 +65,13 @@ class MainActivity : AppCompatActivity() {
 		setupActionBarWithNavController(navController, appBarConfiguration)
 		navView.setupWithNavController(navController)
 
+		onBackPressedDispatcher.addCallback(this) {
+			if (!player.exitFullscreen()) // attempt to exit fullscreen
+				if (!minimizePlayer()) // attempt to minimize the player sheet
+					if (!navController.navigateUp()) // attempt to go back on the fragment history
+						finish() // close the app
+		}
+
 		val miniplayerView: View = findViewById(R.id.miniplayer)
 		miniplayerScene = miniplayerView.findViewById(R.id.miniplayer_motion)
 		miniplayer = BottomSheetBehavior.from(miniplayerView)
@@ -89,14 +97,27 @@ class MainActivity : AppCompatActivity() {
 			}
 
 			override fun onSlide(bottomSheet: View, slideOffset: Float) {
+				if (slideOffset < 0)
+					player.setVolume(max(0.1f, 1 + slideOffset * 3))
+				else
+					player.setVolume(1f)
 				miniplayerScene.progress = max(0f, min(1f, slideOffset * 5))
 
 				if (slideOffset > .3)
 					binding.navView.visibility = View.GONE
 				else
 					binding.navView.visibility = View.VISIBLE
+
+				player.toggleControls(slideOffset * 5 > 0.9)
 			}
 		})
+	}
+
+	private fun minimizePlayer(): Boolean {
+		return if (miniplayer.state == BottomSheetBehavior.STATE_EXPANDED) {
+			miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+			true
+		} else false
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {

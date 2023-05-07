@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -53,5 +54,20 @@
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/bottom_nav_menu" />
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/fullscreen_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:visibility="gone"
+        android:elevation="10dp"
+        app:animation_enabled="false"
+        app:controller_layout_id="@layout/exo_playback_control_view"
+        app:layout_constraintDimensionRatio="V,16:9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar"
+        app:show_subtitle_button="true"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

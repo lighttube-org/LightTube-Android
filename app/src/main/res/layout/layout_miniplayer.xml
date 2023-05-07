@@ -19,6 +19,8 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:background="#000000"
+        app:animation_enabled="false"
+        app:controller_layout_id="@layout/exo_playback_control_view"
         app:layout_constraintDimensionRatio="V,16:9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar"
