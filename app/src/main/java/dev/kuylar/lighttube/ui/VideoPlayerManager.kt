@@ -8,10 +8,11 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import android.os.Handler
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.fragment.app.FragmentContainerView
 import com.google.android.exoplayer2.Player
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import kotlin.concurrent.thread
 
@@ -25,6 +26,7 @@ class VideoPlayerManager(activity: MainActivity) : Player.Listener {
 	private val miniplayerSubtitle: TextView = activity.findViewById(R.id.miniplayer_video_subtitle)
 	private val miniplayerProgress: ProgressBar =
 		activity.findViewById(R.id.miniplayer_progress_bar)
+	private val miniplayer: BottomSheetBehavior<View> = activity.miniplayer
 
 	init {
 		exoplayerView.player = player
@@ -49,17 +51,25 @@ class VideoPlayerManager(activity: MainActivity) : Player.Listener {
 	}
 
 	fun playVideo(id: String) {
-		fragmentManager.beginTransaction().apply {
-			val bundle = Bundle()
-			bundle.putString("id", id)
-			replace(R.id.player_video_info, VideoInfoFragment::class.java, bundle)
-		}.commit()
-		thread {
-			val item = mediaItemFromVideoId(id)
-			playerHandler.post {
-				player.setMediaItem(item)
-				player.prepare()
-				player.play()
+		if (player.currentMediaItem?.mediaId == id)
+			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
+		else {
+			fragmentManager.beginTransaction().apply {
+				val bundle = Bundle()
+				bundle.putString("id", id)
+				replace(R.id.player_video_info, VideoInfoFragment::class.java, bundle)
+			}.commit()
+			thread {
+				val item = mediaItemFromVideoId(id)
+				playerHandler.post {
+					if (miniplayer.state == BottomSheetBehavior.STATE_HIDDEN)
+						miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
+					else
+						miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+					player.setMediaItem(item)
+					player.prepare()
+					player.play()
+				}
 			}
 		}
 	}
@@ -69,6 +79,7 @@ class VideoPlayerManager(activity: MainActivity) : Player.Listener {
 		return MediaItem.Builder().apply {
 			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=false")
 			setMediaMetadata(video.details.getMediaMetadata(api.host))
+			setMediaId(id)
 		}.build()
 	}
 
@@ -79,5 +90,11 @@ class VideoPlayerManager(activity: MainActivity) : Player.Listener {
 			miniplayerTitle.text = player.currentMediaItem?.mediaMetadata?.title
 			miniplayerSubtitle.text = player.currentMediaItem?.mediaMetadata?.artist
 		}
+	}
+
+	fun stop() {
+		miniplayer.state = BottomSheetBehavior.STATE_HIDDEN
+		player.stop()
+		player.clearMediaItems()
 	}
 }

@@ -11,9 +11,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.elevation.SurfaceColors
@@ -28,7 +25,7 @@ import kotlin.math.min
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
-	private lateinit var miniplayer: BottomSheetBehavior<View>
+	lateinit var miniplayer: BottomSheetBehavior<View>
 	private lateinit var miniplayerScene: MotionLayout
 	lateinit var player: VideoPlayerManager
 	lateinit var api: LightTubeApi
@@ -70,6 +67,7 @@ class MainActivity : AppCompatActivity() {
 		val miniplayerView: View = findViewById(R.id.miniplayer)
 		miniplayerScene = miniplayerView.findViewById(R.id.miniplayer_motion)
 		miniplayer = BottomSheetBehavior.from(miniplayerView)
+		miniplayer.state = BottomSheetBehavior.STATE_HIDDEN
 
 		player = VideoPlayerManager(this)
 
@@ -78,8 +76,7 @@ class MainActivity : AppCompatActivity() {
 			@SuppressLint("SwitchIntDef")
 			override fun onStateChanged(bottomSheet: View, newState: Int) {
 				when (newState) {
-					BottomSheetBehavior.STATE_HIDDEN -> //todo: stop player, clear queue etc.
-						miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+					BottomSheetBehavior.STATE_HIDDEN -> player.stop()
 
 					BottomSheetBehavior.STATE_DRAGGING -> {
 						supportActionBar?.show()
