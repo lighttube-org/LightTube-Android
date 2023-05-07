@@ -48,7 +48,7 @@
                 android:id="@+id/miniplayer_video_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:textStyle="bold"
                 tools:text="Video Title" />
 
@@ -56,7 +56,7 @@
                 android:id="@+id/miniplayer_video_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
+                android:maxLines="1"
                 tools:text="Channel Title" />
         </LinearLayout>
 
