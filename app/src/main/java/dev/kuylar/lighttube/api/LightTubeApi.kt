@@ -9,6 +9,7 @@ import dev.kuylar.lighttube.api.models.InstanceInfo
 import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
+import dev.kuylar.lighttube.api.models.SearchResults
 import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -97,6 +98,17 @@ class LightTubeApi(context: Context) {
 		return get(
 			object : TypeToken<ApiResponse<LightTubeVideo>>() {},
 			"video",
+			data
+		)
+	}
+
+	fun search(query: String, params: String? = null): ApiResponse<SearchResults> {
+		val data = hashMapOf(Pair("query", query))
+		if (params != null)
+			data["params"] = params
+		return get(
+			object : TypeToken<ApiResponse<SearchResults>>() {},
+			"search",
 			data
 		)
 	}
