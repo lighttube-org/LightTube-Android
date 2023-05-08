@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    style="?attr/materialCardViewElevatedStyle"
-    android:checkable="true"
-    android:clickable="true"
-    android:focusable="true">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginBottom="8dp"
+	style="?attr/materialCardViewElevatedStyle"
+	android:checkable="true"
+	android:clickable="true"
+	android:focusable="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/video_thumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:adjustViewBounds="false"
-            android:scaleType="centerCrop"
-            app:layout_constraintDimensionRatio="V,16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/cardThumbnailView"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/video_thumbnail"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:adjustViewBounds="false"
+			android:scaleType="centerCrop"
+			app:layout_constraintDimensionRatio="V,16:9"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:shapeAppearanceOverlay="@style/cardThumbnailView"
+			tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <TextView
-            android:id="@+id/video_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/material_on_background_emphasis_high_type"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/video_thumbnail"
-            android:maxLines="1"
-            tools:text="Video Title" />
+		<TextView
+			android:id="@+id/video_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginTop="10dp"
+			android:layout_marginEnd="10dp"
+			android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+			android:textColor="@color/material_on_background_emphasis_high_type"
+			android:textStyle="bold"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/video_thumbnail"
+			android:maxLines="1"
+			tools:text="Video Title" />
 
-        <TextView
-            android:id="@+id/video_subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/template_video_subtitle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/video_title"
-            android:maxLines="1"
-            tools:text="Channel Title • 12K views • 2 days ago" />
+		<TextView
+			android:id="@+id/video_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="10dp"
+			android:layout_marginBottom="10dp"
+			android:text="@string/template_video_subtitle"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/video_title"
+			android:maxLines="1"
+			tools:text="Channel Title • 12K views • 2 days ago" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

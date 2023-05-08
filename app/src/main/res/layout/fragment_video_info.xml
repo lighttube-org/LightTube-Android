@@ -1,229 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragment.VideoInfoFragment">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.fragment.VideoInfoFragment">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/video_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:padding="8dp">
+			<LinearLayout
+				android:id="@+id/video_details"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="?attr/selectableItemBackground"
+				android:orientation="vertical"
+				android:padding="8dp">
 
-                <TextView
-                    android:id="@+id/video_title"
-                    style="@style/TextAppearance.AppCompat.Body1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    tools:text="Video Title" />
+				<TextView
+					android:id="@+id/video_title"
+					style="@style/TextAppearance.AppCompat.Body1"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:textSize="20sp"
+					android:textStyle="bold"
+					tools:text="Video Title" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="8dp">
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingVertical="8dp">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/channel_avatar"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        app:shapeAppearanceOverlay="@style/avatarImageView"
-                        tools:src="@tools:sample/avatars" />
+					<com.google.android.material.imageview.ShapeableImageView
+						android:id="@+id/channel_avatar"
+						android:layout_width="32dp"
+						android:layout_height="32dp"
+						app:shapeAppearanceOverlay="@style/avatarImageView"
+						tools:src="@tools:sample/avatars" />
 
-                    <TextView
-                        android:id="@+id/channel_title"
-                        style="@style/TextAppearance.AppCompat.Body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:maxLines="1"
-                        tools:text="Channel Title" />
+					<TextView
+						android:id="@+id/channel_title"
+						style="@style/TextAppearance.AppCompat.Body1"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="12dp"
+						android:maxLines="1"
+						tools:text="Channel Title" />
 
-                    <TextView
-                        android:id="@+id/video_views"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:maxLines="1"
-                        tools:text="123K views" />
+					<TextView
+						android:id="@+id/video_views"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="12dp"
+						android:maxLines="1"
+						tools:text="123K views" />
 
-                    <TextView
-                        android:id="@+id/video_uploaded"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:maxLines="1"
-                        tools:text="6d ago" />
+					<TextView
+						android:id="@+id/video_uploaded"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="12dp"
+						android:maxLines="1"
+						tools:text="6d ago" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:text="@string/video_info_more"
-                        android:textAlignment="viewEnd" />
-                </LinearLayout>
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="12dp"
+						android:layout_weight="1"
+						android:maxLines="1"
+						android:text="@string/video_info_more"
+						android:textAlignment="viewEnd" />
+				</LinearLayout>
 
 
-            </LinearLayout>
+			</LinearLayout>
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="8dp"
-                android:scrollbars="none">
+			<HorizontalScrollView
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:paddingHorizontal="8dp"
+				android:scrollbars="none">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButtonToggleGroup
-                        android:id="@+id/toggleButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp">
+					<com.google.android.material.button.MaterialButtonToggleGroup
+						android:id="@+id/toggleButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginHorizontal="4dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/button_like"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/action_like"
-                            app:icon="@drawable/ic_like" />
+						<com.google.android.material.button.MaterialButton
+							android:id="@+id/button_like"
+							style="@style/Widget.Material3.Button.TonalButton"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/action_like"
+							app:icon="@drawable/ic_like" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/button_dislike"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/action_dislike"
-                            app:icon="@drawable/ic_dislike" />
-                    </com.google.android.material.button.MaterialButtonToggleGroup>
+						<com.google.android.material.button.MaterialButton
+							android:id="@+id/button_dislike"
+							style="@style/Widget.Material3.Button.TonalButton"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="@string/action_dislike"
+							app:icon="@drawable/ic_dislike" />
+					</com.google.android.material.button.MaterialButtonToggleGroup>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_comments"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:text="@string/action_comments"
-                        app:icon="@drawable/ic_comments" />
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/button_comments"
+						style="@style/Widget.Material3.Button.TonalButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginHorizontal="4dp"
+						android:text="@string/action_comments"
+						app:icon="@drawable/ic_comments" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_share"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:text="@string/action_share"
-                        app:icon="@drawable/ic_share" />
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/button_share"
+						style="@style/Widget.Material3.Button.TonalButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginHorizontal="4dp"
+						android:text="@string/action_share"
+						app:icon="@drawable/ic_share" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_download"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:text="@string/action_download"
-                        app:icon="@drawable/ic_download" />
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/button_download"
+						style="@style/Widget.Material3.Button.TonalButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginHorizontal="4dp"
+						android:text="@string/action_download"
+						app:icon="@drawable/ic_download" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_save"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:text="@string/action_save"
-                        app:icon="@drawable/ic_save" />
-                </LinearLayout>
-            </HorizontalScrollView>
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/button_save"
+						style="@style/Widget.Material3.Button.TonalButton"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginHorizontal="4dp"
+						android:text="@string/action_save"
+						app:icon="@drawable/ic_save" />
+				</LinearLayout>
+			</HorizontalScrollView>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/sheet_video_details"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:attr/windowBackground"
-        android:clickable="true"
-        android:elevation="3dp"
-        android:focusable="true"
-        android:orientation="vertical"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="0dp"
-        app:enableEdgeToEdge="true"
-        app:gestureInsetBottomIgnored="true"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+	<LinearLayout
+		android:id="@+id/sheet_video_details"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="?android:attr/windowBackground"
+		android:clickable="true"
+		android:elevation="3dp"
+		android:focusable="true"
+		android:orientation="vertical"
+		app:behavior_hideable="true"
+		app:behavior_peekHeight="0dp"
+		app:enableEdgeToEdge="true"
+		app:gestureInsetBottomIgnored="true"
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <View
-            android:layout_width="100dp"
-            android:layout_height="4dp"
-            android:layout_gravity="center"
-            android:layout_margin="4dp"
-            android:background="?android:attr/listDivider" />
+		<View
+			android:layout_width="100dp"
+			android:layout_height="4dp"
+			android:layout_gravity="center"
+			android:layout_margin="4dp"
+			android:background="?android:attr/listDivider" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingVertical="8dp">
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:paddingVertical="8dp">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_weight="1"
-                android:text="@string/video_info_description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textStyle="bold" />
+			<TextView
+				android:id="@+id/textView"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				android:layout_weight="1"
+				android:text="@string/video_info_description"
+				android:textAppearance="@style/TextAppearance.AppCompat.Large"
+				android:textStyle="bold" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/sheet_video_details_close"
-                style="@style/Widget.Material3.Button.IconButton.Outlined"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                app:icon="@drawable/ic_close" />
-        </LinearLayout>
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/sheet_video_details_close"
+				style="@style/Widget.Material3.Button.IconButton.Outlined"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="#0000"
+				app:icon="@drawable/ic_close" />
+		</LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="?android:attr/listDivider" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:scrollbars="vertical">
+		<ScrollView
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:scrollbars="vertical">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/video_info_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </ScrollView>
+			<androidx.fragment.app.FragmentContainerView
+				android:id="@+id/video_info_fragment"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+		</ScrollView>
 
-    </LinearLayout>
+	</LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

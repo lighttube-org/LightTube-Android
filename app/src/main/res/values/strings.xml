@@ -1,55 +1,55 @@
 <resources>
-    <string name="app_name">LightTube</string>
-    <string name="title_home">Home</string>
-    <string name="searchbar_hint">Search…</string>
-    <string name="title_library">Library</string>
-    <string name="title_subscriptions">Subscriptions</string>
+	<string name="app_name">LightTube</string>
+	<string name="title_home">Home</string>
+	<string name="searchbar_hint">Search…</string>
+	<string name="title_library">Library</string>
+	<string name="title_subscriptions">Subscriptions</string>
 
-    <!-- Setup -->
-    <string name="setup_welcome_title">Welcome to LightTube!</string>
-    <string name="setup_welcome_body">Let\'s get you started</string>
-    <string name="setup_instance_title">Select an instance.</string>
-    <string name="setup_instance_body">Your subscriptions &amp; playlists will be saved in the instance you choose</string>
-    <string name="setup_login_title">Log in</string>
-    <string name="setup_login_body">Log into an account to sync your subscriptions &amp; playlists between devices.
+	<!-- Setup -->
+	<string name="setup_welcome_title">Welcome to LightTube!</string>
+	<string name="setup_welcome_body">Let\'s get you started</string>
+	<string name="setup_instance_title">Select an instance.</string>
+	<string name="setup_instance_body">Your subscriptions &amp; playlists will be saved in the instance you choose</string>
+	<string name="setup_login_title">Log in</string>
+	<string name="setup_login_body">Log into an account to sync your subscriptions &amp; playlists between devices.
 Your data is stored in the instance you chose (%s).</string>
 
-    <!-- Login -->
-    <string name="login_hint">Log into your LightTube account to continue</string>
-    <string name="login_token_received">Received token, logging in…</string>
-    <string name="login_token_received_desc">This should not take longer than a few seconds…</string>
-    <string name="login_complete">Logged in as %s</string>
+	<!-- Login -->
+	<string name="login_hint">Log into your LightTube account to continue</string>
+	<string name="login_token_received">Received token, logging in…</string>
+	<string name="login_token_received_desc">This should not take longer than a few seconds…</string>
+	<string name="login_complete">Logged in as %s</string>
 
-    <!-- Actions -->
-    <string name="action_next">Next</string>
-    <string name="action_select">Select</string>
-    <string name="action_login">Login</string>
-    <string name="action_skip">Skip</string>
-    <string name="action_later">Maybe later</string>
-    <string name="action_like">Like</string>
-    <string name="action_dislike">Dislike</string>
-    <string name="action_share">Share</string>
-    <string name="action_download">Download</string>
-    <string name="action_save">Save</string>
-    <string name="action_comments">Comments</string>
+	<!-- Actions -->
+	<string name="action_next">Next</string>
+	<string name="action_select">Select</string>
+	<string name="action_login">Login</string>
+	<string name="action_skip">Skip</string>
+	<string name="action_later">Maybe later</string>
+	<string name="action_like">Like</string>
+	<string name="action_dislike">Dislike</string>
+	<string name="action_share">Share</string>
+	<string name="action_download">Download</string>
+	<string name="action_save">Save</string>
+	<string name="action_comments">Comments</string>
 
-    <!-- Templates -->
-    <string name="template_instance_info">API: %s | Accounts: %s</string>
-    <string name="template_video_subtitle">%s • %s • %s</string>
-    <string name="template_views">%s views</string>
+	<!-- Templates -->
+	<string name="template_instance_info">API: %s | Accounts: %s</string>
+	<string name="template_video_subtitle">%s • %s • %s</string>
+	<string name="template_views">%s views</string>
 
-    <!-- General -->
-    <string name="enabled">Enabled</string>
-    <string name="disabled">Disabled</string>
-    <string name="search">Search</string>
-    <string name="autoplay">Autoplay</string>
+	<!-- General -->
+	<string name="enabled">Enabled</string>
+	<string name="disabled">Disabled</string>
+	<string name="search">Search</string>
+	<string name="autoplay">Autoplay</string>
 
-    <!-- Video info -->
-    <string name="video_info_more">…more</string>
-    <string name="video_info_likes">Likes</string>
-    <string name="video_info_dislikes">Dislikes</string>
-    <string name="video_info_views">Views</string>
-    <string name="video_info_channel_about">About</string>
-    <string name="video_info_channel_videos">Videos</string>
-    <string name="video_info_description">Description</string>
+	<!-- Video info -->
+	<string name="video_info_more">…more</string>
+	<string name="video_info_likes">Likes</string>
+	<string name="video_info_dislikes">Dislikes</string>
+	<string name="video_info_views">Views</string>
+	<string name="video_info_channel_about">About</string>
+	<string name="video_info_channel_videos">Videos</string>
+	<string name="video_info_description">Description</string>
 </resources>

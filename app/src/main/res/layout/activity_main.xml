@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:liftOnScroll="true">
+	<com.google.android.material.appbar.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:liftOnScroll="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:menu="@menu/top_app_bar"
-            app:title="@string/app_name" />
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			app:layout_scrollFlags="scroll|enterAlways|snap"
+			app:menu="@menu/top_app_bar"
+			app:title="@string/app_name" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+	</com.google.android.material.appbar.AppBarLayout>
 
-    <fragment
-        android:id="@+id/nav_host_fragment_activity_main"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
-        app:navGraph="@navigation/mobile_navigation" />
+	<fragment
+		android:id="@+id/nav_host_fragment_activity_main"
+		android:name="androidx.navigation.fragment.NavHostFragment"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:defaultNavHost="true"
+		app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
+		app:navGraph="@navigation/mobile_navigation" />
 
-    <LinearLayout
-        android:id="@+id/miniplayer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:attr/windowBackground"
-        android:clickable="true"
-        android:elevation="3dp"
-        android:focusable="true"
-        android:orientation="vertical"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="144dp"
-        app:enableEdgeToEdge="true"
-        app:gestureInsetBottomIgnored="true"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+	<LinearLayout
+		android:id="@+id/miniplayer"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="?android:attr/windowBackground"
+		android:clickable="true"
+		android:elevation="3dp"
+		android:focusable="true"
+		android:orientation="vertical"
+		app:behavior_hideable="true"
+		app:behavior_peekHeight="144dp"
+		app:enableEdgeToEdge="true"
+		app:gestureInsetBottomIgnored="true"
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <include layout="@layout/layout_miniplayer" />
-    </LinearLayout>
+		<include layout="@layout/layout_miniplayer" />
+	</LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/bottom_nav_menu" />
+	<com.google.android.material.bottomnavigation.BottomNavigationView
+		android:id="@+id/nav_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:background="?android:attr/windowBackground"
+		app:menu="@menu/bottom_nav_menu" />
 
-    <com.google.android.exoplayer2.ui.StyledPlayerView
-        android:id="@+id/fullscreen_player"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000000"
-        android:visibility="gone"
-        android:elevation="10dp"
-        app:animation_enabled="false"
-        app:controller_layout_id="@layout/exo_playback_control_view"
-        app:layout_constraintDimensionRatio="V,16:9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar"
-        app:show_subtitle_button="true"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+	<com.google.android.exoplayer2.ui.StyledPlayerView
+		android:id="@+id/fullscreen_player"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#000000"
+		android:visibility="gone"
+		android:elevation="10dp"
+		app:animation_enabled="false"
+		app:controller_layout_id="@layout/exo_playback_control_view"
+		app:layout_constraintDimensionRatio="V,16:9"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar"
+		app:show_subtitle_button="true"
+		tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
