@@ -55,13 +55,13 @@ class SubscriptionsFragment : Fragment() {
 	private fun loadMore() {
 		if (loading) return
 		loading = true
-		binding.progressBar.isIndeterminate = true
+		(activity as MainActivity).setLoading(true)
 		thread {
 			val feed = api.getSubscriptionFeed(items.size, limit)
 			val start = items.size
 			items.addAll(feed.data!!)
 			activity?.runOnUiThread {
-				binding.progressBar.isIndeterminate = false
+				(activity as MainActivity).setLoading(false)
 				binding.recyclerFeed.adapter!!.notifyItemRangeInserted(start, feed.data.size)
 				loading = false
 			}

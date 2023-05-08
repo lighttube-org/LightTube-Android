@@ -28,9 +28,11 @@ class HomeFragment : Fragment() {
 		val sp = a.getSharedPreferences("main", Activity.MODE_PRIVATE)
 		binding.homeMotd.text = sp.getString("cachedMotd", "Search something to get started!")
 
+		a.setLoading(true)
 		thread {
 			val info = a.api.getInstanceInfo()
 			a.runOnUiThread {
+				a.setLoading(false)
 				binding.homeMotd.text = info.motd
 				sp.edit {
 					putString("cachedMotd", info.motd)

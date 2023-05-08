@@ -19,6 +19,7 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
+import java.lang.Exception
 import kotlin.math.max
 import kotlin.math.min
 
@@ -123,5 +124,12 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.top_app_bar, menu)
 		return true
+	}
+
+	fun setLoading(loading: Boolean) {
+		try {
+			binding.loadingBar.visibility = if (loading) View.VISIBLE else View.GONE
+		} catch (_: Exception) {
+		}
 	}
 }

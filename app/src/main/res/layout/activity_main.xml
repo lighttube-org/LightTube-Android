@@ -18,6 +18,15 @@
 			app:menu="@menu/top_app_bar"
 			app:title="@string/app_name" />
 
+		<com.google.android.material.progressindicator.LinearProgressIndicator
+			android:id="@+id/loading_bar"
+			android:layout_width="match_parent"
+			android:layout_height="4dp"
+			android:indeterminate="true"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<fragment
