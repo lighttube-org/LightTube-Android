@@ -43,6 +43,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="disabled">Disabled</string>
 	<string name="search">Search</string>
 	<string name="autoplay">Autoplay</string>
+	<string name="unknown_renderer">Unknown Renderer</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>
