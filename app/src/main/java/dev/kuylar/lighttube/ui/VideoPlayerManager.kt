@@ -8,9 +8,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
@@ -40,6 +42,14 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 	init {
 		exoplayerView.player = player
 		player.addListener(this)
+		player.setAudioAttributes(
+			AudioAttributes.Builder().apply {
+				setContentType(C.AUDIO_CONTENT_TYPE_SPEECH)
+				setAllowedCapturePolicy(C.ALLOW_CAPTURE_BY_ALL)
+				setUsage(C.USAGE_MEDIA)
+			}.build(),
+			true
+		)
 		playerHandler = Handler(player.applicationLooper)
 
 		// im sorry for this monstrosity
@@ -116,6 +126,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
 			miniplayerTitle.text = player.currentMediaItem?.mediaMetadata?.title
 			miniplayerSubtitle.text = player.currentMediaItem?.mediaMetadata?.artist
+		}
+
+		if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
+			getActivePlayerView().keepScreenOn = !(player.playbackState == Player.STATE_IDLE ||
+					player.playbackState == Player.STATE_ENDED ||
+					!player.playWhenReady || !player.isPlaying)
 		}
 
 		getActivePlayerView().findViewById<MaterialButton>(R.id.player_play_pause).icon =
