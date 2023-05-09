@@ -5,9 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.view.get
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -19,18 +25,20 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
-import java.lang.Exception
+import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
 
 
 class MainActivity : AppCompatActivity() {
 
+	private lateinit var navController: NavController
 	private lateinit var binding: ActivityMainBinding
 	lateinit var miniplayer: BottomSheetBehavior<View>
 	private lateinit var miniplayerScene: MotionLayout
 	lateinit var player: VideoPlayerManager
 	lateinit var api: LightTubeApi
+	private var loadingSuggestions = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -53,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 		setContentView(binding.root)
 
 		val navView: BottomNavigationView = binding.navView
-		val navController = findNavController(R.id.nav_host_fragment_activity_main)
+		navController = findNavController(R.id.nav_host_fragment_activity_main)
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		val appBarConfiguration = AppBarConfiguration(
@@ -69,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 		onBackPressedDispatcher.addCallback(this) {
 			if (!player.exitFullscreen()) // attempt to exit fullscreen
 				if (!minimizePlayer()) // attempt to minimize the player sheet
-					if (!navController.navigateUp()) // attempt to go back on the fragment history
+					if (!navController.popBackStack()) // attempt to go back on the fragment history
 						finish() // close the app
 		}
 
@@ -123,6 +131,58 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.top_app_bar, menu)
+
+		val searchView = menu[0].actionView as SearchView
+		val searchAutoComplete: SearchAutoComplete =
+			searchView.findViewById(androidx.appcompat.R.id.search_src_text) as SearchAutoComplete
+
+		searchAutoComplete.onItemClickListener =
+			OnItemClickListener { adapterView, view, itemIndex, id ->
+				val queryString = adapterView.getItemAtPosition(itemIndex) as String
+				searchAutoComplete.setText(queryString)
+				searchAutoComplete.setSelection(queryString.length)
+			}
+
+		searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+			override fun onQueryTextSubmit(query: String): Boolean {
+				val bundle = Bundle()
+				bundle.putString("query", query)
+				navController.navigate(R.id.navigation_search, bundle)
+				searchView.isSelected = false
+				searchView.clearFocus()
+				searchAutoComplete.dismissDropDown()
+				return false
+			}
+
+			override fun onQueryTextChange(newText: String): Boolean {
+				return updateSuggestions(newText, searchAutoComplete)
+			}
+		})
+
+		return true
+	}
+
+	private fun updateSuggestions(
+		newText: String,
+		searchAutoComplete: SearchAutoComplete
+	): Boolean {
+		if (loadingSuggestions) return false
+		if (newText.isEmpty()) return false
+		loadingSuggestions = true
+		thread {
+			val suggestions = api.searchSuggestions(newText)
+			runOnUiThread {
+				val newsAdapter = ArrayAdapter(
+					this@MainActivity,
+					android.R.layout.simple_dropdown_item_1line,
+					suggestions.data!!.autocomplete
+				)
+				searchAutoComplete.setAdapter(newsAdapter)
+				if (searchAutoComplete.isSelected)
+					searchAutoComplete.showDropDown()
+				loadingSuggestions = false
+			}
+		}
 		return true
 	}
 

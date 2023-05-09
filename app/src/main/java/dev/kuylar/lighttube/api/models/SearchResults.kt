@@ -6,8 +6,8 @@ class SearchResults(
 	val searchResults: List<JsonObject>,
 	val searchFilters: List<FilterGroup>,
 	val estimatedResultCount: Long,
-	val continuationKey: String,
-	val typoFixer: TypoFixer
+	val continuationKey: String?,
+	val typoFixer: TypoFixer?
 ) {
 	class FilterGroup(
 		val title: String,

@@ -22,4 +22,9 @@
 		android:name="dev.kuylar.lighttube.ui.fragment.LibraryFragment"
 		android:label="@string/title_library"
 		tools:layout="@layout/fragment_library" />
+	<fragment
+		android:id="@+id/navigation_search"
+		android:name="dev.kuylar.lighttube.ui.fragment.SearchFragment"
+		android:label="fragment_search"
+		tools:layout="@layout/fragment_search" />
 </navigation>

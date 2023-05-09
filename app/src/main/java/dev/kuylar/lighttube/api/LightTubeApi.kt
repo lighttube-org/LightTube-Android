@@ -10,6 +10,7 @@ import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.api.models.SearchResults
+import dev.kuylar.lighttube.api.models.SearchSuggestions
 import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -110,6 +111,22 @@ class LightTubeApi(context: Context) {
 			object : TypeToken<ApiResponse<SearchResults>>() {},
 			"search",
 			data
+		)
+	}
+
+	fun continueSearch(continuation: String): ApiResponse<SearchResults> {
+		return get(
+			object : TypeToken<ApiResponse<SearchResults>>() {},
+			"search",
+			hashMapOf(Pair("continuation", continuation))
+		)
+	}
+
+	fun searchSuggestions(query: String): ApiResponse<SearchSuggestions> {
+		return get(
+			object : TypeToken<ApiResponse<SearchSuggestions>>() {},
+			"searchSuggestions",
+			hashMapOf(Pair("query", query))
 		)
 	}
 

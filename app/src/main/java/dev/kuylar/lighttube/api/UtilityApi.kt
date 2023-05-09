@@ -67,10 +67,13 @@ class TokenInfo(
 	private val host: String
 ) {
 	lateinit var accessToken: String
-	var expires: Date = Date(0)
+	private var expiryTimestamp = 0L
+	private var refreshed = false
 
 	fun refreshIfNeeded() {
-		if (expires.time >= System.currentTimeMillis()) return
+		if (refreshed) return
+		refreshed = true
+		if (expiryTimestamp >= System.currentTimeMillis() / 1000) return
 
 		val body = FormBody.Builder().apply {
 			add("grant_type", "refresh_token")
@@ -94,12 +97,12 @@ class TokenInfo(
 			if (res.has("error"))
 				throw Exception("An error occurred while refreshing token: [${res["error"]}] ${res["error_description"]}")
 
-			expires =
-				Date(((System.currentTimeMillis() / 1000) + res.getAsJsonPrimitive("expires_in").asLong) * 1000)
+			expiryTimestamp =
+				(System.currentTimeMillis() / 1000) + res.getAsJsonPrimitive("expires_in").asLong
 			accessToken = res.getAsJsonPrimitive("access_token").asString
 			Log.d(
 				"UtilityApi",
-				"Refreshed token ${refreshToken.take(5)}...${refreshToken.takeLast(5)}. It will expire at $expires"
+				"Refreshed token ${refreshToken.take(5)}...${refreshToken.takeLast(5)}. It will expire at ${Date(expiryTimestamp)}"
 			)
 		}
 	}
@@ -126,12 +129,12 @@ class TokenInfo(
 			if (res.has("error"))
 				throw Exception("An error occurred while refreshing token: [${res["error"]}] ${res["error_description"]}")
 
-			expires =
-				Date(((System.currentTimeMillis() / 1000) + res.getAsJsonPrimitive("expires_in").asLong) * 1000)
+			expiryTimestamp =
+				(System.currentTimeMillis() / 1000) + res.getAsJsonPrimitive("expires_in").asLong
 			accessToken = res.getAsJsonPrimitive("access_token").asString
 			Log.d(
 				"UtilityApi",
-				"Refreshed token ${refreshToken.take(5)}...${refreshToken.takeLast(5)}. It will expire at $expires"
+				"Refreshed token ${refreshToken.take(5)}...${refreshToken.takeLast(5)}. It will expire at $expiryTimestamp"
 			)
 		}
 	}
