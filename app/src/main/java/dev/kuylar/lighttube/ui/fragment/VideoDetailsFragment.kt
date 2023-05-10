@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoDetailsBinding
 
@@ -28,8 +29,13 @@ class VideoDetailsFragment(private val video: LightTubeVideo) : Fragment() {
 		binding.dislikeContainer.visibility = View.GONE // todo: return youtube dislike
 		binding.viewCount.text = video.viewCount
 		val dateSplits = video.dateText.split(", ")
-		binding.publishedDate.text = dateSplits[0]
-		binding.publishedYear.text = dateSplits[1]
+		try {
+			binding.publishedDate.text = dateSplits[0]
+			binding.publishedYear.text = dateSplits[1]
+		} catch(_: Exception) {
+			binding.publishedDate.text = video.dateText
+			binding.publishedYear.text = getString(R.string.video_info_published)
+		}
 
 		binding.channelTitle.text = video.channel.title
 		binding.channelSubscribers.text = video.channel.subscribers

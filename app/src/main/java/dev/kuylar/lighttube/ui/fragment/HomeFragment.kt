@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.databinding.FragmentHomeBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import java.io.IOException
 import kotlin.concurrent.thread
 
 class HomeFragment : Fragment() {
@@ -30,12 +33,24 @@ class HomeFragment : Fragment() {
 
 		a.setLoading(true)
 		thread {
-			val info = a.api.getInstanceInfo()
-			a.runOnUiThread {
-				a.setLoading(false)
-				binding.homeMotd.text = info.motd
-				sp.edit {
-					putString("cachedMotd", info.motd)
+			try {
+				val info = a.api.getInstanceInfo()
+				a.runOnUiThread {
+					a.setLoading(false)
+					binding.homeMotd.text = info.motd
+					sp.edit {
+						putString("cachedMotd", info.motd)
+					}
+				}
+			} catch (e: IOException) {
+				a.runOnUiThread {
+					a.setLoading(false)
+					val sb = Snackbar.make(binding.root, R.string.error_connection, Snackbar.LENGTH_INDEFINITE)
+					sb.setAnchorView(R.id.nav_view)
+					sb.setAction(R.string.action_close) {
+						sb.dismiss()
+					}
+					sb.show()
 				}
 			}
 		}

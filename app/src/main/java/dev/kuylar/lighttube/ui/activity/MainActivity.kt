@@ -170,16 +170,20 @@ class MainActivity : AppCompatActivity() {
 		if (newText.isEmpty()) return false
 		loadingSuggestions = true
 		thread {
-			val suggestions = api.searchSuggestions(newText)
-			runOnUiThread {
-				val newsAdapter = ArrayAdapter(
-					this@MainActivity,
-					android.R.layout.simple_dropdown_item_1line,
-					suggestions.data!!.autocomplete
-				)
-				searchAutoComplete.setAdapter(newsAdapter)
-				if (searchAutoComplete.isSelected)
-					searchAutoComplete.showDropDown()
+			try {
+				val suggestions = api.searchSuggestions(newText)
+				runOnUiThread {
+					val newsAdapter = ArrayAdapter(
+						this@MainActivity,
+						android.R.layout.simple_dropdown_item_1line,
+						suggestions.data!!.autocomplete
+					)
+					searchAutoComplete.setAdapter(newsAdapter)
+					if (searchAutoComplete.isSelected)
+						searchAutoComplete.showDropDown()
+					loadingSuggestions = false
+				}
+			} catch (e: Exception) {
 				loadingSuggestions = false
 			}
 		}

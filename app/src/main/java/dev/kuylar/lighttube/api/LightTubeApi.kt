@@ -53,6 +53,8 @@ class LightTubeApi(context: Context) {
 		}.build()
 
 		client.newCall(request).execute().use { response ->
+			if (!response.headers["Content-Type"]?.contains("json")!!)
+				throw LightTubeException(0, "Received non-JSON response")
 			val r = gson.fromJson<ApiResponse<T>>(
 				response.body!!.string(),
 				token.type

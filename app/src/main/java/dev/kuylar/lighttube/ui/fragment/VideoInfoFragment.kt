@@ -8,11 +8,14 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoInfoFragment : Fragment() {
@@ -43,9 +46,28 @@ class VideoInfoFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 		if (id.isNotBlank())
 			thread {
-				val video = api.getVideo(id, playlistId)
-				activity?.runOnUiThread {
-					fillData(video.data!!)
+				try {
+					val video = api.getVideo(id, playlistId)
+					activity?.runOnUiThread {
+						fillData(video.data!!)
+					}
+				} catch (e: IOException) {
+					activity?.runOnUiThread {
+						Snackbar.make(
+							binding.root,
+							R.string.error_connection,
+							Snackbar.LENGTH_INDEFINITE
+						).show()
+					}
+				} catch (e: LightTubeException) {
+					activity?.runOnUiThread {
+						Snackbar.make(
+							binding.root,
+							getString(R.string.error_lighttube, e.message),
+							Snackbar.LENGTH_INDEFINITE
+						).setTextMaxLines(2)
+							.show()
+					}
 				}
 			}
 
@@ -73,7 +95,7 @@ class VideoInfoFragment : Fragment() {
 		binding.videoDetails.setOnClickListener {
 			detailsSheet.state = BottomSheetBehavior.STATE_EXPANDED
 		}
-		binding.sheetVideoDetailsClose.setOnClickListener{
+		binding.sheetVideoDetailsClose.setOnClickListener {
 			detailsSheet.state = BottomSheetBehavior.STATE_HIDDEN
 		}
 	}

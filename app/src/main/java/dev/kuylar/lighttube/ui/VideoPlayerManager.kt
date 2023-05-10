@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.C
@@ -19,8 +20,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
+import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
@@ -97,15 +100,31 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 				replace(R.id.player_video_info, VideoInfoFragment::class.java, bundle)
 			}.commit()
 			thread {
-				val item = mediaItemFromVideoId(id)
-				playerHandler.post {
-					if (miniplayer.state == BottomSheetBehavior.STATE_HIDDEN)
-						miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
-					else
-						miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
-					player.setMediaItem(item)
-					player.prepare()
-					player.play()
+				try {
+					val item = mediaItemFromVideoId(id)
+					playerHandler.post {
+						if (miniplayer.state == BottomSheetBehavior.STATE_HIDDEN)
+							miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
+						player.setMediaItem(item)
+						player.prepare()
+						player.play()
+					}
+				} catch (e: IOException) {
+					activity.runOnUiThread {
+						Toast.makeText(
+							activity,
+							R.string.error_connection,
+							Toast.LENGTH_LONG
+						).show()
+					}
+				} catch (e: LightTubeException) {
+					activity.runOnUiThread {
+						Toast.makeText(
+							activity,
+							activity.getString(R.string.error_lighttube, e.message),
+							Toast.LENGTH_LONG
+						).show()
+					}
 				}
 			}
 		}
