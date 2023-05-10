@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.InstanceInfo
+import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
@@ -14,6 +15,7 @@ import dev.kuylar.lighttube.api.models.SearchSuggestions
 import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.IOException
 import java.net.URLEncoder
 
 
@@ -37,6 +39,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	private fun <T> get(
 		token: TypeToken<ApiResponse<T>>,
 		path: String,
@@ -55,13 +58,14 @@ class LightTubeApi(context: Context) {
 				token.type
 			)
 			if (r.error != null)
-				throw r.error.getException()
+				throw r.error
 			if (r.data == null)
-				throw Exception("[0] Received null data")
+				throw LightTubeException(0, "Received null date")
 			return r
 		}
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun getCurrentUser(): ApiResponse<LightTubeUserInfo> {
 		return get(
 			object : TypeToken<ApiResponse<LightTubeUserInfo>>() {},
@@ -69,6 +73,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class, Exception::class)
 	fun getInstanceInfo(): InstanceInfo {
 		val request: Request = Request.Builder()
 			.url("$host/api/info")
@@ -84,6 +89,7 @@ class LightTubeApi(context: Context) {
 		}
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun getPlayer(id: String): ApiResponse<LightTubePlayer> {
 		return get(
 			object : TypeToken<ApiResponse<LightTubePlayer>>() {},
@@ -92,6 +98,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun getVideo(id: String, playlistId: String?): ApiResponse<LightTubeVideo> {
 		val data = hashMapOf(Pair("id", id))
 		if (playlistId != null)
@@ -103,6 +110,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun search(query: String, params: String? = null): ApiResponse<SearchResults> {
 		val data = hashMapOf(Pair("query", query))
 		if (params != null)
@@ -114,6 +122,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun continueSearch(continuation: String): ApiResponse<SearchResults> {
 		return get(
 			object : TypeToken<ApiResponse<SearchResults>>() {},
@@ -122,6 +131,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun searchSuggestions(query: String): ApiResponse<SearchSuggestions> {
 		return get(
 			object : TypeToken<ApiResponse<SearchSuggestions>>() {},
@@ -130,6 +140,7 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
 	fun getSubscriptionFeed(
 		skip: Int = 0,
 		limit: Int = 50
