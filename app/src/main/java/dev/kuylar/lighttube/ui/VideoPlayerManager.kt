@@ -3,6 +3,7 @@ package dev.kuylar.lighttube.ui
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -133,7 +134,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		val video = api.getPlayer(id).data!!
 		return MediaItem.Builder().apply {
 			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=false")
-			setMediaMetadata(video.details.getMediaMetadata(api.host))
+			setMediaMetadata(video.details.getMediaMetadata(video.formats))
 			setMediaId(id)
 		}.build()
 	}
@@ -152,6 +153,19 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 					!player.playWhenReady || !player.isPlaying)
 		}
 
+		if (events.contains(Player.EVENT_PLAYER_ERROR)) {
+			if (player.playerError?.errorCode == 2004) {
+				// fallback to muxed format
+				val cmii = player.currentMediaItemIndex
+				player.addMediaItem(cmii + 1, getFallbackMediaItem(player.currentMediaItem!!))
+				player.seekToNextMediaItem()
+				player.prepare()
+				player.play()
+				Toast.makeText(activity, R.string.error_playback, Toast.LENGTH_LONG).show()
+				player.removeMediaItem(cmii)
+			}
+		}
+
 		getActivePlayerView().findViewById<MaterialButton>(R.id.player_play_pause).icon =
 			AppCompatResources.getDrawable(
 				activity,
@@ -160,6 +174,17 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 
 		getActivePlayerView().findViewById<CircularProgressIndicator>(R.id.player_buffering_progress).visibility =
 			if (player.playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
+	}
+
+	private fun getFallbackMediaItem(currentItem: MediaItem): MediaItem {
+		return MediaItem.Builder().apply {
+			setUri(currentItem.mediaMetadata.extras!!.getString("fallback"))
+			Log.i("LTPlayer", "-> URL: ${currentItem.mediaMetadata.extras!!.getString("fallback")}")
+			setMediaId(currentItem.mediaId)
+			Log.i("LTPlayer", "-> ID: ${currentItem.mediaId}")
+			setMediaMetadata(currentItem.mediaMetadata.buildUpon().apply { setExtras(null) }
+				.build())
+		}.build()
 	}
 
 	fun stop() {

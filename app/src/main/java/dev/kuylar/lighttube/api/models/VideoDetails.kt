@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.api.models
 
+import android.os.Bundle
 import com.google.android.exoplayer2.MediaMetadata
 
 class VideoDetails(
@@ -13,12 +14,15 @@ class VideoDetails(
 	val viewCount: Long,
 	val allowRatings: Boolean
 ) {
-	fun getMediaMetadata(apiHost: String): MediaMetadata {
+	fun getMediaMetadata(formats: ArrayList<Format>): MediaMetadata {
 		return MediaMetadata.Builder().apply {
 			setTitle(title)
 			setArtist(author.title)
 			setDescription(shortDescription)
 			setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
+			val b = Bundle()
+			b.putString("fallback", formats.last().url)
+			setExtras(b)
 		}.build()
 	}
 }
