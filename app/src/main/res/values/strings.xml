@@ -47,6 +47,10 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="search">Search</string>
 	<string name="autoplay">Autoplay</string>
 	<string name="unknown_renderer">Unknown Renderer</string>
+	<string name="on">On</string>
+	<string name="off">Off</string>
+	<string name="unavailable">Unavailable</string>
+	<string name="bullet">•</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>
@@ -70,4 +74,13 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="error_label_version">Version</string>
 	<string name="error_label_activity">Activity</string>
 	<string name="error_label_trace">Stack trace</string>
+
+	<!-- Player settings -->
+	<string name="player_quality">Quality</string>
+	<string name="player_captions">Captions</string>
+	<string name="player_loop">Loop video</string>
+	<string name="player_speed">Playback speed</string>
+	<string name="player_track">Audio track</string>
+	<string name="player_quality_auto">Auto</string>
+	<string name="player_speed_default">Normal</string>
 </resources>

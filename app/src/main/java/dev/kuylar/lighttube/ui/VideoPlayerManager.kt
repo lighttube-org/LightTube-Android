@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,11 +23,13 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.fragment.PlayerSettingsFragment
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
+	private var videoTracks: Tracks? = null
 	private var infoFragment: VideoInfoFragment? = null
 	private val playerHandler: Handler
 	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
@@ -84,6 +87,15 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 
 		view.findViewById<MaterialButton>(R.id.player_fullscreen).setOnClickListener {
 			toggleFullscreen()
+		}
+
+		view.findViewById<MaterialButton>(R.id.player_settings).setOnClickListener {
+			PlayerSettingsFragment(player, videoTracks).show(fragmentManager, null)
+		}
+
+		view.findViewById<MaterialButton>(R.id.player_captions).setOnLongClickListener {
+			PlayerSettingsFragment(player, videoTracks, "caption").show(fragmentManager, null)
+			true
 		}
 	}
 
@@ -144,6 +156,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
 			miniplayerTitle.text = player.currentMediaItem?.mediaMetadata?.title
 			miniplayerSubtitle.text = player.currentMediaItem?.mediaMetadata?.artist
+			videoTracks = null
 		}
 
 		if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
@@ -173,6 +186,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 
 		getActivePlayerView().findViewById<CircularProgressIndicator>(R.id.player_buffering_progress).visibility =
 			if (player.playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
+	}
+
+	override fun onTracksChanged(tracks: Tracks) {
+		videoTracks = tracks
 	}
 
 	private fun getFallbackMediaItem(currentItem: MediaItem): MediaItem {
