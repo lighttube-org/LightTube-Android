@@ -11,8 +11,13 @@ android {
         applicationId "dev.kuylar.lighttube"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        if (System.getenv("CI") == "true") {
+            versionCode System.getenv("GITHUB_RUN_NUMBER") as Integer
+            versionName "${System.getenv("VERSION_NAME")} (${System.getenv("GITHUB_SHA").take(7)})"
+        } else {
+            versionCode 1
+            versionName "1.0"
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
