@@ -7,19 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoInfoFragment(val id: String, val playlistId: String?) : Fragment() {
+	private val items: MutableList<JsonObject> = mutableListOf()
 	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var binding: FragmentVideoInfoBinding
@@ -83,6 +87,11 @@ class VideoInfoFragment(val id: String, val playlistId: String?) : Fragment() {
 			.with(this)
 			.load(video.channel.avatar)
 			.into(binding.channelAvatar)
+
+		items.addAll(video.recommended)
+		val adapter = RendererRecyclerAdapter(items)
+		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
+		binding.recyclerRecommended.adapter = adapter
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
 			val f = VideoDetailsFragment(video)

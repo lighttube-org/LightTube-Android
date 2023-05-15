@@ -38,6 +38,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<!-- Templates -->
 	<string name="template_instance_info">API: %s | Accounts: %s</string>
 	<string name="template_video_subtitle">%s • %s • %s</string>
+	<string name="template_video_subtitle_no_channel">%s • %s</string>
 	<string name="template_views">%s views</string>
 
 	<!-- General -->

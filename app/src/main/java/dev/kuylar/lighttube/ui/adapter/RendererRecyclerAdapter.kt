@@ -23,6 +23,7 @@ class RendererRecyclerAdapter(private val rendererList: MutableList<JsonObject>)
 		val inflater = LayoutInflater.from(parent.context)
 		return when (rendererList[position].getAsJsonPrimitive("type").asString) {
 			"videoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
+			"compactVideoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
 			else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 		}
 	}
