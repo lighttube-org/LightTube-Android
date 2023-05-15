@@ -1,11 +1,6 @@
-name: Generated APK AAB (Upload)
-
-env:
-  # The name of the main module repository
-  main_project_module: app
+name: Build APK
 
 on:
-
   push:
     branches:
       - 'master'
@@ -15,56 +10,64 @@ on:
 
 jobs:
   build:
-
+    name: Build Signed APK
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      # Set Current Date As Env Variable
-      - name: Set current date as env variable
-        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-
-      # Set Repository Name As Env Variable
-      - name: Set repository name as env variable
-        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
-      
-      - name: Set Up JDK
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-
-      # Run Tests Build
-      - name: Run gradle tests
-        run: ./gradlew test
-
-      # Run Build Project
-      - name: Build gradle project
-        run: ./gradlew build
-
-      # Create APK Release
-      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assemble
-
-      # Create Bundle AAB Release
-      # Noted for main module build [main_project_module]:bundleRelease
-      - name: Build app bundle release (AAB) - ${{ env.main_project_module }} module
-        run: ./gradlew ${{ env.main_project_module }}:bundleRelease
-
-      # Upload Artifact Build
-      # Noted For Output [main_project_module]/build/outputs/apk/release/
-      - name: Upload APK Release - ${{ env.repository_name }}
-        uses: actions/upload-artifact@v2
+      # Here we need to decode keystore.jks from base64 string and place it
+      # in the folder specified in the release signing configuration
+      - name: Decode Keystore
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.2
         with:
-          name: ${{ env.date_today }} -  ${{ env.repository_name }} - APK(s) release generated
-          path: ${{ env.main_project_module }}/build/outputs/apk/release/
+          fileName: 'android_keystore.jks'
+          fileDir: '/home/runner/work/lighttube-android/lighttube-android/app/keystore/'
+          encodedString: ${{ secrets.KEYSTORE }}
 
-      # Noted For Output [main_project_module]/build/outputs/bundle/release/
-      - name: Upload AAB (App Bundle) Release - ${{ env.repository_name }}
-        uses: actions/upload-artifact@v2
+      # Build and sign APK ("-x test" argument is used to skip tests)
+      - name: Build APK
+        run: ./gradlew :app:assembleRelease -x test
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+      # Show information about the APK's signing certificates
+      - name: Verify Signature
+        run: $ANDROID_SDK_ROOT/build-tools/33.0.1/apksigner verify --print-certs app/build/outputs/apk/release/LightTube_${{ github.event.inputs.version }}.apk
+
+      # Save the APK after the Build job is complete to publish it as a Github release in the next job
+      - name: Upload APK
+        uses: actions/upload-artifact@v3.1.2
         with:
-          name: ${{ env.date_today }} -  ${{ env.repository_name }} - App bundle(s) AAB release generated
-          path: ${{ env.main_project_module }}/build/outputs/bundle/release/
+          name: LightTube
+          path: app/build/outputs/apk/release/LightTube_${{ github.event.inputs.version }}.apk
+#  release:
+#    name: Release APK
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download APK from build
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: LightTube
+#      - name: Create Release
+#        id: create_release
+#        uses: softprops/action-gh-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: v${{ github.event.inputs.version }}
+#          name: Release v${{ github.event.inputs.version }}
+#          draft: false
+#          prerelease: false
+#          files: LightTube/LightTube_${{ github.event.inputs.version }}.apk
