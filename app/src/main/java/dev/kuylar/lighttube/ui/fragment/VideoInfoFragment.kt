@@ -20,6 +20,7 @@ import kotlin.concurrent.thread
 
 class VideoInfoFragment : Fragment() {
 	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
+	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var id: String
 	private var playlistId: String? = null
 	private lateinit var binding: FragmentVideoInfoBinding
@@ -72,6 +73,7 @@ class VideoInfoFragment : Fragment() {
 			}
 
 		detailsSheet = BottomSheetBehavior.from(binding.sheetVideoDetails)
+		commentsSheet = BottomSheetBehavior.from(binding.sheetComments)
 
 		//todo: placeholder shimmer thing?
 	}
@@ -90,6 +92,9 @@ class VideoInfoFragment : Fragment() {
 		requireActivity().supportFragmentManager.beginTransaction().apply {
 			val f = VideoDetailsFragment(video)
 			replace(R.id.video_info_fragment, f)
+
+			val c = VideoCommentsFragment(video.commentsContinuation)
+			replace(R.id.comments_fragment, c)
 		}.commit()
 
 		binding.videoDetails.setOnClickListener {
@@ -97,6 +102,13 @@ class VideoInfoFragment : Fragment() {
 		}
 		binding.sheetVideoDetailsClose.setOnClickListener {
 			detailsSheet.state = BottomSheetBehavior.STATE_HIDDEN
+		}
+
+		binding.buttonComments.setOnClickListener {
+			commentsSheet.state = BottomSheetBehavior.STATE_EXPANDED
+		}
+		binding.sheetCommentsClose.setOnClickListener {
+			commentsSheet.state = BottomSheetBehavior.STATE_HIDDEN
 		}
 	}
 }

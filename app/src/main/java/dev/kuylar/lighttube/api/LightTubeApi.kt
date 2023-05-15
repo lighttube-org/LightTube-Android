@@ -3,8 +3,10 @@ package dev.kuylar.lighttube.api
 import android.content.Context
 import android.util.Log
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
+import dev.kuylar.lighttube.api.models.ContinuationContainer
 import dev.kuylar.lighttube.api.models.InstanceInfo
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubePlayer
@@ -139,6 +141,14 @@ class LightTubeApi(context: Context) {
 			object : TypeToken<ApiResponse<SearchSuggestions>>() {},
 			"searchSuggestions",
 			hashMapOf(Pair("query", query))
+		)
+	}
+
+	fun getComments(continuation: String): ApiResponse<ContinuationContainer<JsonObject>> {
+		return get(
+			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
+			"comments",
+			hashMapOf(Pair("continuation", continuation))
 		)
 	}
 

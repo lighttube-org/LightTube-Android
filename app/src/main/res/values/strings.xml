@@ -56,6 +56,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="video_info_channel_videos">Videos</string>
 	<string name="video_info_description">Description</string>
 	<string name="video_info_published">Published</string>
+	<string name="video_info_comments">Comments</string>
 
 	<!-- Error messages -->
 	<string name="error_connection">Failed to connect to the instance</string>
