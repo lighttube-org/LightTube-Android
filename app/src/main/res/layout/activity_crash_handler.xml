@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center_vertical"
+	android:orientation="vertical">
+
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/error_title"
+		android:textAlignment="center"
+		android:textStyle="bold"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="16dp" />
+
+	<TableLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TableRow
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="4dp"
+				android:text="@string/error_label_instance"
+				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/error_instance"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="4dp" />
+		</TableRow>
+
+		<TableRow
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="4dp"
+				android:text="@string/error_label_version"
+				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/error_version"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="4dp" />
+		</TableRow>
+
+	</TableLayout>
+
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="16dp" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/error_label_trace"
+		android:textStyle="bold"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="8dp" />
+
+	<TextView
+		android:id="@+id/error_trace"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#6A6A6A"
+		android:fontFamily="monospace"
+		android:padding="8dp"
+		android:textColor="#FFFFFF" />
+
+</LinearLayout>
