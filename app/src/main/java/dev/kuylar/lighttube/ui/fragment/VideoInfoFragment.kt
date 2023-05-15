@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -109,6 +110,17 @@ class VideoInfoFragment : Fragment() {
 		}
 		binding.sheetCommentsClose.setOnClickListener {
 			commentsSheet.state = BottomSheetBehavior.STATE_HIDDEN
+		}
+
+		binding.buttonShare.setOnClickListener {
+			val sendIntent: Intent = Intent().apply {
+				action = Intent.ACTION_SEND
+				putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${video.id}")
+				type = "text/plain"
+			}
+
+			val shareIntent = Intent.createChooser(sendIntent, null)
+			startActivity(shareIntent)
 		}
 	}
 }
