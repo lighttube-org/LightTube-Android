@@ -99,12 +99,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 				bundle.putString("id", id)
 				replace(R.id.player_video_info, VideoInfoFragment::class.java, bundle)
 			}.commit()
+			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 			thread {
 				try {
 					val item = mediaItemFromVideoId(id)
 					playerHandler.post {
-						if (miniplayer.state == BottomSheetBehavior.STATE_HIDDEN)
-							miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 						player.setMediaItem(item)
 						player.prepare()
 						player.play()
