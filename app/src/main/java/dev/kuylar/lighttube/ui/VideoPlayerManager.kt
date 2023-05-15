@@ -1,7 +1,6 @@
 package dev.kuylar.lighttube.ui
 
 import android.content.pm.ActivityInfo
-import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -28,6 +27,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
+	private var infoFragment: VideoInfoFragment? = null
 	private val playerHandler: Handler
 	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
 	private val fullscreenPlayer: StyledPlayerView = activity.findViewById(R.id.fullscreen_player)
@@ -96,9 +96,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 		else {
 			fragmentManager.beginTransaction().apply {
-				val bundle = Bundle()
-				bundle.putString("id", id)
-				replace(R.id.player_video_info, VideoInfoFragment::class.java, bundle)
+				infoFragment = VideoInfoFragment(id, null)
+				replace(R.id.player_video_info, infoFragment!!)
 			}.commit()
 			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 			thread {
@@ -235,5 +234,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 
 	fun setVolume(volume: Float) {
 		player.volume = volume
+	}
+
+	fun closeSheets(): Boolean {
+		return infoFragment?.closeSheets() ?: false
 	}
 }

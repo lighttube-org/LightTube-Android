@@ -75,10 +75,11 @@ class MainActivity : AppCompatActivity() {
 		navView.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
-			if (!player.exitFullscreen()) // attempt to exit fullscreen
-				if (!minimizePlayer()) // attempt to minimize the player sheet
-					if (!navController.popBackStack()) // attempt to go back on the fragment history
-						finish() // close the app
+			if (!player.closeSheets()) // attempt to close details/comments
+				if (!player.exitFullscreen()) // attempt to exit fullscreen
+					if (!minimizePlayer()) // attempt to minimize the player sheet
+						if (!navController.popBackStack()) // attempt to go back on the fragment history
+							finish() // close the app
 		}
 
 		val miniplayerView: View = findViewById(R.id.miniplayer)

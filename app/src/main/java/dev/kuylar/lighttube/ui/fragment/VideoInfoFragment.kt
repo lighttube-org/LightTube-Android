@@ -19,21 +19,15 @@ import dev.kuylar.lighttube.ui.activity.MainActivity
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class VideoInfoFragment : Fragment() {
+class VideoInfoFragment(val id: String, val playlistId: String?) : Fragment() {
 	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
-	private lateinit var id: String
-	private var playlistId: String? = null
 	private lateinit var binding: FragmentVideoInfoBinding
 	private lateinit var api: LightTubeApi
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		api = (requireActivity() as MainActivity).api
-		arguments?.let {
-			id = it.getString("id", "")
-			playlistId = it.getString("playlistId", "")
-		}
 	}
 
 	override fun onCreateView(
@@ -122,5 +116,19 @@ class VideoInfoFragment : Fragment() {
 			val shareIntent = Intent.createChooser(sendIntent, null)
 			startActivity(shareIntent)
 		}
+	}
+
+	fun closeSheets(): Boolean {
+		if (commentsSheet.state != BottomSheetBehavior.STATE_HIDDEN) {
+			commentsSheet.state = BottomSheetBehavior.STATE_HIDDEN
+			return true
+		}
+
+		if (detailsSheet.state != BottomSheetBehavior.STATE_HIDDEN) {
+			detailsSheet.state = BottomSheetBehavior.STATE_HIDDEN
+			return true
+		}
+
+		return false
 	}
 }
