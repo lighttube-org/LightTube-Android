@@ -17,7 +17,8 @@ import dev.kuylar.lighttube.databinding.ItemPlayerSettingBinding
 
 
 class PlayerSettingsFragment(
-	private val player: Player, val videoTracks: Tracks?, val defaultScreen: String? = null
+	private val player: Player,
+	private val defaultScreen: String? = null
 ) : BottomSheetDialogFragment() {
 	private lateinit var binding: FragmentPlayerSettingsBinding
 
@@ -28,18 +29,64 @@ class PlayerSettingsFragment(
 		return binding.root
 	}
 
-	@SuppressLint("SetTextI18n")
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		if (player.currentMediaItem?.mediaMetadata?.extras?.getString("fallback") != null && videoTracks != null) {
+		loadQualityMenu()
+		loadSubtitleMenu()
+		binding.playerSettingsLoopValue.text =
+			if (player.repeatMode == Player.REPEAT_MODE_ONE) getString(R.string.on)
+			else getString(R.string.off)
+
+		binding.playerSettingsButtonCaption.setOnClickListener {
+			binding.playerSettingsMain.visibility = View.GONE
+			binding.playerSettingsCaption.visibility = View.VISIBLE
+		}
+		binding.playerSettingsButtonLoop.setOnClickListener {
+			player.repeatMode =
+				if (player.repeatMode == Player.REPEAT_MODE_ONE) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+			dismissNow()
+		}
+		binding.playerSettingsButtonSpeed.setOnClickListener {
+			binding.playerSettingsMain.visibility = View.GONE
+			binding.playerSettingsSpeed.visibility = View.VISIBLE
+		}
+		binding.playerSettingsButtonAudio.setOnClickListener {
+			binding.playerSettingsMain.visibility = View.GONE
+			binding.playerSettingsTrack.visibility = View.VISIBLE
+		}
+
+		when (defaultScreen) {
+			"caption" -> {
+				binding.playerSettingsMain.visibility = View.GONE
+				binding.playerSettingsCaption.visibility = View.VISIBLE
+			}
+		}
+	}
+
+	private fun createMenuItem(
+		label: String, checked: Boolean, onClick: ((View) -> Unit)
+	): LinearLayout {
+		val layout = ItemPlayerSettingBinding.inflate(layoutInflater)
+		layout.playerSettingCheck.visibility = if (checked) View.VISIBLE else View.INVISIBLE
+		layout.playerSettingLabel.text = label
+		layout.root.setOnClickListener(onClick)
+		return layout.root
+	}
+
+	@SuppressLint("SetTextI18n")
+	private fun loadQualityMenu() {
+		if (player.currentMediaItem?.mediaMetadata?.extras?.getString("fallback") != null && player.currentTracks.groups.size > 0) {
 			binding.playerSettingsButtonQuality.setOnClickListener {
 				binding.playerSettingsMain.visibility = View.GONE
 				binding.playerSettingsQuality.visibility = View.VISIBLE
 			}
 
+			val group = player.currentTracks.groups[0]
 			val isAuto =
-				player.trackSelectionParameters.overrides.any { it.key.type == C.TRACK_TYPE_VIDEO }
+				player.trackSelectionParameters.overrides.any { it.key.type == 0 } || multipleSelected(
+					group
+				)
 
 			// Auto resolution
 			binding.playerSettingsQuality.addView(createMenuItem(
@@ -54,7 +101,6 @@ class PlayerSettingsFragment(
 			})
 
 			// Video resolutions
-			val group = videoTracks.groups[0]
 			for (i in 1 until group.length) {
 				val fmt = group.getTrackFormat(i)
 				if (fmt.sampleMimeType?.equals("video/avc") != false) continue
@@ -79,8 +125,8 @@ class PlayerSettingsFragment(
 			else {
 				try {
 					val formatIndex =
-						player.trackSelectionParameters.overrides[videoTracks.groups[0].mediaTrackGroup]!!.trackIndices.first()
-					val format = videoTracks.groups[0].getTrackFormat(formatIndex)
+						player.trackSelectionParameters.overrides[player.currentTracks.groups[0].mediaTrackGroup]!!.trackIndices.first()
+					val format = player.currentTracks.groups[0].getTrackFormat(formatIndex)
 					binding.playerSettingsQualityValue.text = "${format.height}p"
 				} catch (_: Exception) {
 					binding.playerSettingsQualityValue.text =
@@ -90,7 +136,17 @@ class PlayerSettingsFragment(
 		} else {
 			binding.playerSettingsQualityValue.text = getString(R.string.unavailable)
 		}
+	}
 
+	private fun multipleSelected(group: Tracks.Group): Boolean {
+		var selected = 0
+		for (i in 1 until group.length)
+			if (group.isTrackSelected(i))
+				selected++
+		return selected > 1
+	}
+
+	private fun loadSubtitleMenu() {
 		val textTracks = player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }
 		if (textTracks.isNotEmpty()) {
 			val params =
@@ -137,40 +193,5 @@ class PlayerSettingsFragment(
 		} else {
 			binding.playerSettingsButtonCaption.visibility = View.GONE
 		}
-
-		binding.playerSettingsButtonCaption.setOnClickListener {
-			binding.playerSettingsMain.visibility = View.GONE
-			binding.playerSettingsCaption.visibility = View.VISIBLE
-		}
-		binding.playerSettingsButtonLoop.setOnClickListener {
-			player.repeatMode =
-				if (player.repeatMode == Player.REPEAT_MODE_ONE) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
-			dismissNow()
-		}
-		binding.playerSettingsButtonSpeed.setOnClickListener {
-			binding.playerSettingsMain.visibility = View.GONE
-			binding.playerSettingsSpeed.visibility = View.VISIBLE
-		}
-		binding.playerSettingsButtonAudio.setOnClickListener {
-			binding.playerSettingsMain.visibility = View.GONE
-			binding.playerSettingsTrack.visibility = View.VISIBLE
-		}
-
-		when (defaultScreen) {
-			"caption" -> {
-				binding.playerSettingsMain.visibility = View.GONE
-				binding.playerSettingsCaption.visibility = View.VISIBLE
-			}
-		}
-	}
-
-	private fun createMenuItem(
-		label: String, checked: Boolean, onClick: ((View) -> Unit)
-	): LinearLayout {
-		val layout = ItemPlayerSettingBinding.inflate(layoutInflater)
-		layout.playerSettingCheck.visibility = if (checked) View.VISIBLE else View.INVISIBLE
-		layout.playerSettingLabel.text = label
-		layout.root.setOnClickListener(onClick)
-		return layout.root
 	}
 }
