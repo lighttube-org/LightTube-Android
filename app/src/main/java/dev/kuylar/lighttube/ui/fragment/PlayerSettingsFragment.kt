@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
@@ -31,13 +32,14 @@ class PlayerSettingsFragment(
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		if (player.currentMediaItem!!.mediaMetadata.extras!!.getString("fallback") != null && videoTracks != null) {
+		if (player.currentMediaItem?.mediaMetadata?.extras?.getString("fallback") != null && videoTracks != null) {
 			binding.playerSettingsButtonQuality.setOnClickListener {
 				binding.playerSettingsMain.visibility = View.GONE
 				binding.playerSettingsQuality.visibility = View.VISIBLE
 			}
 
-			val isAuto = player.trackSelectionParameters.overrides.size == 0
+			val isAuto =
+				player.trackSelectionParameters.overrides.any { it.key.type == C.TRACK_TYPE_VIDEO }
 
 			// Auto resolution
 			binding.playerSettingsQuality.addView(createMenuItem(
@@ -46,7 +48,7 @@ class PlayerSettingsFragment(
 			) {
 				player.trackSelectionParameters = player.trackSelectionParameters
 					.buildUpon()
-					.clearOverrides()
+					.clearOverridesOfType(C.TRACK_TYPE_VIDEO)
 					.build()
 				dismissNow()
 			})
@@ -87,6 +89,53 @@ class PlayerSettingsFragment(
 			}
 		} else {
 			binding.playerSettingsQualityValue.text = getString(R.string.unavailable)
+		}
+
+		val textTracks = player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }
+		if (textTracks.isNotEmpty()) {
+			val params =
+				player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_TEXT }
+
+			binding.playerSettingsCaptionValue.text = if (params.isEmpty()) {
+				getString(R.string.off)
+			} else {
+				val f =
+					textTracks
+						.find { it.mediaTrackGroup.id == params.values.first()!!.mediaTrackGroup.id }
+						?.getTrackFormat(0)
+				f?.label ?: f?.id ?: f?.language ?: getString(R.string.unavailable)
+			}
+
+			binding.playerSettingsCaption.addView(createMenuItem(
+				getString(R.string.off),
+				params.isEmpty()
+			) {
+				player.trackSelectionParameters = player.trackSelectionParameters
+					.buildUpon()
+					.clearOverridesOfType(C.TRACK_TYPE_TEXT)
+					.build()
+				dismissNow()
+			})
+
+			for (group in textTracks) {
+				val f = group.getTrackFormat(0)
+				val item = createMenuItem(
+					f.label ?: f.id ?: f.language ?: getString(R.string.unavailable),
+					if (params.isNotEmpty()) params.values.first()!!.mediaTrackGroup.id == group.mediaTrackGroup.id else false
+				) {
+					player.trackSelectionParameters = player.trackSelectionParameters
+						.buildUpon()
+						.clearOverridesOfType(C.TRACK_TYPE_TEXT)
+						.setOverrideForType(
+							TrackSelectionOverride(group.mediaTrackGroup, 0)
+						)
+						.build()
+					dismissNow()
+				}
+				binding.playerSettingsCaption.addView(item)
+			}
+		} else {
+			binding.playerSettingsButtonCaption.visibility = View.GONE
 		}
 
 		binding.playerSettingsButtonCaption.setOnClickListener {
