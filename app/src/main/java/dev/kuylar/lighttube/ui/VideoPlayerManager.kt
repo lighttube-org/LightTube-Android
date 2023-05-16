@@ -93,9 +93,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 			PlayerSettingsFragment(player).show(fragmentManager, null)
 		}
 
-		view.findViewById<MaterialButton>(R.id.player_captions).setOnLongClickListener {
+		view.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
 			PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
-			true
 		}
 	}
 
