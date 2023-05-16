@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/player_controls"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="#7000"
-	android:id="@+id/player_controls"
 	android:padding="8dp">
 
 	<LinearLayout
@@ -59,16 +59,25 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
+		<Space
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
+
 		<com.google.android.material.button.MaterialButton
 			android:id="@id/exo_prev"
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginHorizontal="16dp"
 			app:backgroundTint="#5000"
 			app:icon="@drawable/ic_prev"
 			app:iconSize="40dp"
 			app:iconTint="#fff" />
+
+		<Space
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
 
 		<!-- exoplayer doesnt support MaterialButton :( -->
 		<com.google.android.material.button.MaterialButton
@@ -76,22 +85,30 @@
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginHorizontal="16dp"
 			app:backgroundTint="#5000"
 			app:icon="@drawable/ic_play"
 			app:iconSize="40dp"
 			app:iconTint="#fff" />
+
+		<Space
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@id/exo_next"
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginHorizontal="16dp"
 			app:backgroundTint="#5000"
 			app:icon="@drawable/ic_next"
 			app:iconSize="40dp"
 			app:iconTint="#fff" />
+
+		<Space
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
 
 	</LinearLayout>
 
