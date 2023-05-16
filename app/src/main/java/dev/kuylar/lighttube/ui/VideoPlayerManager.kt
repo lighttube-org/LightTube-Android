@@ -226,7 +226,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 			getActivePlayerView().findViewById<MaterialButton>(R.id.player_fullscreen).icon =
 				ContextCompat.getDrawable(
 					activity,
-					R.drawable.ic_fullscreen
+					R.drawable.ic_fullscreen_exit
 				)
 			fullscreen = false
 		} else {
@@ -241,7 +241,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 			getActivePlayerView().findViewById<MaterialButton>(R.id.player_fullscreen).icon =
 				ContextCompat.getDrawable(
 					activity,
-					R.drawable.ic_fullscreen_exit
+					R.drawable.ic_fullscreen
 				)
 			fullscreen = true
 		}
