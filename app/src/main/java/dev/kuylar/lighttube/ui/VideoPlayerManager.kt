@@ -96,6 +96,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		view.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
 			PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
 		}
+
+		view.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
+			if (fullscreen) toggleFullscreen()
+			else miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+		}
 	}
 
 	private fun getActivePlayerView(): StyledPlayerView {
