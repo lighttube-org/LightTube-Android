@@ -4,14 +4,12 @@ import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
-import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 
 class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(binding.root) {
 	override fun bind(item: JsonObject) {
 		binding.videoTitle.text = item.getAsJsonPrimitive("title").asString
-		val p = item.getAsJsonPrimitive("published")
 		var durText = item.getAsJsonPrimitive("duration").asString
 		if (durText.startsWith("00:")) durText = durText.substring(3)
 		binding.videoDuration.text = durText
@@ -21,7 +19,7 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 			.load(item.getAsJsonArray("thumbnails")[0].asJsonObject.getAsJsonPrimitive("url").asString)
 			.into(binding.videoThumbnail)
 
-		if (item.has("channel")) {
+		if (item.has("channel"))
 			if (!item.getAsJsonObject("channel").get("avatar").isJsonNull)
 				Glide
 					.with(binding.root)
@@ -29,19 +27,17 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 					.into(binding.channelAvatar)
 			else
 				binding.channelAvatar.visibility = View.GONE
-			binding.videoSubtitle.text = binding.root.context.getString(
-				R.string.template_video_subtitle,
-				item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString,
-				item.getAsJsonPrimitive("viewCount").asString,
-				if (p.isJsonNull) "" else p.asString
-			)
-		} else {
-			binding.videoSubtitle.text = binding.root.context.getString(
-				R.string.template_video_subtitle_no_channel,
-				item.getAsJsonPrimitive("viewCount").asString,
-				if (p.isJsonNull) "" else p.asString
-			)
-		}
+
+		val items = ArrayList<String>()
+		if (item.has("channel"))
+			items.add(item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString)
+
+		items.add(item.getAsJsonPrimitive("viewCount").asString)
+
+		if (!item.get("published").isJsonNull)
+			items.add(item.get("published").asString)
+
+		binding.videoSubtitle.text = items.joinToString(" • ")
 
 		binding.root.setOnClickListener {
 			// bad idea? idk

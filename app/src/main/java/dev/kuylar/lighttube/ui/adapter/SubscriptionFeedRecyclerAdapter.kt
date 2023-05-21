@@ -39,9 +39,9 @@ Adapter<SubscriptionFeedRecyclerAdapter.ViewHolder>() {
 			val c = binding.root.context
 			binding.videoTitle.text = item.title
 			binding.videoSubtitle.text = c.getString(
-				R.string.template_video_subtitle,
+				R.string.template_feed_video_subtitle,
 				item.channelName,
-				c.getString(R.string.template_views, DecimalFormat().format(item.viewCount)),
+				DecimalFormat().format(item.viewCount),
 				DateUtils.getRelativeTimeSpanString(
 					item.publishedDate.time,
 					System.currentTimeMillis(),

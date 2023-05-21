@@ -67,7 +67,7 @@
 			android:layout_marginBottom="10dp"
 			android:ellipsize="end"
 			android:maxLines="2"
-			android:text="@string/template_video_subtitle"
+			android:text="@string/template_feed_video_subtitle"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toEndOf="@id/channel_avatar"
