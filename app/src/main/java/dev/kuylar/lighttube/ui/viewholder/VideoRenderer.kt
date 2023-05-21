@@ -2,8 +2,10 @@ package dev.kuylar.lighttube.ui.viewholder
 
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
+import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 
@@ -12,7 +14,15 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 		binding.videoTitle.text = item.getAsJsonPrimitive("title").asString
 		var durText = item.getAsJsonPrimitive("duration").asString
 		if (durText.startsWith("00:")) durText = durText.substring(3)
-		binding.videoDuration.text = durText
+		if (durText == "00:00") {
+			binding.videoDuration.background = AppCompatResources.getDrawable(
+				binding.root.context,
+				R.drawable.live_video_duration_background
+			)
+			binding.videoDuration.text = binding.root.context.getString(R.string.live).uppercase()
+		} else {
+			binding.videoDuration.text = durText
+		}
 
 		Glide
 			.with(binding.root)
