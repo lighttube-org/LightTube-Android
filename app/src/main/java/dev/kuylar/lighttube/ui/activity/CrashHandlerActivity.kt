@@ -28,5 +28,6 @@ class CrashHandlerActivity : AppCompatActivity() {
 		binding.errorInstance.text = sp.getString("instanceHost", "<none>")
 		binding.errorVersion.text = version
 		binding.errorTrace.text = (intent.extras?.getString("trace") ?: "No stack trace provided")
+		binding.errorTrace.setHorizontallyScrolling(true)
 	}
 }

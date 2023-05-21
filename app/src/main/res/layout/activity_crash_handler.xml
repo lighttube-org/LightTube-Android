@@ -5,14 +5,18 @@
 	android:gravity="center_vertical"
 	android:orientation="vertical">
 
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" />
 
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/error_title"
 		android:textAlignment="center"
-		android:textStyle="bold"
-		android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+		android:textAppearance="@style/TextAppearance.AppCompat.Large"
+		android:textStyle="bold" />
 
 	<Space
 		android:layout_width="match_parent"
@@ -70,9 +74,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/error_label_trace"
-		android:textStyle="bold"
 		android:textAlignment="center"
-		android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+		android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+		android:textStyle="bold" />
 
 	<Space
 		android:layout_width="match_parent"
@@ -81,10 +85,19 @@
 	<TextView
 		android:id="@+id/error_trace"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="0dp"
+		android:layout_weight="2"
 		android:background="#6A6A6A"
 		android:fontFamily="monospace"
 		android:padding="8dp"
-		android:textColor="#FFFFFF" />
+		android:scrollbars="vertical"
+		android:scrollHorizontally="true"
+		android:textColor="#FFFFFF"
+		android:textIsSelectable="true" />
+
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1" />
 
 </LinearLayout>
