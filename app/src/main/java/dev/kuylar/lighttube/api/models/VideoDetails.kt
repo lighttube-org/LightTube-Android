@@ -20,9 +20,11 @@ class VideoDetails(
 			setArtist(author.title)
 			setDescription(shortDescription)
 			setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO)
-			val b = Bundle()
-			b.putString("fallback", formats.last().url)
-			setExtras(b)
+			if (!isLive) {
+				val b = Bundle()
+				b.putString("fallback", formats.last().url)
+				setExtras(b)
+			}
 		}.build()
 	}
 }
