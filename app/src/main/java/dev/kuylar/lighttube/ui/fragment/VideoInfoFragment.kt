@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -22,8 +23,10 @@ import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class VideoInfoFragment(val id: String, val playlistId: String?) : Fragment() {
+class VideoInfoFragment : Fragment() {
 	private val items: MutableList<JsonObject> = mutableListOf()
+	private lateinit var id: String
+	private var playlistId: String? = null
 	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var binding: FragmentVideoInfoBinding
@@ -32,6 +35,10 @@ class VideoInfoFragment(val id: String, val playlistId: String?) : Fragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		api = (requireActivity() as MainActivity).api
+		arguments?.let {
+			id = it.getString("id")!!
+			playlistId = it.getString("playlistId")
+		}
 	}
 
 	override fun onCreateView(
@@ -94,11 +101,9 @@ class VideoInfoFragment(val id: String, val playlistId: String?) : Fragment() {
 		binding.recyclerRecommended.adapter = adapter
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
-			val f = VideoDetailsFragment(video)
-			replace(R.id.video_info_fragment, f)
+			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", video)))
 
-			val c = VideoCommentsFragment(video.commentsContinuation)
-			replace(R.id.comments_fragment, c)
+			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("commentsContinuation", video.commentsContinuation)))
 		}.commit()
 
 		binding.videoDetails.setOnClickListener {

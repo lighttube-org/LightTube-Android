@@ -11,8 +11,16 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoDetailsBinding
 
-class VideoDetailsFragment(private val video: LightTubeVideo) : Fragment() {
+class VideoDetailsFragment : Fragment() {
+	private lateinit var video: LightTubeVideo
 	private lateinit var binding: FragmentVideoDetailsBinding
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		arguments?.let {
+			video = it.getSerializable("video") as LightTubeVideo
+		}
+	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,

@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -114,8 +115,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 		else {
 			fragmentManager.beginTransaction().apply {
-				infoFragment = VideoInfoFragment(id, null)
-				replace(R.id.player_video_info, infoFragment!!)
+				replace(
+					R.id.player_video_info,
+					VideoInfoFragment::class.java,
+					bundleOf(Pair("id", id), Pair("playlistId", null))
+				)
 			}.commit()
 			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 			thread {

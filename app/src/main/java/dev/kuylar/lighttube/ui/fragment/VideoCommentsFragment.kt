@@ -18,11 +18,19 @@ import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class VideoCommentsFragment(private var commentsContinuation: String?) : Fragment() {
+class VideoCommentsFragment : Fragment() {
+	private var commentsContinuation: String? = null
 	private var loading: Boolean = false
 	private val items: MutableList<JsonObject> = mutableListOf()
 	private lateinit var api: LightTubeApi
 	private lateinit var binding: FragmentVideoCommentsBinding
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		arguments?.let {
+			commentsContinuation = it.getString("commentsContinuation")
+		}
+	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,

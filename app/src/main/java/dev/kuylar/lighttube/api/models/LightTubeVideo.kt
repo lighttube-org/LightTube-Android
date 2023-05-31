@@ -1,6 +1,7 @@
 package dev.kuylar.lighttube.api.models
 
 import com.google.gson.JsonObject
+import java.io.Serializable
 
 class LightTubeVideo(
 	val id: String,
@@ -14,4 +15,4 @@ class LightTubeVideo(
 	val commentCount: String,
 	val recommended: ArrayList<JsonObject>,
 	val playlist: Any? = null
-)
+) : Serializable
