@@ -34,7 +34,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 	private val playerHandler: Handler
 	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
 	private val fullscreenPlayer: StyledPlayerView = activity.findViewById(R.id.fullscreen_player)
-	private val player: ExoPlayer = ExoPlayer.Builder(activity).build()
+	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
+		setHandleAudioBecomingNoisy(true)
+	}.build()
 	private val api: LightTubeApi = activity.api
 	private val fragmentManager = activity.supportFragmentManager
 
