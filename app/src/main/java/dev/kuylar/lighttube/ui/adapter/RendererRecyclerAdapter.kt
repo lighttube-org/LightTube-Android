@@ -4,8 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
+import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
 import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
 import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
@@ -24,6 +26,7 @@ class RendererRecyclerAdapter(private val rendererList: MutableList<JsonObject>)
 		return when (rendererList[position].getAsJsonPrimitive("type").asString) {
 			"videoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
 			"compactVideoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
+			"commentThreadRenderer" -> CommentRenderer(RendererCommentBinding.inflate(inflater, parent, false))
 			else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 		}
 	}

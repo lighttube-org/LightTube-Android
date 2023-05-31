@@ -50,6 +50,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="unavailable">Unavailable</string>
 	<string name="bullet">•</string>
 	<string name="live">Live</string>
+	<string name="comment_pinnedby">Pinned by video author</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>

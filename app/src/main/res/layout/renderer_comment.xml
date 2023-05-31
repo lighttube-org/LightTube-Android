@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="8dp">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/comment_avatar"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
+		app:shapeAppearanceOverlay="@style/avatarImageView"
+		tools:srcCompat="@tools:sample/avatars" />
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="8dp"
+		android:layout_weight="1"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/comment_pinned"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="4dp"
+			android:gravity="start|center_vertical"
+			android:text="@string/comment_pinnedby"
+			android:textColor="@color/material_on_surface_emphasis_medium"
+			android:visibility="gone"
+			app:drawableStartCompat="@drawable/ic_pin"
+			app:drawableTint="@color/material_on_surface_emphasis_medium"
+			tools:visibility="visible" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<TextView
+				android:id="@+id/comment_author"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawablePadding="4dp"
+				android:gravity="start|center_vertical"
+				android:textColor="@color/material_on_surface_emphasis_medium"
+				app:drawableTint="@color/material_on_surface_emphasis_medium"
+				tools:text="Author Name" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="start|center_vertical"
+				android:paddingHorizontal="8dp"
+				android:text="@string/bullet"
+				android:textColor="@color/material_on_surface_emphasis_medium" />
+
+			<TextView
+				android:id="@+id/comment_date"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="start|center_vertical"
+				android:textColor="@color/material_on_surface_emphasis_medium"
+				tools:text="3w ago" />
+
+		</LinearLayout>
+
+		<TextView
+			android:id="@+id/comment_body"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textColor="@color/material_on_surface_emphasis_high_type"
+			tools:text="Lorem ipsum dolor sit amet..." />
+
+		<TextView
+			android:id="@+id/comment_like_count"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:drawablePadding="8dp"
+			android:gravity="center_vertical"
+			android:paddingHorizontal="8dp"
+			android:paddingVertical="12dp"
+			android:textColor="@color/material_on_surface_emphasis_high_type"
+			app:drawableLeftCompat="@drawable/ic_like"
+			app:drawableTint="@color/material_on_surface_emphasis_high_type"
+			tools:text="1.5K" />
+
+	</LinearLayout>
+</LinearLayout>
