@@ -32,8 +32,10 @@ class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(
 				Html.FROM_HTML_MODE_LEGACY
 			)
 
-		binding.commentLikeCount.text =
-			item.getAsJsonPrimitive("likeCount").asString
+		val lc = item.get("likeCount")
+		if (!lc.isJsonNull)
+			binding.commentLikeCount.text =
+				lc.asString
 
 		Glide
 			.with(binding.root)
