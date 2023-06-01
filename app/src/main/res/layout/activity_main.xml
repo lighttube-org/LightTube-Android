@@ -7,14 +7,12 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:liftOnScroll="true">
+		android:layout_height="wrap_content">
 
 		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
-			app:layout_scrollFlags="scroll|enterAlways|snap"
 			app:menu="@menu/top_app_bar"
 			app:title="@string/app_name" />
 
@@ -34,8 +32,8 @@
 		android:name="androidx.navigation.fragment.NavHostFragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:layout_marginTop="?attr/actionBarSize"
 		app:defaultNavHost="true"
-		app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
 		app:navGraph="@navigation/mobile_navigation" />
 
 	<LinearLayout

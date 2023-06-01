@@ -5,8 +5,5 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:paddingHorizontal="8dp"
-	android:paddingTop="?attr/actionBarSize"
 	tools:context=".ui.activity.MainActivity"
-	tools:listitem="@layout/item_subscription_video">
-
-</androidx.recyclerview.widget.RecyclerView>
+	tools:listitem="@layout/item_subscription_video"/>
