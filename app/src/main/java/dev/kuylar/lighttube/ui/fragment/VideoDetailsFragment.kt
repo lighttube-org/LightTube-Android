@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoDetailsBinding
@@ -18,7 +19,7 @@ class VideoDetailsFragment : Fragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		arguments?.let {
-			video = it.getSerializable("video") as LightTubeVideo
+			video = Gson().fromJson(it.getString("video"), LightTubeVideo::class.java)
 		}
 	}
 

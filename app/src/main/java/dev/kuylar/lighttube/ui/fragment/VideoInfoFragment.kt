@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
@@ -101,7 +102,7 @@ class VideoInfoFragment : Fragment() {
 		binding.recyclerRecommended.adapter = adapter
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
-			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", video)))
+			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Gson().toJson(video))))
 
 			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("commentsContinuation", video.commentsContinuation)))
 		}.commit()
