@@ -97,12 +97,47 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		}
 
 		view.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
-			PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
+			if (player.currentTracks.groups.any { it.type == C.TRACK_TYPE_TEXT })
+				PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
 		}
 
 		view.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
 			if (fullscreen) toggleFullscreen()
 			else miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+		}
+	}
+
+	private fun setCaptionsButtonState(buttonState: Int) {
+		val normalButton = exoplayerView.findViewById<MaterialButton>(R.id.player_captions)
+		val fullscreenButton = fullscreenPlayer.findViewById<MaterialButton>(R.id.player_captions)
+		when (buttonState) {
+			0 -> {
+				normalButton.alpha = 0.5f
+				normalButton.isEnabled = false
+				normalButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+				fullscreenButton.alpha = 0.5f
+				fullscreenButton.isEnabled = false
+				fullscreenButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+			}
+
+			1 -> {
+				normalButton.alpha = 1f
+				normalButton.isEnabled = true
+				normalButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+				fullscreenButton.alpha = 1f
+				fullscreenButton.isEnabled = true
+				fullscreenButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+			}
+
+			2 -> {
+				normalButton.alpha = 1f
+				normalButton.isEnabled = true
+				normalButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
+				fullscreenButton.alpha = 1f
+				fullscreenButton.isEnabled = true
+				fullscreenButton.icon =
+					ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
+			}
 		}
 	}
 
@@ -186,6 +221,15 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 				Toast.makeText(activity, R.string.error_playback, Toast.LENGTH_LONG).show()
 				player.removeMediaItem(cmii)
 			}
+		}
+
+		if (player.currentTracks.groups.none { it.type == C.TRACK_TYPE_TEXT }) {
+			setCaptionsButtonState(0)
+		} else if (player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_TEXT }
+				.isNotEmpty()) {
+			setCaptionsButtonState(2)
+		} else {
+			setCaptionsButtonState(1)
 		}
 
 		getActivePlayerView().findViewById<MaterialButton>(R.id.player_play_pause).icon =
