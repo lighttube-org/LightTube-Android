@@ -238,7 +238,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		} else {
 			fullscreenPlayer.visibility = View.VISIBLE
 			StyledPlayerView.switchTargetView(player, exoplayerView, fullscreenPlayer)
-			activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+			activity.requestedOrientation =
+				if (getAspectRatio() < 1) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+				else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 			activity.window.decorView.systemUiVisibility = (
 					View.SYSTEM_UI_FLAG_FULLSCREEN
 							or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -250,6 +252,14 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 					R.drawable.ic_fullscreen
 				)
 			fullscreen = true
+		}
+	}
+
+	private fun getAspectRatio(): Float {
+		return try {
+			player.videoSize.width.toFloat() / player.videoSize.height.toFloat()
+		} catch (e: Exception) {
+			Float.MAX_VALUE
 		}
 	}
 
