@@ -1,7 +1,8 @@
 package dev.kuylar.lighttube.api.models
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
-import java.io.Serializable
+import com.google.gson.JsonPrimitive
 
 class LightTubeVideo(
 	val id: String,
@@ -15,4 +16,11 @@ class LightTubeVideo(
 	val commentCount: String,
 	val recommended: ArrayList<JsonObject>,
 	val playlist: Any? = null
-) : Serializable
+) {
+	fun getAsRenderer() : JsonObject {
+		val gson = Gson()
+		val asJson = gson.fromJson(gson.toJson(this), JsonObject::class.java)
+		asJson.add("type", JsonPrimitive("slimVideoInfoRenderer"))
+		return asJson
+	}
+}

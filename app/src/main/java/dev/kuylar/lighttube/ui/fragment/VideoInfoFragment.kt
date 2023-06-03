@@ -1,6 +1,5 @@
 package dev.kuylar.lighttube.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -86,20 +84,9 @@ class VideoInfoFragment : Fragment() {
 	}
 
 	private fun fillData(video: LightTubeVideo) {
-		binding.videoTitle.text = video.title
-		binding.channelTitle.text = video.channel.title
-		binding.videoViews.text = video.viewCount
-		binding.videoUploaded.text = video.dateText
-		binding.buttonLike.text = video.likeCount
-		Glide
-			.with(this)
-			.load(video.channel.avatar)
-			.into(binding.channelAvatar)
-
+		items.add(video.getAsRenderer())
 		items.addAll(video.recommended)
 		val adapter = RendererRecyclerAdapter(items)
-		binding.recyclerRecommended.setHasFixedSize(false)
-		binding.recyclerRecommended.isNestedScrollingEnabled = false
 		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
 		binding.recyclerRecommended.adapter = adapter
 
@@ -109,29 +96,11 @@ class VideoInfoFragment : Fragment() {
 			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("commentsContinuation", video.commentsContinuation)))
 		}.commit()
 
-		binding.videoDetails.setOnClickListener {
-			detailsSheet.state = BottomSheetBehavior.STATE_EXPANDED
-		}
 		binding.sheetVideoDetailsClose.setOnClickListener {
 			detailsSheet.state = BottomSheetBehavior.STATE_HIDDEN
 		}
-
-		binding.buttonComments.setOnClickListener {
-			commentsSheet.state = BottomSheetBehavior.STATE_EXPANDED
-		}
 		binding.sheetCommentsClose.setOnClickListener {
 			commentsSheet.state = BottomSheetBehavior.STATE_HIDDEN
-		}
-
-		binding.buttonShare.setOnClickListener {
-			val sendIntent: Intent = Intent().apply {
-				action = Intent.ACTION_SEND
-				putExtra(Intent.EXTRA_TEXT, "https://youtu.be/${video.id}")
-				type = "text/plain"
-			}
-
-			val shareIntent = Intent.createChooser(sendIntent, null)
-			startActivity(shareIntent)
 		}
 	}
 
@@ -147,5 +116,10 @@ class VideoInfoFragment : Fragment() {
 		}
 
 		return false
+	}
+
+	fun setSheets(details: Boolean, comments: Boolean) {
+		detailsSheet.state = if (details) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
+		commentsSheet.state = if (comments) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
 	}
 }

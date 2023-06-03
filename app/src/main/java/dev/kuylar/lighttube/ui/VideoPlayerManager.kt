@@ -27,11 +27,11 @@ import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.PlayerSettingsFragment
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import java.io.IOException
+import java.lang.Exception
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 	private var videoTracks: Tracks? = null
-	private var infoFragment: VideoInfoFragment? = null
 	private val playerHandler: Handler
 	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
 	private val fullscreenPlayer: StyledPlayerView = activity.findViewById(R.id.fullscreen_player)
@@ -264,6 +264,17 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 	}
 
 	fun closeSheets(): Boolean {
-		return infoFragment?.closeSheets() ?: false
+		return try {
+			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).closeSheets()
+		} catch (e: Exception) {
+			false
+		}
+	}
+
+	fun setSheets(details: Boolean, comments: Boolean) {
+		(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).setSheets(
+			details,
+			comments
+		)
 	}
 }
