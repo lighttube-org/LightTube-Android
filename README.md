@@ -1,5 +1,7 @@
 # LightTube Android
 
+> ⚠️ This app is in early development. Use at your own risk
+
 A Material You design YouTube client, using [LightTube][1] to sync subscriptions & playlists between
 devices
 
