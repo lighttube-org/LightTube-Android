@@ -6,6 +6,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 
@@ -26,7 +27,7 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 
 		Glide
 			.with(binding.root)
-			.load(item.getAsJsonArray("thumbnails")[0].asJsonObject.getAsJsonPrimitive("url").asString)
+			.load(Utils.getBestImageUrlJson(item.getAsJsonArray("thumbnails")))
 			.into(binding.videoThumbnail)
 
 		if (item.has("channel"))
