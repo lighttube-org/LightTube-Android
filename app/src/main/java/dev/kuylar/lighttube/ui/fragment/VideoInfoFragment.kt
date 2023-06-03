@@ -98,6 +98,8 @@ class VideoInfoFragment : Fragment() {
 
 		items.addAll(video.recommended)
 		val adapter = RendererRecyclerAdapter(items)
+		binding.recyclerRecommended.setHasFixedSize(false)
+		binding.recyclerRecommended.isNestedScrollingEnabled = false
 		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
 		binding.recyclerRecommended.adapter = adapter
 

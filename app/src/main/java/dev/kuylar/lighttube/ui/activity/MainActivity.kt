@@ -75,6 +75,16 @@ class MainActivity : AppCompatActivity() {
 		navView.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
+//			if (player.closeSheets())
+//				Toast.makeText(this@MainActivity, "closed player sheets", Toast.LENGTH_LONG).show()
+//			else if (player.exitFullscreen())
+//				Toast.makeText(this@MainActivity, "exited fullscreen", Toast.LENGTH_LONG).show()
+//			else if (minimizePlayer())
+//				Toast.makeText(this@MainActivity, "minimized player", Toast.LENGTH_LONG).show()
+//			else if (navController.popBackStack())
+//				Toast.makeText(this@MainActivity, "pop back stack", Toast.LENGTH_LONG).show()
+//			else
+//				Toast.makeText(this@MainActivity, "nothing else to do", Toast.LENGTH_LONG).show()
 			if (!player.closeSheets()) // attempt to close details/comments
 				if (!player.exitFullscreen()) // attempt to exit fullscreen
 					if (!minimizePlayer()) // attempt to minimize the player sheet
