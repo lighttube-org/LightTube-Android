@@ -163,6 +163,14 @@ class LightTubeApi(context: Context) {
 			hashMapOf(Pair("skip", skip.toString()), Pair("limit", limit.toString()))
 		)
 	}
+
+	@Throws(LightTubeException::class, IOException::class)
+	fun getLibraryPlaylists(): ApiResponse<List<JsonObject>> {
+		return get(
+			object : TypeToken<ApiResponse<List<JsonObject>>>() {},
+			"playlists"
+		)
+	}
 }
 
 private fun <K, V> HashMap<K, V>.toUrl(): String {

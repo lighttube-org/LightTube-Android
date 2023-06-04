@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginBottom="8dp"
+	android:background="?android:attr/selectableItemBackground"
+	android:checkable="true"
+	android:clickable="true"
+	android:focusable="true">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/playlist_thumbnail"
+		android:layout_width="0dp"
+		android:layout_height="100dp"
+		android:adjustViewBounds="false"
+		android:scaleType="centerCrop"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintDimensionRatio="V,16:9"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/cardThumbnailView"
+		tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:paddingHorizontal="8dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/playlist_thumbnail"
+		app:layout_constraintTop_toTopOf="@+id/playlist_thumbnail"
+		app:layout_constraintVertical_bias="0.0">
+
+		<TextView
+			android:id="@+id/playlist_title"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+			android:textColor="@color/material_on_background_emphasis_high_type"
+			android:textStyle="bold"
+			tools:text="Playlist Title" />
+
+		<TextView
+			android:id="@+id/playlist_subtitle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			tools:text="Private" />
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/playlist_video_count"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:background="@drawable/playlist_count_background"
+		android:paddingHorizontal="8dp"
+		android:paddingVertical="2dp"
+		android:textAlignment="center"
+		android:textColor="#fff"
+		app:layout_constraintBottom_toBottomOf="@+id/playlist_thumbnail"
+		app:layout_constraintEnd_toEndOf="@+id/playlist_thumbnail"
+		app:layout_constraintStart_toStartOf="@+id/playlist_thumbnail"
+		tools:text="12 videos" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

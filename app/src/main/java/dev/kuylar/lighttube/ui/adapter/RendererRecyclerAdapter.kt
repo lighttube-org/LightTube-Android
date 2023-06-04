@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
+import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
+import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
 import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
@@ -36,6 +38,7 @@ class RendererRecyclerAdapter(
 			"commentThreadRenderer" -> CommentRenderer(RendererCommentBinding.inflate(inflater, parent, false))
 			"continuationItemRenderer" -> ContinuationRenderer(RendererContinuationBinding.inflate(inflater, parent, false))
 			"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(RendererSlimVideoInfoBinding.inflate(inflater, parent, false))
+			"gridPlaylistRenderer" -> GridPlaylistRenderer(RendererGridPlaylistBinding.inflate(inflater, parent, false))
 			else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 		}
 	}
