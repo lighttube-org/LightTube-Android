@@ -41,7 +41,8 @@ class LibraryFragment : Fragment() {
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerLibrary.layoutManager = LinearLayoutManager(context)
 		binding.recyclerLibrary.adapter = adapter
-		loadData()
+		if (items.size == 0)
+			loadData()
 	}
 
 	private fun loadData() {
