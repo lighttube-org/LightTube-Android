@@ -54,23 +54,23 @@ jobs:
         with:
           name: LightTube
           path: app/build/outputs/apk/release/app-release.apk
-#  release:
-#    name: Release APK
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Download APK from build
-#        uses: actions/download-artifact@v1
-#        with:
-#          name: LightTube
-#      - name: Create Release
-#        id: create_release
-#        uses: softprops/action-gh-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: v${{ github.event.inputs.version }}
-#          name: Release v${{ github.event.inputs.version }}
-#          draft: false
-#          prerelease: false
-#          files: LightTube/LightTube_${{ github.event.inputs.version }}.apk
+  release:
+    name: Release APK
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK from build
+        uses: actions/download-artifact@v1
+        with:
+          name: LightTube
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION_NAME }}
+          name: Release v${{ env.VERSION_NAME }}
+          draft: false
+          prerelease: false
+          files: LightTube/LightTube_${{ github.event.inputs.version }}.apk
