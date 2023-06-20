@@ -73,4 +73,4 @@ jobs:
           name: Release v${{ env.VERSION_NAME }}
           draft: false
           prerelease: false
-          files: LightTube/LightTube_${{ github.event.inputs.version }}.apk
+          files: LightTube/app-release.apk
