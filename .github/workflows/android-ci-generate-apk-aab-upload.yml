@@ -73,4 +73,5 @@ jobs:
           name: Release v${{ env.VERSION_NAME }}
           draft: false
           prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
           files: LightTube/app-release.apk
