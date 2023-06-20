@@ -4,9 +4,11 @@ import android.content.Intent
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import kotlin.concurrent.thread
 
 open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBinding) :
 	RendererViewHolder(binding.root) {
@@ -39,6 +41,14 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 
 			val shareIntent = Intent.createChooser(sendIntent, null)
 			activity.startActivity(shareIntent)
+		}
+
+		thread {
+			val dislikes = Utils.getDislikeCount(video.id)
+			if (dislikes != -1L)
+				activity.runOnUiThread {
+					binding.buttonDislike.text = dislikes.toString()
+				}
 		}
 	}
 }
