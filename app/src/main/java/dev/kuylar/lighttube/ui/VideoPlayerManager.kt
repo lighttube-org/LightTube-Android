@@ -27,7 +27,6 @@ import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.PlayerSettingsFragment
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import java.io.IOException
-import java.lang.Exception
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
@@ -79,11 +78,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		playerHandler.post(r)
 
 		// im sorry for this monstrosity too
-		initOnClickListeners(exoplayerView)
-		initOnClickListeners(fullscreenPlayer)
+		initOnClickListeners(exoplayerView, false)
+		initOnClickListeners(fullscreenPlayer, true)
 	}
 
-	private fun initOnClickListeners(view: View) {
+	private fun initOnClickListeners(view: View, isFullscreen: Boolean) {
 		view.findViewById<MaterialButton>(R.id.player_play_pause).setOnClickListener {
 			if (player.isPlaying) player.pause() else player.play()
 		}
@@ -104,6 +103,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		view.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
 			if (fullscreen) toggleFullscreen()
 			else miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+		}
+
+		if (!isFullscreen) {
+			view.findViewById<View>(R.id.player_metadata).visibility = View.GONE
 		}
 	}
 
@@ -201,6 +204,14 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
 			miniplayerTitle.text = player.currentMediaItem?.mediaMetadata?.title
 			miniplayerSubtitle.text = player.currentMediaItem?.mediaMetadata?.artist
+			exoplayerView.findViewById<TextView>(R.id.player_title).text =
+				player.currentMediaItem?.mediaMetadata?.title
+			exoplayerView.findViewById<TextView>(R.id.player_subtitle).text =
+				player.currentMediaItem?.mediaMetadata?.artist
+			fullscreenPlayer.findViewById<TextView>(R.id.player_title).text =
+				player.currentMediaItem?.mediaMetadata?.title
+			fullscreenPlayer.findViewById<TextView>(R.id.player_subtitle).text =
+				player.currentMediaItem?.mediaMetadata?.artist
 			videoTracks = null
 		}
 
