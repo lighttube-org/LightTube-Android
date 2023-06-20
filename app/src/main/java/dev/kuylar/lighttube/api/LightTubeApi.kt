@@ -10,6 +10,7 @@ import dev.kuylar.lighttube.api.models.ContinuationContainer
 import dev.kuylar.lighttube.api.models.InstanceInfo
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubePlayer
+import dev.kuylar.lighttube.api.models.LightTubePlaylist
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.api.models.SearchResults
@@ -169,6 +170,24 @@ class LightTubeApi(context: Context) {
 		return get(
 			object : TypeToken<ApiResponse<List<JsonObject>>>() {},
 			"playlists"
+		)
+	}
+
+	@Throws(LightTubeException::class, IOException::class)
+	fun getPlaylist(id: String): ApiResponse<LightTubePlaylist> {
+		return get(
+			object : TypeToken<ApiResponse<LightTubePlaylist>>() {},
+			"playlist",
+			hashMapOf(Pair("id", id))
+		)
+	}
+
+	@Throws(LightTubeException::class, IOException::class)
+	fun continuePlaylist(contKey: String): ApiResponse<LightTubePlaylist> {
+		return get(
+			object : TypeToken<ApiResponse<LightTubePlaylist>>() {},
+			"playlist",
+			hashMapOf(Pair("continuation", contKey))
 		)
 	}
 }

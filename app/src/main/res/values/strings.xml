@@ -34,6 +34,8 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="action_comments">Comments</string>
 	<string name="action_close">Close</string>
 	<string name="action_retry">Retry</string>
+	<string name="action_playlist_play">Play all</string>
+	<string name="action_playlist_shuffle">Shuffle</string>
 
 	<!-- Templates -->
 	<string name="template_instance_info">API: %s | Accounts: %s</string>
@@ -52,6 +54,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="bullet">•</string>
 	<string name="live">Live</string>
 	<string name="comment_pinnedby">Pinned by video author</string>
+	<string name="playlist">Playlist</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>

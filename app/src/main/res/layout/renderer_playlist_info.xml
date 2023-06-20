@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingBottom="8dp">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/playlist_thumbnail"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:scaleType="centerCrop"
+		app:layout_constraintDimensionRatio="V,16:9"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearanceOverlay="@style/cardThumbnailView"
+		tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+	<TextView
+		android:id="@+id/playlist_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="16dp"
+		android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/playlist_thumbnail"
+		tools:text="Playlist Title" />
+
+	<TextView
+		android:id="@+id/playlist_author"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="8dp"
+		android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/playlist_title"
+		tools:text="Channel Title" />
+
+	<TextView
+		android:id="@+id/playlist_video_count"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="4dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/playlist_author"
+		tools:text="Video Count" />
+
+	<TextView
+		android:id="@+id/playlist_description"
+		style="@style/MaterialAlertDialog.Material3.Body.Text"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="8dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/playlist_video_count"
+		tools:text="Playlist Description" />
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="8dp"
+		android:orientation="horizontal"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/playlist_description">
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_play_all"
+			style="@style/Widget.Material3.Button.IconButton.Filled"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/action_playlist_play"
+			app:icon="@drawable/ic_play" />
+
+		<Space
+			android:layout_width="8dp"
+			android:layout_height="match_parent" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/button_shuffle"
+			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/action_playlist_shuffle"
+			app:icon="@drawable/ic_shuffle" />
+	</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

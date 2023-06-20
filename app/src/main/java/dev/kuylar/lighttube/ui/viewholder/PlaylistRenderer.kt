@@ -7,10 +7,10 @@ import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
-import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import java.text.DecimalFormat
 
-class GridPlaylistRenderer(val binding: RendererGridPlaylistBinding) :
+class PlaylistRenderer(val binding: RendererPlaylistBinding) :
 	RendererViewHolder(binding.root) {
 	override fun bind(item: JsonObject) {
 		binding.playlistTitle.text = item.getAsJsonPrimitive("title").asString
@@ -18,6 +18,8 @@ class GridPlaylistRenderer(val binding: RendererGridPlaylistBinding) :
 			R.string.template_videos,
 			DecimalFormat().format(item.getAsJsonPrimitive("videoCount").asInt)
 		)
+		binding.playlistSubtitle.text =
+			item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString
 
 		Glide
 			.with(binding.root)

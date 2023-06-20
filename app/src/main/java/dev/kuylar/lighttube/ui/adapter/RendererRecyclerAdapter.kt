@@ -7,12 +7,20 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
 import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
 import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistAlertRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistVideoRenderer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
 import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
@@ -39,6 +47,10 @@ class RendererRecyclerAdapter(
 			"continuationItemRenderer" -> ContinuationRenderer(RendererContinuationBinding.inflate(inflater, parent, false))
 			"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(RendererSlimVideoInfoBinding.inflate(inflater, parent, false))
 			"gridPlaylistRenderer" -> GridPlaylistRenderer(RendererGridPlaylistBinding.inflate(inflater, parent, false))
+			"playlistRenderer" -> PlaylistRenderer(RendererPlaylistBinding.inflate(inflater, parent, false))
+			"playlistInfoRenderer" -> PlaylistInfoRenderer(RendererPlaylistInfoBinding.inflate(inflater, parent, false))
+			"playlistVideoRenderer" -> PlaylistVideoRenderer(RendererPlaylistVideoBinding.inflate(inflater, parent, false))
+			"playlistAlertRenderer" -> PlaylistAlertRenderer(RendererPlaylistAlertBinding.inflate(inflater, parent, false))
 			else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 		}
 	}

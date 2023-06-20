@@ -6,7 +6,10 @@ import dev.kuylar.lighttube.api.models.LightTubeImage
 class Utils {
 	companion object {
 		fun getBestImageUrl(images: List<LightTubeImage>): String {
-			return images.maxBy { it.height }.url
+			return if (images.isNotEmpty())
+				images.maxBy { it.height }.url
+			else
+				""
 		}
 
 		fun getBestImageUrlJson(images: JsonArray): String {
