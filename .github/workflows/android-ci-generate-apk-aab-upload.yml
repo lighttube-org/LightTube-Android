@@ -63,11 +63,11 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: LightTube
+      - name: Set version
+        run: echo VERSION_NAME=`date +%Y.%m.%d` >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ env.VERSION_NAME }}
           name: Release v${{ env.VERSION_NAME }}
