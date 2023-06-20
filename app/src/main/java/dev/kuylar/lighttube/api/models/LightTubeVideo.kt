@@ -15,7 +15,8 @@ class LightTubeVideo(
 	val commentsContinuation: String,
 	val commentCount: String,
 	val recommended: ArrayList<JsonObject>,
-	val playlist: Any? = null
+	val playlist: Any? = null,
+	val chapters: ArrayList<VideoChapter>
 ) {
 	fun getAsRenderer() : JsonObject {
 		val gson = Gson()

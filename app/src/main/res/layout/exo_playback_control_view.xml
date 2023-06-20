@@ -191,7 +191,21 @@
 		app:layout_constraintBottom_toTopOf="@id/exo_progress"
 		app:layout_constraintEnd_toEndOf="parent" />
 
-	<com.google.android.exoplayer2.ui.DefaultTimeBar
+	<FrameLayout
+		app:layout_constraintBottom_toTopOf="@id/exo_progress"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<com.github.vkay94.timebar.YouTubeTimeBarPreview
+			android:id="@+id/player_preview"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingLeft="16dp"
+			android:paddingRight="16dp" />
+
+	</FrameLayout>
+
+	<com.github.vkay94.timebar.YouTubeTimeBar
 		android:id="@id/exo_progress"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"

@@ -17,6 +17,7 @@ import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.databinding.FragmentVideoInfoBinding
+import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
@@ -30,10 +31,12 @@ class VideoInfoFragment : Fragment() {
 	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var binding: FragmentVideoInfoBinding
 	private lateinit var api: LightTubeApi
+	private lateinit var player: VideoPlayerManager
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		api = (requireActivity() as MainActivity).api
+		player = (requireActivity() as MainActivity).player
 		arguments?.let {
 			id = it.getString("id")!!
 			playlistId = it.getString("playlistId")
@@ -84,6 +87,7 @@ class VideoInfoFragment : Fragment() {
 	}
 
 	private fun fillData(video: LightTubeVideo) {
+		player.setChapters(video.id, video.chapters)
 		items.add(video.getAsRenderer())
 		items.addAll(video.recommended)
 		val adapter = RendererRecyclerAdapter(items)

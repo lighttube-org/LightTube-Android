@@ -4,12 +4,16 @@ import android.content.pm.ActivityInfo
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import com.bumptech.glide.Glide
+import com.github.vkay94.timebar.YouTubeTimeBar
+import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -21,15 +25,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.VideoChapter
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.PlayerSettingsFragment
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
+class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
+	YouTubeTimeBarPreview.Listener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
@@ -47,6 +54,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 	private val miniplayer: BottomSheetBehavior<View> = activity.miniplayer
 	private val playerControls = exoplayerView.findViewById<View>(R.id.player_controls)
 	private var fullscreen = false
+	private var chapters: ArrayList<VideoChapter>? = null
 
 	init {
 		exoplayerView.player = player
@@ -108,6 +116,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 		if (!isFullscreen) {
 			view.findViewById<View>(R.id.player_metadata).visibility = View.GONE
 		}
+
+		val preview = view.findViewById<YouTubeTimeBarPreview>(R.id.player_preview)
+		view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
+			.timeBarPreview(preview)
+		preview.previewListener(this)
 	}
 
 	private fun setCaptionsButtonState(buttonState: Int) {
@@ -341,5 +354,40 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener {
 			details,
 			comments
 		)
+	}
+
+	fun setChapters(videoId: String, chapters: ArrayList<VideoChapter>?) {
+		if (videoId != player.currentMediaItem?.mediaId) return
+		this.chapters = chapters
+		if (chapters != null) {
+			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
+				chapters
+			fullscreenPlayer.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
+				chapters
+		} else {
+			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
+				listOf(VideoChapter(null, emptyList(), 0))
+			fullscreenPlayer.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
+				listOf(VideoChapter(null, emptyList(), 0))
+		}
+	}
+
+	// TODO: use the actual storyboard instead of chapter thumbnails
+	override fun loadThumbnail(imageView: ImageView, position: Long) {
+		if (chapters.isNullOrEmpty()) {
+			Glide.with(activity)
+				.load("https://i.ytimg.com/vi/${player.currentMediaItem?.mediaId}/maxresdefault.jpg")
+				.into(imageView)
+		} else {
+			var currentMs = 0L
+			chapters!!.forEach {
+				currentMs += it.startTimeMs
+				if (currentMs < position && position < currentMs + it.timeRangeStartMillis) {
+					Glide.with(activity)
+						.load(Utils.getBestImageUrl(it.thumbnails))
+						.into(imageView)
+				}
+			}
+		}
 	}
 }
