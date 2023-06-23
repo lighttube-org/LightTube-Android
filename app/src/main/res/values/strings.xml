@@ -87,4 +87,11 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="player_track">Audio track</string>
 	<string name="player_quality_auto">Auto</string>
 	<string name="player_speed_default">Normal</string>
+
+	<!-- Update checker -->
+	<string name="update_title">New version available</string>
+	<string name="update_subtitle">v%s</string>
+	<string name="update_download">Download</string>
+	<string name="update_skip">Skip this version</string>
+	<string name="update_skip_notice">Update skipped. You can always re-check updates under Settings → About → Check for Updates</string>
 </resources>

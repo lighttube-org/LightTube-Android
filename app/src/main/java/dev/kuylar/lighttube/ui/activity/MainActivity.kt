@@ -3,6 +3,7 @@ package dev.kuylar.lighttube.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
@@ -22,9 +23,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.elevation.SurfaceColors
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
+import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
@@ -131,6 +134,21 @@ class MainActivity : AppCompatActivity() {
 				player.toggleControls(slideOffset * 5 > 0.9)
 			}
 		})
+
+		// check for updates
+		thread {
+			val update = Utils.checkForUpdates(this)
+			if (update != null) {
+				val skippedUpdate = sp.getString("skippedUpdate", null)
+				if (skippedUpdate == update.latestVersion) {
+					Log.i("UpdateChecker", "User skipped update $skippedUpdate. Not showing the update dialog.")
+				} else {
+					runOnUiThread {
+						UpdateFragment(update).show(supportFragmentManager, null)
+					}
+				}
+			}
+		}
 	}
 
 	private fun minimizePlayer(): Boolean {
