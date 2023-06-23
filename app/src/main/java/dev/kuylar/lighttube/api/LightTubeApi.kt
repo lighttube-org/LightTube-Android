@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.ContinuationContainer
 import dev.kuylar.lighttube.api.models.InstanceInfo
+import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubePlaylist
@@ -187,6 +188,22 @@ class LightTubeApi(context: Context) {
 		return get(
 			object : TypeToken<ApiResponse<LightTubePlaylist>>() {},
 			"playlist",
+			hashMapOf(Pair("continuation", contKey))
+		)
+	}
+
+	fun getChannel(id: String, tab: String = "home"): ApiResponse<LightTubeChannel> {
+		return get(
+			object : TypeToken<ApiResponse<LightTubeChannel>>() {},
+			"channel",
+			hashMapOf(Pair("id", id), Pair("tab", tab))
+		)
+	}
+
+	fun continueChannel(contKey: String): ApiResponse<LightTubeChannel> {
+		return get(
+			object : TypeToken<ApiResponse<LightTubeChannel>>() {},
+			"channel",
 			hashMapOf(Pair("continuation", contKey))
 		)
 	}

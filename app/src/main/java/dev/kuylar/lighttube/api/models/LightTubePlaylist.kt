@@ -10,7 +10,7 @@ class LightTubePlaylist(
 	val title: String,
 	val description: String? = null,
 	val badges: List<LightTubeBadge>,
-	val channel: LightTubeChannel,
+	val channel: Channel,
 	val thumbnails: List<LightTubeImage>,
 	val lastUpdated: String,
 	val videoCountText: String,

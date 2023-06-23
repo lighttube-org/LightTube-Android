@@ -25,11 +25,13 @@
 	<fragment
 		android:id="@+id/navigation_search"
 		android:name="dev.kuylar.lighttube.ui.fragment.SearchFragment"
-		android:label="fragment_search"
 		tools:layout="@layout/fragment_search" />
 	<fragment
 		android:id="@+id/navigation_playlist"
 		android:name="dev.kuylar.lighttube.ui.fragment.PlaylistFragment"
-		android:label="fragment_playlist"
 		tools:layout="@layout/fragment_playlist" />
+	<fragment
+		android:id="@+id/navigation_channel"
+		android:name="dev.kuylar.lighttube.ui.fragment.ChannelFragment"
+		tools:layout="@layout/fragment_channel" />
 </navigation>

@@ -11,7 +11,7 @@ class LightTubeVideo(
 	val dateText: String,
 	val viewCount: String,
 	val likeCount: String,
-	val channel: LightTubeChannel,
+	val channel: Channel,
 	val commentsContinuation: String,
 	val commentCount: String,
 	val recommended: ArrayList<JsonObject>,

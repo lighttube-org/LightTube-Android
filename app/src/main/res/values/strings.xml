@@ -94,4 +94,6 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="update_download">Download</string>
 	<string name="update_skip">Skip this version</string>
 	<string name="update_skip_notice">Update skipped. You can always re-check updates under Settings → About → Check for Updates</string>
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

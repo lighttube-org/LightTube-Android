@@ -6,7 +6,7 @@ import com.google.android.exoplayer2.MediaMetadata
 class VideoDetails(
 	val id: String,
 	val title: String,
-	val author: LightTubeChannel,
+	val author: Channel,
 	val keywords: List<String>,
 	val shortDescription: String,
 	val length: String,
