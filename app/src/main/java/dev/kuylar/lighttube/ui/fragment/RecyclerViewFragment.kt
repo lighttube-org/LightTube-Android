@@ -12,7 +12,7 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
-import dev.kuylar.lighttube.databinding.FragmentSearchBinding
+import dev.kuylar.lighttube.databinding.FragmentRecyclerviewBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
@@ -21,7 +21,7 @@ import kotlin.concurrent.thread
 
 class RecyclerViewFragment : Fragment() {
 	private val items: MutableList<JsonObject> = mutableListOf()
-	private lateinit var binding: FragmentSearchBinding
+	private lateinit var binding: FragmentRecyclerviewBinding
 	private lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
 	private lateinit var type: String
@@ -34,7 +34,7 @@ class RecyclerViewFragment : Fragment() {
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		binding = FragmentSearchBinding.inflate(inflater)
+		binding = FragmentRecyclerviewBinding.inflate(inflater)
 		(activity as MainActivity).apply {
 			this@RecyclerViewFragment.api = api
 			this@RecyclerViewFragment.player = player
@@ -48,10 +48,10 @@ class RecyclerViewFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = RendererRecyclerAdapter(items)
-		binding.recyclerSearch.layoutManager = LinearLayoutManager(context)
-		binding.recyclerSearch.adapter = adapter
-		binding.recyclerSearch.itemAnimator = null
-		binding.recyclerSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+		binding.recycler.layoutManager = LinearLayoutManager(context)
+		binding.recycler.adapter = adapter
+		binding.recycler.itemAnimator = null
+		binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
 				if (!recyclerView.canScrollVertically(1)) {
@@ -76,7 +76,7 @@ class RecyclerViewFragment : Fragment() {
 					contKey = continuation
 					runOnUiThread {
 						setLoading(false)
-						binding.recyclerSearch.adapter!!.notifyItemRangeInserted(
+						binding.recycler.adapter!!.notifyItemRangeInserted(
 							start,
 							newItems.size
 						)
