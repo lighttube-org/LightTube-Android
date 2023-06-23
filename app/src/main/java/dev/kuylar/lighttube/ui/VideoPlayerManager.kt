@@ -275,12 +275,17 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			if (player.playerError?.errorCode == 2004) {
 				// fallback to muxed format
 				val cmii = player.currentMediaItemIndex
-				player.addMediaItem(cmii + 1, getFallbackMediaItem(player.currentMediaItem!!))
-				player.seekToNextMediaItem()
-				player.prepare()
-				player.play()
-				Toast.makeText(activity, R.string.error_playback, Toast.LENGTH_LONG).show()
-				player.removeMediaItem(cmii)
+				val fallback = getFallbackMediaItem(player.currentMediaItem!!)
+				if (fallback != null) {
+					player.addMediaItem(cmii + 1, fallback)
+					player.seekToNextMediaItem()
+					player.prepare()
+					player.play()
+					Toast.makeText(activity, R.string.error_playback_falling_back, Toast.LENGTH_LONG).show()
+					player.removeMediaItem(cmii)
+				} else {
+					Toast.makeText(activity, R.string.error_playback, Toast.LENGTH_LONG).show()
+				}
 			}
 		}
 
@@ -307,15 +312,22 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		videoTracks = tracks
 	}
 
-	private fun getFallbackMediaItem(currentItem: MediaItem): MediaItem {
-		return MediaItem.Builder().apply {
-			setUri(currentItem.mediaMetadata.extras!!.getString("fallback"))
-			Log.i("LTPlayer", "-> URL: ${currentItem.mediaMetadata.extras!!.getString("fallback")}")
-			setMediaId(currentItem.mediaId)
-			Log.i("LTPlayer", "-> ID: ${currentItem.mediaId}")
-			setMediaMetadata(currentItem.mediaMetadata.buildUpon().apply { setExtras(null) }
-				.build())
-		}.build()
+	private fun getFallbackMediaItem(currentItem: MediaItem): MediaItem? {
+		return try {
+			MediaItem.Builder().apply {
+				setUri(currentItem.mediaMetadata.extras!!.getString("fallback"))
+				Log.i(
+					"LTPlayer",
+					"-> URL: ${currentItem.mediaMetadata.extras!!.getString("fallback")}"
+				)
+				setMediaId(currentItem.mediaId)
+				Log.i("LTPlayer", "-> ID: ${currentItem.mediaId}")
+				setMediaMetadata(currentItem.mediaMetadata.buildUpon().apply { setExtras(null) }
+					.build())
+			}.build()
+		} catch (e: Exception) {
+			null
+		}
 	}
 
 	fun stop() {

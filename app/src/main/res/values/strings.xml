@@ -73,7 +73,8 @@ Your data is stored in the instance you chose (%s).</string>
 	<!-- Error messages -->
 	<string name="error_connection">Failed to connect to the instance</string>
 	<string name="error_lighttube">An error has occurred: %s</string>
-	<string name="error_playback">Failed to play video. Switching to fallback player.\n(some features will be unavailable)</string>
+	<string name="error_playback">Failed to play video.</string>
+	<string name="error_playback_falling_back">Failed to play video. Switching to fallback player.\n(some features will be unavailable)</string>
 
 	<!-- Error handler -->
 	<string name="error_title">LightTube has crashed!</string>
