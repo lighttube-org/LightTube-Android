@@ -2,12 +2,38 @@ package dev.kuylar.lighttube
 
 import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.LightTubeImage
+import dev.kuylar.lighttube.databinding.RendererChannelBinding
+import dev.kuylar.lighttube.databinding.RendererCommentBinding
+import dev.kuylar.lighttube.databinding.RendererContinuationBinding
+import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
+import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
+import dev.kuylar.lighttube.databinding.RendererUnknownBinding
+import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
+import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
+import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
+import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistAlertRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
+import dev.kuylar.lighttube.ui.viewholder.PlaylistVideoRenderer
+import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
+import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
+import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
+import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -85,6 +111,27 @@ class Utils {
 				Log.e("UpdateChecker", e.message, e)
 			}
 			return updateInfo
+		}
+
+		fun getViewHolder(renderer: JsonObject, inflater: LayoutInflater, parent: ViewGroup): RendererViewHolder {
+			return when (renderer.getAsJsonPrimitive("type").asString) {
+				"videoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
+				"compactVideoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
+				"channelRenderer" -> ChannelRenderer(RendererChannelBinding.inflate(inflater, parent, false))
+				"commentThreadRenderer" -> CommentRenderer(RendererCommentBinding.inflate(inflater, parent, false))
+				"continuationItemRenderer" -> ContinuationRenderer(RendererContinuationBinding.inflate(inflater, parent, false))
+				"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(RendererSlimVideoInfoBinding.inflate(inflater, parent, false))
+				"gridPlaylistRenderer" -> GridPlaylistRenderer(RendererGridPlaylistBinding.inflate(inflater, parent, false))
+				"playlistRenderer" -> PlaylistRenderer(RendererPlaylistBinding.inflate(inflater, parent, false))
+				"playlistInfoRenderer" -> PlaylistInfoRenderer(RendererPlaylistInfoBinding.inflate(inflater, parent, false))
+				"playlistVideoRenderer" -> PlaylistVideoRenderer(RendererPlaylistVideoBinding.inflate(inflater, parent, false))
+				"playlistAlertRenderer" -> PlaylistAlertRenderer(RendererPlaylistAlertBinding.inflate(inflater, parent, false))
+
+				// i hate these
+				"richItemRenderer" -> getViewHolder(renderer.getAsJsonObject("content"), inflater, parent)
+
+				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
+			}
 		}
 	}
 }

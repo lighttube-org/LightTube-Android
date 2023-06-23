@@ -40,7 +40,7 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 				binding.channelAvatar.visibility = View.GONE
 
 		val items = ArrayList<String>()
-		if (item.has("channel"))
+		if (item.has("channel") && !item.getAsJsonObject("channel").get("title").isJsonNull)
 			items.add(item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString)
 
 		items.add(item.getAsJsonPrimitive("viewCount").asString)

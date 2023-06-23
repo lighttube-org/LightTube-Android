@@ -4,29 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
-import dev.kuylar.lighttube.databinding.RendererChannelBinding
-import dev.kuylar.lighttube.databinding.RendererCommentBinding
-import dev.kuylar.lighttube.databinding.RendererContinuationBinding
-import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
-import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
-import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
-import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
-import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
-import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
-import dev.kuylar.lighttube.databinding.RendererUnknownBinding
-import dev.kuylar.lighttube.databinding.RendererVideoBinding
-import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
-import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
-import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
-import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
-import dev.kuylar.lighttube.ui.viewholder.PlaylistAlertRenderer
-import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
-import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
-import dev.kuylar.lighttube.ui.viewholder.PlaylistVideoRenderer
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
-import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
-import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
-import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 
 class RendererRecyclerAdapter(
 	private val rendererList: MutableList<JsonObject>,
@@ -42,20 +21,7 @@ class RendererRecyclerAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, position: Int): RendererViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
-		return when (rendererList[position].getAsJsonPrimitive("type").asString) {
-			"videoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
-			"compactVideoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
-			"channelRenderer" -> ChannelRenderer(RendererChannelBinding.inflate(inflater, parent, false))
-			"commentThreadRenderer" -> CommentRenderer(RendererCommentBinding.inflate(inflater, parent, false))
-			"continuationItemRenderer" -> ContinuationRenderer(RendererContinuationBinding.inflate(inflater, parent, false))
-			"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(RendererSlimVideoInfoBinding.inflate(inflater, parent, false))
-			"gridPlaylistRenderer" -> GridPlaylistRenderer(RendererGridPlaylistBinding.inflate(inflater, parent, false))
-			"playlistRenderer" -> PlaylistRenderer(RendererPlaylistBinding.inflate(inflater, parent, false))
-			"playlistInfoRenderer" -> PlaylistInfoRenderer(RendererPlaylistInfoBinding.inflate(inflater, parent, false))
-			"playlistVideoRenderer" -> PlaylistVideoRenderer(RendererPlaylistVideoBinding.inflate(inflater, parent, false))
-			"playlistAlertRenderer" -> PlaylistAlertRenderer(RendererPlaylistAlertBinding.inflate(inflater, parent, false))
-			else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
-		}
+		return Utils.getViewHolder(rendererList[position], inflater!!, parent)
 	}
 
 	override fun getItemCount(): Int = rendererList.size
@@ -63,11 +29,15 @@ class RendererRecyclerAdapter(
 	override fun onBindViewHolder(holder: RendererViewHolder, position: Int) {
 		val renderer = rendererList[position]
 		val type = renderer.getAsJsonPrimitive("type").asString
-		if (type == "continuationItemRenderer") {
-			val token = renderer.get("token")
-			if (!token.isJsonNull)
-				requestMore?.invoke(token.asString)
+		when (type) {
+			"continuationItemRenderer" -> {
+				val token = renderer.get("token")
+				if (!token.isJsonNull)
+					requestMore?.invoke(token.asString)
+			}
+
+			"richItemRenderer" -> holder.bind(renderer.getAsJsonObject("content"))
+			else -> holder.bind(renderer)
 		}
-		holder.bind(renderer)
 	}
 }
