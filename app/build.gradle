@@ -82,4 +82,7 @@ dependencies {
 
     // https://github.com/vkay94/YouTubeTimeBar
     implementation 'com.github.vkay94:YouTubeTimeBar:0.2.2'
+
+    // https://github.com/vkay94/DoubleTapPlayerView
+    implementation 'com.github.vkay94:DoubleTapPlayerView:1.0.4'
 }

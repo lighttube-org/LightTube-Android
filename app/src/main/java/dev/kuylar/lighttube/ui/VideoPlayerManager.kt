@@ -12,6 +12,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.bumptech.glide.Glide
+import com.github.vkay94.dtpv.DoubleTapPlayerView
+import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.github.vkay94.timebar.YouTubeTimeBar
 import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.exoplayer2.C
@@ -20,7 +22,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -39,8 +41,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	YouTubeTimeBarPreview.Listener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
-	private val exoplayerView: StyledPlayerView = activity.findViewById(R.id.player)
-	private val fullscreenPlayer: StyledPlayerView = activity.findViewById(R.id.fullscreen_player)
+	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
+	private val doubleTapView: YouTubeOverlay = activity.findViewById(R.id.player_overlay)
+	private val fullscreenPlayer: DoubleTapPlayerView =
+		activity.findViewById(R.id.fullscreen_player)
+	private val fullscreenDoubleTapView: YouTubeOverlay =
+		activity.findViewById(R.id.fullscreen_player_overlay)
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
 		setHandleAudioBecomingNoisy(true)
 	}.build()
@@ -90,7 +96,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		initOnClickListeners(fullscreenPlayer, true)
 	}
 
-	private fun initOnClickListeners(view: View, isFullscreen: Boolean) {
+	private fun initOnClickListeners(view: DoubleTapPlayerView, isFullscreen: Boolean) {
 		view.findViewById<MaterialButton>(R.id.player_play_pause).setOnClickListener {
 			if (player.isPlaying) player.pause() else player.play()
 		}
@@ -121,6 +127,37 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
 			.timeBarPreview(preview)
 		preview.previewListener(this)
+
+		if (fullscreen) {
+			fullscreenDoubleTapView
+				.player(player)
+				.performListener(object : YouTubeOverlay.PerformListener {
+					override fun onAnimationStart() {
+						view.useController = false
+						fullscreenDoubleTapView.visibility = View.VISIBLE
+					}
+
+					override fun onAnimationEnd() {
+						fullscreenDoubleTapView.visibility = View.GONE
+						view.useController = true
+					}
+				})
+			view.controller(fullscreenDoubleTapView)
+		} else {
+			doubleTapView.player(player)
+				.performListener(object : YouTubeOverlay.PerformListener {
+					override fun onAnimationStart() {
+						view.useController = false
+						doubleTapView.visibility = View.VISIBLE
+					}
+
+					override fun onAnimationEnd() {
+						doubleTapView.visibility = View.GONE
+						view.useController = true
+					}
+				})
+			view.controller(doubleTapView)
+		}
 	}
 
 	private fun setCaptionsButtonState(buttonState: Int) {
@@ -157,7 +194,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 	}
 
-	private fun getActivePlayerView(): StyledPlayerView {
+	private fun getActivePlayerView(): DoubleTapPlayerView {
 		return if (fullscreen) fullscreenPlayer else exoplayerView
 	}
 
@@ -205,7 +242,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private fun mediaItemFromVideoId(id: String): MediaItem {
 		val video = api.getPlayer(id).data!!
 		return MediaItem.Builder().apply {
-			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=true")
+			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=false")
 			setMediaMetadata(video.details.getMediaMetadata(video.formats))
 			setMediaId(id)
 		}.build()
@@ -293,8 +330,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	private fun toggleFullscreen() {
 		if (fullscreen) {
+			(fullscreenPlayer.parent as View).visibility = View.GONE
 			fullscreenPlayer.visibility = View.GONE
-			StyledPlayerView.switchTargetView(player, fullscreenPlayer, exoplayerView)
+			PlayerView.switchTargetView(player, fullscreenPlayer, exoplayerView)
 			activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 			activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
 			getActivePlayerView().findViewById<MaterialButton>(R.id.player_fullscreen).icon =
@@ -304,8 +342,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				)
 			fullscreen = false
 		} else {
+			(fullscreenPlayer.parent as View).visibility = View.VISIBLE
 			fullscreenPlayer.visibility = View.VISIBLE
-			StyledPlayerView.switchTargetView(player, exoplayerView, fullscreenPlayer)
+			PlayerView.switchTargetView(player, exoplayerView, fullscreenPlayer)
 			activity.requestedOrientation =
 				if (getAspectRatio() < 1) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 				else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE

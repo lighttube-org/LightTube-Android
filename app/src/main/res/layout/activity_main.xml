@@ -33,8 +33,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_marginBottom="80dp"
-		app:layout_behavior="@string/appbar_scrolling_view_behavior"
 		app:defaultNavHost="true"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior"
 		app:navGraph="@navigation/mobile_navigation" />
 
 	<LinearLayout
@@ -63,21 +63,33 @@
 		android:background="?android:attr/windowBackground"
 		app:menu="@menu/bottom_nav_menu" />
 
-	<com.google.android.exoplayer2.ui.StyledPlayerView
-		android:id="@+id/fullscreen_player"
+	<FrameLayout
+		android:id="@+id/fullscreen_player_container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="#000000"
-		android:clickable="true"
 		android:elevation="10dp"
-		android:focusable="true"
-		android:visibility="gone"
-		app:animation_enabled="false"
-		app:controller_layout_id="@layout/exo_playback_control_view"
-		app:layout_constraintDimensionRatio="V,16:9"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar"
-		app:show_subtitle_button="true"
-		tools:srcCompat="@tools:sample/backgrounds/scenic" />
+		android:visibility="gone">
+
+		<com.github.vkay94.dtpv.DoubleTapPlayerView
+			android:id="@+id/fullscreen_player"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="#000000"
+			android:clickable="true"
+			android:focusable="true"
+			app:animation_enabled="false"
+			app:controller_layout_id="@layout/exo_playback_control_view"
+			app:show_subtitle_button="true"
+			tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+		<com.github.vkay94.dtpv.youtube.YouTubeOverlay
+			android:id="@+id/fullscreen_player_overlay"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="#77000000"
+			android:visibility="invisible"
+			app:yt_playerView="@id/fullscreen_player"
+			tools:visibility="visible" />
+	</FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
