@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
+import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
 import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
@@ -14,6 +15,7 @@ import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
 import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
@@ -43,6 +45,7 @@ class RendererRecyclerAdapter(
 		return when (rendererList[position].getAsJsonPrimitive("type").asString) {
 			"videoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
 			"compactVideoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
+			"channelRenderer" -> ChannelRenderer(RendererChannelBinding.inflate(inflater, parent, false))
 			"commentThreadRenderer" -> CommentRenderer(RendererCommentBinding.inflate(inflater, parent, false))
 			"continuationItemRenderer" -> ContinuationRenderer(RendererContinuationBinding.inflate(inflater, parent, false))
 			"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(RendererSlimVideoInfoBinding.inflate(inflater, parent, false))

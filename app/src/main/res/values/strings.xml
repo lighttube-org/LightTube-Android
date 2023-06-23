@@ -40,6 +40,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<!-- Templates -->
 	<string name="template_instance_info">API: %s | Accounts: %s</string>
 	<string name="template_feed_video_subtitle">%s • %s views • %s</string>
+	<string name="template_channel_subtitle">%s • %s</string>
 	<string name="template_videos">%s videos</string>
 
 	<!-- General -->
@@ -55,6 +56,8 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="live">Live</string>
 	<string name="comment_pinnedby">Pinned by video author</string>
 	<string name="playlist">Playlist</string>
+	<string name="subscribe">Subscribe</string>
+	<string name="subscribed">Subscribed</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>
@@ -94,6 +97,4 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="update_download">Download</string>
 	<string name="update_skip">Skip this version</string>
 	<string name="update_skip_notice">Update skipped. You can always re-check updates under Settings → About → Check for Updates</string>
-	<!-- TODO: Remove or change this placeholder text -->
-	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

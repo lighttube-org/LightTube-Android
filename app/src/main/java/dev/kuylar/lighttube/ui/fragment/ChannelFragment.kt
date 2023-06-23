@@ -34,7 +34,7 @@ class ChannelFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		(activity as MainActivity).apply {
 			thread {
-				val channel = api.getChannel(id)
+				val channel = api.getChannel(id, "about")
 				val channelAdapter =
 					ChannelAdapter(childFragmentManager, id, ArrayList(channel.data!!.enabledTabs.filter { it.lowercase() != "search" }))
 				val viewPager = binding.channelPager
