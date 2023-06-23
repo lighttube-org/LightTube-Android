@@ -205,7 +205,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private fun mediaItemFromVideoId(id: String): MediaItem {
 		val video = api.getPlayer(id).data!!
 		return MediaItem.Builder().apply {
-			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=false")
+			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=true")
 			setMediaMetadata(video.details.getMediaMetadata(video.formats))
 			setMediaId(id)
 		}.build()
