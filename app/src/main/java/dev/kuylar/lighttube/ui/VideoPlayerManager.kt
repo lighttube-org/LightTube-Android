@@ -15,6 +15,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.github.vkay94.dtpv.DoubleTapPlayerView
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
+import com.github.vkay94.timebar.LibTimeBar
+import com.github.vkay94.timebar.YouTubeChapter
+import com.github.vkay94.timebar.YouTubeSegment
 import com.github.vkay94.timebar.YouTubeTimeBar
 import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.exoplayer2.C
@@ -28,7 +31,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.SponsorBlockSegment
 import dev.kuylar.lighttube.StoryboardInfo
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.VideoChapter
@@ -39,7 +44,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
-	YouTubeTimeBarPreview.Listener {
+	YouTubeTimeBarPreview.Listener, LibTimeBar.SegmentListener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
@@ -121,6 +126,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				view.findViewById<View>(R.id.player_metadata).visibility = View.GONE
 			}
 
+			val timeBar =
+				view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
+			timeBar.addSegmentListener(this)
 			val preview = view.findViewById<YouTubeTimeBarPreview>(R.id.player_preview)
 			view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
 				.timeBarPreview(preview)
@@ -261,6 +269,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				player.currentMediaItem?.mediaMetadata?.title
 			fullscreenPlayer.findViewById<TextView>(R.id.player_subtitle).text =
 				player.currentMediaItem?.mediaMetadata?.artist
+			if (player.currentMediaItem?.mediaId != null)
+				setSponsors(player.currentMediaItem?.mediaId!!)
 			if (player.currentMediaItem?.mediaMetadata?.extras != null)
 				setStoryboards(
 					player.currentMediaItem?.mediaMetadata?.extras?.getString("storyboard"),
@@ -322,6 +332,23 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
 		if (levels == null || length == null || recommendedLevel == null) storyboard = null
 		storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
+	}
+
+	private fun setSponsors(videoId: String) {
+		thread {
+			val sponsors = Utils.getSponsorBlockInfo(videoId)
+			activity.runOnUiThread {
+				forAllPlayerViews { player, _ ->
+					if (sponsors != null) {
+						player.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
+							sponsors.segments
+					} else {
+						player.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
+							listOf(SponsorBlockSegment("", "", listOf(0.0, 0.0), "", 0.0, 0, 0, ""))
+					}
+				}
+			}
+		}
 	}
 
 	override fun onTracksChanged(tracks: Tracks) {
@@ -452,5 +479,18 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 					.load("https://i.ytimg.com/vi/${player.currentMediaItem?.mediaId}/maxresdefault.jpg")
 					.into(imageView)
 		}
+	}
+
+	override fun onChapterChanged(timeBar: LibTimeBar, newChapter: YouTubeChapter, drag: Boolean) {
+		// todo: show current chapter on UI
+	}
+
+	override fun onSegmentChanged(timeBar: LibTimeBar, newSegment: YouTubeSegment?) {
+		if (newSegment != null)
+			Toast.makeText(
+				activity,
+				(newSegment as SponsorBlockSegment).actionType,
+				Toast.LENGTH_LONG
+			).show()
 	}
 }

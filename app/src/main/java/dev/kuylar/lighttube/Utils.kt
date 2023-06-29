@@ -36,6 +36,7 @@ import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
 import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.security.MessageDigest
 
 
 class Utils {
@@ -72,6 +73,37 @@ class Utils {
 				}
 			} catch (e: Exception) {
 				return -1
+			}
+		}
+
+		fun getSponsorBlockInfo(videoId: String): SponsorBlockVideo? {
+			try {
+				val req = Request.Builder().apply {
+					val bytes = videoId.toByteArray()
+					val md = MessageDigest.getInstance("SHA-256")
+					val hash = md.digest(bytes).fold("") { str, it -> str + "%02x".format(it) }
+					url(
+						"https://sponsor.ajay.app/api/skipSegments/${
+							hash.substring(
+								0,
+								4
+							)
+						}?category=sponsor&category=selfpromo&category=interaction&category=intro&category=outro&category=preview&category=music_offtopic&category=filler"
+					)
+					header(
+						"User-Agent",
+						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
+					)
+				}.build()
+
+				http.newCall(req).execute().use { response ->
+					val res = gson.fromJson(
+						response.body!!.string(),
+						object : TypeToken<List<SponsorBlockVideo>>() {})
+					return res.firstOrNull { it.videoId == videoId }
+				}
+			} catch (e: Exception) {
+				return null
 			}
 		}
 
@@ -113,22 +145,106 @@ class Utils {
 			return updateInfo
 		}
 
-		fun getViewHolder(renderer: JsonObject, inflater: LayoutInflater, parent: ViewGroup): RendererViewHolder {
+		fun getViewHolder(
+			renderer: JsonObject,
+			inflater: LayoutInflater,
+			parent: ViewGroup
+		): RendererViewHolder {
 			return when (renderer.getAsJsonPrimitive("type").asString) {
-				"videoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
-				"compactVideoRenderer" -> VideoRenderer(RendererVideoBinding.inflate(inflater, parent, false))
-				"channelRenderer" -> ChannelRenderer(RendererChannelBinding.inflate(inflater, parent, false))
-				"commentThreadRenderer" -> CommentRenderer(RendererCommentBinding.inflate(inflater, parent, false))
-				"continuationItemRenderer" -> ContinuationRenderer(RendererContinuationBinding.inflate(inflater, parent, false))
-				"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(RendererSlimVideoInfoBinding.inflate(inflater, parent, false))
-				"gridPlaylistRenderer" -> GridPlaylistRenderer(RendererGridPlaylistBinding.inflate(inflater, parent, false))
-				"playlistRenderer" -> PlaylistRenderer(RendererPlaylistBinding.inflate(inflater, parent, false))
-				"playlistInfoRenderer" -> PlaylistInfoRenderer(RendererPlaylistInfoBinding.inflate(inflater, parent, false))
-				"playlistVideoRenderer" -> PlaylistVideoRenderer(RendererPlaylistVideoBinding.inflate(inflater, parent, false))
-				"playlistAlertRenderer" -> PlaylistAlertRenderer(RendererPlaylistAlertBinding.inflate(inflater, parent, false))
+				"videoRenderer" -> VideoRenderer(
+					RendererVideoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"compactVideoRenderer" -> VideoRenderer(
+					RendererVideoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"channelRenderer" -> ChannelRenderer(
+					RendererChannelBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"commentThreadRenderer" -> CommentRenderer(
+					RendererCommentBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"continuationItemRenderer" -> ContinuationRenderer(
+					RendererContinuationBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(
+					RendererSlimVideoInfoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"gridPlaylistRenderer" -> GridPlaylistRenderer(
+					RendererGridPlaylistBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"playlistRenderer" -> PlaylistRenderer(
+					RendererPlaylistBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"playlistInfoRenderer" -> PlaylistInfoRenderer(
+					RendererPlaylistInfoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"playlistVideoRenderer" -> PlaylistVideoRenderer(
+					RendererPlaylistVideoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"playlistAlertRenderer" -> PlaylistAlertRenderer(
+					RendererPlaylistAlertBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
 
 				// i hate these
-				"richItemRenderer" -> getViewHolder(renderer.getAsJsonObject("content"), inflater, parent)
+				"richItemRenderer" -> getViewHolder(
+					renderer.getAsJsonObject("content"),
+					inflater,
+					parent
+				)
 
 				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 			}
