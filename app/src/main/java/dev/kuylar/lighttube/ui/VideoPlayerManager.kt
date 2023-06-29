@@ -128,7 +128,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			.timeBarPreview(preview)
 		preview.previewListener(this)
 
-		if (fullscreen) {
+		if (isFullscreen) {
 			fullscreenDoubleTapView
 				.player(player)
 				.performListener(object : YouTubeOverlay.PerformListener {
