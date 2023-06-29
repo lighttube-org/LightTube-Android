@@ -92,104 +92,101 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		playerHandler.post(r)
 
 		// im sorry for this monstrosity too
-		initOnClickListeners(exoplayerView, false)
-		initOnClickListeners(fullscreenPlayer, true)
+		forAllPlayerViews { view, isFullscreen ->
+			view.findViewById<MaterialButton>(R.id.player_play_pause).setOnClickListener {
+				if (player.isPlaying) player.pause() else player.play()
+			}
+
+			view.findViewById<MaterialButton>(R.id.player_fullscreen).setOnClickListener {
+				toggleFullscreen()
+			}
+
+			view.findViewById<MaterialButton>(R.id.player_settings).setOnClickListener {
+				PlayerSettingsFragment(player).show(fragmentManager, null)
+			}
+
+			view.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
+				if (player.currentTracks.groups.any { it.type == C.TRACK_TYPE_TEXT })
+					PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
+			}
+
+			view.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
+				if (fullscreen) toggleFullscreen()
+				else miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+			}
+
+			if (!isFullscreen) {
+				view.findViewById<View>(R.id.player_metadata).visibility = View.GONE
+			}
+
+			val preview = view.findViewById<YouTubeTimeBarPreview>(R.id.player_preview)
+			view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
+				.timeBarPreview(preview)
+			preview.previewListener(this)
+
+			if (isFullscreen) {
+				fullscreenDoubleTapView
+					.player(player)
+					.performListener(object : YouTubeOverlay.PerformListener {
+						override fun onAnimationStart() {
+							view.useController = false
+							fullscreenDoubleTapView.visibility = View.VISIBLE
+						}
+
+						override fun onAnimationEnd() {
+							fullscreenDoubleTapView.visibility = View.GONE
+							view.useController = true
+						}
+					})
+				view.controller(fullscreenDoubleTapView)
+			} else {
+				doubleTapView.player(player)
+					.performListener(object : YouTubeOverlay.PerformListener {
+						override fun onAnimationStart() {
+							view.useController = false
+							doubleTapView.visibility = View.VISIBLE
+						}
+
+						override fun onAnimationEnd() {
+							doubleTapView.visibility = View.GONE
+							view.useController = true
+						}
+					})
+				view.controller(doubleTapView)
+			}
+		}
 	}
 
-	private fun initOnClickListeners(view: DoubleTapPlayerView, isFullscreen: Boolean) {
-		view.findViewById<MaterialButton>(R.id.player_play_pause).setOnClickListener {
-			if (player.isPlaying) player.pause() else player.play()
-		}
-
-		view.findViewById<MaterialButton>(R.id.player_fullscreen).setOnClickListener {
-			toggleFullscreen()
-		}
-
-		view.findViewById<MaterialButton>(R.id.player_settings).setOnClickListener {
-			PlayerSettingsFragment(player).show(fragmentManager, null)
-		}
-
-		view.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
-			if (player.currentTracks.groups.any { it.type == C.TRACK_TYPE_TEXT })
-				PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
-		}
-
-		view.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
-			if (fullscreen) toggleFullscreen()
-			else miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
-		}
-
-		if (!isFullscreen) {
-			view.findViewById<View>(R.id.player_metadata).visibility = View.GONE
-		}
-
-		val preview = view.findViewById<YouTubeTimeBarPreview>(R.id.player_preview)
-		view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
-			.timeBarPreview(preview)
-		preview.previewListener(this)
-
-		if (isFullscreen) {
-			fullscreenDoubleTapView
-				.player(player)
-				.performListener(object : YouTubeOverlay.PerformListener {
-					override fun onAnimationStart() {
-						view.useController = false
-						fullscreenDoubleTapView.visibility = View.VISIBLE
-					}
-
-					override fun onAnimationEnd() {
-						fullscreenDoubleTapView.visibility = View.GONE
-						view.useController = true
-					}
-				})
-			view.controller(fullscreenDoubleTapView)
-		} else {
-			doubleTapView.player(player)
-				.performListener(object : YouTubeOverlay.PerformListener {
-					override fun onAnimationStart() {
-						view.useController = false
-						doubleTapView.visibility = View.VISIBLE
-					}
-
-					override fun onAnimationEnd() {
-						doubleTapView.visibility = View.GONE
-						view.useController = true
-					}
-				})
-			view.controller(doubleTapView)
-		}
+	private fun forAllPlayerViews(runnable: ((DoubleTapPlayerView, Boolean) -> Unit)) {
+		runnable.invoke(exoplayerView, false)
+		runnable.invoke(fullscreenPlayer, true)
 	}
 
 	private fun setCaptionsButtonState(buttonState: Int) {
-		val normalButton = exoplayerView.findViewById<MaterialButton>(R.id.player_captions)
-		val fullscreenButton = fullscreenPlayer.findViewById<MaterialButton>(R.id.player_captions)
-		when (buttonState) {
-			0 -> {
-				normalButton.alpha = 0.5f
-				normalButton.isEnabled = false
-				normalButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
-				fullscreenButton.alpha = 0.5f
-				fullscreenButton.isEnabled = false
-				fullscreenButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
-			}
+		forAllPlayerViews { playerView, _ ->
+			val button =
+				playerView.findViewById<MaterialButton>(R.id.player_captions)
+			when (buttonState) {
+				0 -> {
+					button.alpha = 0.5f
+					button.isEnabled = false
+					button.icon =
+						ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+				}
 
-			1 -> {
-				normalButton.alpha = 1f
-				normalButton.isEnabled = true
-				normalButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
-				fullscreenButton.alpha = 1f
-				fullscreenButton.isEnabled = true
-				fullscreenButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions)
-			}
+				1 -> {
+					button.alpha = 1f
+					button.isEnabled = true
+					button.icon =
+						ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+				}
 
-			2 -> {
-				normalButton.alpha = 1f
-				normalButton.isEnabled = true
-				normalButton.icon = ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
-				fullscreenButton.alpha = 1f
-				fullscreenButton.isEnabled = true
-				fullscreenButton.icon =
-					ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
+				2 -> {
+					button.alpha = 1f
+					button.isEnabled = true
+					button.icon =
+						ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
+				}
 			}
 		}
 	}
@@ -243,7 +240,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		val video = api.getPlayer(id).data!!
 		return MediaItem.Builder().apply {
 			setUri("${api.host}/proxy/media/$id.m3u8?useProxy=false")
-			setMediaMetadata(video.details.getMediaMetadata(video.formats))
+			setMediaMetadata(video.details.getMediaMetadata(video.formats, video.storyboard))
 			setMediaId(id)
 		}.build()
 	}
@@ -281,7 +278,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 					player.seekToNextMediaItem()
 					player.prepare()
 					player.play()
-					Toast.makeText(activity, R.string.error_playback_falling_back, Toast.LENGTH_LONG).show()
+					Toast.makeText(
+						activity,
+						R.string.error_playback_falling_back,
+						Toast.LENGTH_LONG
+					).show()
 					player.removeMediaItem(cmii)
 				} else {
 					Toast.makeText(activity, R.string.error_playback, Toast.LENGTH_LONG).show()
