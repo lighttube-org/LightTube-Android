@@ -12,6 +12,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.github.vkay94.dtpv.DoubleTapPlayerView
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.github.vkay94.timebar.YouTubeTimeBar
@@ -27,7 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import dev.kuylar.lighttube.R
-import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.StoryboardInfo
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.VideoChapter
@@ -61,6 +62,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private val playerControls = exoplayerView.findViewById<View>(R.id.player_controls)
 	private var fullscreen = false
 	private var chapters: ArrayList<VideoChapter>? = null
+	private var storyboard: StoryboardInfo? = null
 
 	init {
 		exoplayerView.player = player
@@ -259,6 +261,14 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				player.currentMediaItem?.mediaMetadata?.title
 			fullscreenPlayer.findViewById<TextView>(R.id.player_subtitle).text =
 				player.currentMediaItem?.mediaMetadata?.artist
+			if (player.currentMediaItem?.mediaMetadata?.extras != null)
+				setStoryboards(
+					player.currentMediaItem?.mediaMetadata?.extras?.getString("storyboard"),
+					player.currentMediaItem?.mediaMetadata?.extras?.getString("recommendedLevel"),
+					player.currentMediaItem?.mediaMetadata?.extras?.getLong("length")
+				)
+			else
+				storyboard = null
 			videoTracks = null
 		}
 
@@ -307,6 +317,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 		getActivePlayerView().findViewById<CircularProgressIndicator>(R.id.player_buffering_progress).visibility =
 			if (player.playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
+	}
+
+	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
+		if (levels == null || length == null || recommendedLevel == null) storyboard = null
+		storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
 	}
 
 	override fun onTracksChanged(tracks: Tracks) {
@@ -424,22 +439,18 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 	}
 
-	// TODO: use the actual storyboard instead of chapter thumbnails
 	override fun loadThumbnail(imageView: ImageView, position: Long) {
-		if (chapters.isNullOrEmpty()) {
+		try {
+			storyboard!!.throttle(position) // the library fails throttling, so we do it ourselves
 			Glide.with(activity)
-				.load("https://i.ytimg.com/vi/${player.currentMediaItem?.mediaId}/maxresdefault.jpg")
+				.load(storyboard!!.getImageUrl(position))
+				.transform(storyboard!!.getTransformation(position), CenterCrop())
 				.into(imageView)
-		} else {
-			var currentMs = 0L
-			chapters!!.forEach {
-				currentMs += it.startTimeMs
-				if (currentMs < position && position < currentMs + it.timeRangeStartMillis) {
-					Glide.with(activity)
-						.load(Utils.getBestImageUrl(it.thumbnails))
-						.into(imageView)
-				}
-			}
+		} catch (e: Exception) {
+			if (e.message != "throttle")
+				Glide.with(activity)
+					.load("https://i.ytimg.com/vi/${player.currentMediaItem?.mediaId}/maxresdefault.jpg")
+					.into(imageView)
 		}
 	}
 }
