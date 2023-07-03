@@ -3,6 +3,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
 	android:padding="16dp"
 	tools:context=".ui.fragment.UpdateFragment">
@@ -33,7 +34,8 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/update_skip"
-			style="@style/Widget.Material3.Button.TextButton"
+			style="@style/Widget.Material3.Button.IconButton.Outlined"
+			app:icon="@drawable/ic_close"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/update_skip" />
@@ -45,6 +47,8 @@
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/update_download"
+			app:icon="@drawable/ic_download"
+			style="@style/Widget.Material3.Button.IconButton.Filled"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/update_download" />
