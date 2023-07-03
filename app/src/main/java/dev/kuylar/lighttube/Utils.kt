@@ -24,6 +24,7 @@ import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
+import dev.kuylar.lighttube.ui.viewholder.ChannelVideoPlayerRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
 import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
@@ -235,6 +236,14 @@ class Utils {
 
 				"playlistAlertRenderer" -> PlaylistAlertRenderer(
 					RendererPlaylistAlertBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"channelVideoPlayerRenderer" -> ChannelVideoPlayerRenderer(
+					RendererVideoBinding.inflate(
 						inflater,
 						parent,
 						false
