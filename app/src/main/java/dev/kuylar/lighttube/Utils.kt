@@ -129,6 +129,7 @@ class Utils {
 							response.body!!.string(),
 							object : TypeToken<List<GithubRelease>>() {})
 					val latestVer = res.first().tagName.substring(1)
+					@Suppress("DEPRECATION")
 					val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
 					val version = pInfo.versionName.split(" ").first()
 					val latestVersionCode = latestVer.replace(".", "").toInt()
