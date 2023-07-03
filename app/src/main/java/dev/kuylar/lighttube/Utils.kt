@@ -15,6 +15,7 @@ import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
 import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
+import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
@@ -26,6 +27,7 @@ import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
 import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
+import dev.kuylar.lighttube.ui.viewholder.ItemSectionRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistAlertRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
@@ -244,6 +246,14 @@ class Utils {
 					renderer.getAsJsonObject("content"),
 					inflater,
 					parent
+				)
+
+				"itemSectionRenderer" -> ItemSectionRenderer(
+					RendererItemSectionBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
 				)
 
 				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
