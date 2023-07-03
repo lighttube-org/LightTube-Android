@@ -8,7 +8,7 @@ import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
 class ItemSectionRenderer(val binding: RendererItemSectionBinding) :
 	RendererViewHolder(binding.root) {
 	override fun bind(item: JsonObject) {
-		if (!item.get("contents").isJsonNull)
+		if (item.get("contents") != null)
 			item.getAsJsonArray("contents").forEach {
 				val holder = Utils.getViewHolder(
 					it.asJsonObject,
@@ -18,7 +18,7 @@ class ItemSectionRenderer(val binding: RendererItemSectionBinding) :
 				holder.bind(it.asJsonObject)
 				binding.root.addView(holder.itemView)
 			}
-		else if (!item.get("items").isJsonNull)
+		else if (item.get("items") != null)
 			item.getAsJsonArray("items").forEach {
 				val holder = Utils.getViewHolder(
 					it.asJsonObject,
