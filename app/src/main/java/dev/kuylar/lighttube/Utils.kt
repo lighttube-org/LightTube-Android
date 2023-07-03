@@ -178,6 +178,14 @@ class Utils {
 					)
 				)
 
+				"gridChannelRenderer" -> ChannelRenderer(
+					RendererChannelBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
 				"commentThreadRenderer" -> CommentRenderer(
 					RendererCommentBinding.inflate(
 						inflater,

@@ -13,11 +13,18 @@ class ChannelRenderer(val binding: RendererChannelBinding) : RendererViewHolder(
 	override fun bind(item: JsonObject) {
 		val context = (binding.root.context as Activity)
 		binding.channelTitle.text = item.getAsJsonPrimitive("title").asString
-		binding.channelSubtitle.text = context.getString(
-			R.string.template_channel_subtitle,
-			item.getAsJsonPrimitive("userHandle").asString,
-			item.getAsJsonPrimitive("subscriberCountText").asString
-		)
+		if (item.getAsJsonPrimitive("type").asString == "gridChannelRenderer")
+			binding.channelSubtitle.text = context.getString(
+				R.string.template_channel_subtitle,
+				item.getAsJsonPrimitive("videoCountText").asString,
+				item.getAsJsonPrimitive("subscriberCountText").asString
+			)
+		else
+			binding.channelSubtitle.text = context.getString(
+				R.string.template_channel_subtitle,
+				item.getAsJsonPrimitive("userHandle").asString,
+				item.getAsJsonPrimitive("subscriberCountText").asString
+			)
 		Glide
 			.with(binding.root)
 			.load(Utils.getBestImageUrlJson(item.getAsJsonArray("avatars")))
