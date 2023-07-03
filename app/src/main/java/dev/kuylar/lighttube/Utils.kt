@@ -16,6 +16,7 @@ import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
 import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
+import dev.kuylar.lighttube.databinding.RendererMessageBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
@@ -29,6 +30,7 @@ import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
 import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
 import dev.kuylar.lighttube.ui.viewholder.ItemSectionRenderer
+import dev.kuylar.lighttube.ui.viewholder.MessageRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistAlertRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
@@ -253,6 +255,14 @@ class Utils {
 
 				"channelVideoPlayerRenderer" -> ChannelVideoPlayerRenderer(
 					RendererVideoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"messageRenderer" -> MessageRenderer(
+					RendererMessageBinding.inflate(
 						inflater,
 						parent,
 						false
