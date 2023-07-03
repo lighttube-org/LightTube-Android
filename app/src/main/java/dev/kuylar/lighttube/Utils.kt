@@ -265,6 +265,14 @@ class Utils {
 					)
 				)
 
+				"gridRenderer" -> ItemSectionRenderer(
+					RendererItemSectionBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
 				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 			}
 		}
