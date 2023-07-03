@@ -1,6 +1,7 @@
 package dev.kuylar.lighttube.ui.viewholder
 
 import android.app.Activity
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
@@ -18,8 +19,9 @@ class PlaylistRenderer(val binding: RendererPlaylistBinding) :
 			R.string.template_videos,
 			DecimalFormat().format(item.getAsJsonPrimitive("videoCount").asInt)
 		)
-		binding.playlistSubtitle.text =
-			item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString
+		if (!item.getAsJsonObject("channel").get("title").isJsonNull)
+			binding.playlistSubtitle.text =
+				item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString
 
 		Glide
 			.with(binding.root)
