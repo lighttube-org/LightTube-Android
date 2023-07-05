@@ -271,14 +271,18 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				player.currentMediaItem?.mediaMetadata?.artist
 			if (player.currentMediaItem?.mediaId != null)
 				setSponsors(player.currentMediaItem?.mediaId!!)
-			if (player.currentMediaItem?.mediaMetadata?.extras != null)
-				setStoryboards(
-					player.currentMediaItem?.mediaMetadata?.extras?.getString("storyboard"),
-					player.currentMediaItem?.mediaMetadata?.extras?.getString("recommendedLevel"),
-					player.currentMediaItem?.mediaMetadata?.extras?.getLong("length")
-				)
-			else
+			try {
+				if (player.currentMediaItem?.mediaMetadata?.extras != null)
+					setStoryboards(
+						player.currentMediaItem?.mediaMetadata?.extras?.getString("storyboard"),
+						player.currentMediaItem?.mediaMetadata?.extras?.getString("recommendedLevel"),
+						player.currentMediaItem?.mediaMetadata?.extras?.getLong("length")
+					)
+				else
+					storyboard = null
+			} catch (e: Exception) {
 				storyboard = null
+			}
 			videoTracks = null
 		}
 
