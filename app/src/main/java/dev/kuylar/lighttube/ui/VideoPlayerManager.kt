@@ -4,22 +4,18 @@ import android.content.pm.ActivityInfo
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.github.vkay94.dtpv.DoubleTapPlayerView
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.github.vkay94.timebar.LibTimeBar
 import com.github.vkay94.timebar.YouTubeChapter
 import com.github.vkay94.timebar.YouTubeSegment
 import com.github.vkay94.timebar.YouTubeTimeBar
-import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -44,7 +40,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
-	YouTubeTimeBarPreview.Listener, LibTimeBar.SegmentListener {
+	LibTimeBar.SegmentListener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
@@ -129,10 +125,6 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			val timeBar =
 				view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
 			timeBar.addSegmentListener(this)
-			val preview = view.findViewById<YouTubeTimeBarPreview>(R.id.player_preview)
-			view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
-				.timeBarPreview(preview)
-			preview.previewListener(this)
 
 			if (isFullscreen) {
 				fullscreenDoubleTapView
@@ -334,8 +326,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
-		if (levels == null || length == null || recommendedLevel == null) storyboard = null
-		storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
+		return //FIXME: disabled until i write a working storyboard view
+		// if (levels == null || length == null || recommendedLevel == null) storyboard = null
+		// storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
 	}
 
 	private fun setSponsors(videoId: String) {
@@ -467,21 +460,6 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				listOf(VideoChapter(null, emptyList(), 0))
 			fullscreenPlayer.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
 				listOf(VideoChapter(null, emptyList(), 0))
-		}
-	}
-
-	override fun loadThumbnail(imageView: ImageView, position: Long) {
-		try {
-			storyboard!!.throttle(position) // the library fails throttling, so we do it ourselves
-			Glide.with(activity)
-				.load(storyboard!!.getImageUrl(position))
-				.transform(storyboard!!.getTransformation(position), CenterCrop())
-				.into(imageView)
-		} catch (e: Exception) {
-			if (e.message != "throttle")
-				Glide.with(activity)
-					.load("https://i.ytimg.com/vi/${player.currentMediaItem?.mediaId}/maxresdefault.jpg")
-					.into(imageView)
 		}
 	}
 
