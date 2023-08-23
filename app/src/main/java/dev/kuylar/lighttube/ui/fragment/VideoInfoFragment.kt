@@ -35,7 +35,7 @@ class VideoInfoFragment : Fragment() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		api = (requireActivity() as MainActivity).api
+		api = (requireActivity() as MainActivity).getApi()
 		player = (requireActivity() as MainActivity).player
 		arguments?.let {
 			id = it.getString("id")!!

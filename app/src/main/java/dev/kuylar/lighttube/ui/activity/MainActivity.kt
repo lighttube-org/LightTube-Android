@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 	lateinit var miniplayer: BottomSheetBehavior<View>
 	private lateinit var miniplayerScene: MotionLayout
 	lateinit var player: VideoPlayerManager
-	lateinit var api: LightTubeApi
+	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 			return
 		}
 
-		api = LightTubeApi(this)
+		setApi()
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
@@ -149,6 +149,16 @@ class MainActivity : AppCompatActivity() {
 				}
 			}
 		}
+	}
+
+	private fun setApi() {
+		api = LightTubeApi(this)
+	}
+
+	fun getApi(): LightTubeApi {
+		if (!this::api.isInitialized)
+			setApi()
+		return api
 	}
 
 	private fun minimizePlayer(): Boolean {

@@ -52,7 +52,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
 		setHandleAudioBecomingNoisy(true)
 	}.build()
-	private val api: LightTubeApi = activity.api
+	private lateinit var api: LightTubeApi
 	private val fragmentManager = activity.supportFragmentManager
 
 	private val miniplayerTitle: TextView = activity.findViewById(R.id.miniplayer_video_title)
@@ -77,6 +77,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			true
 		)
 		playerHandler = Handler(player.applicationLooper)
+
+		api = activity.getApi()
 
 		// im sorry for this monstrosity
 		var r = Runnable {}

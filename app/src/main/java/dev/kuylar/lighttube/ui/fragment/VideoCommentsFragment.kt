@@ -36,7 +36,7 @@ class VideoCommentsFragment : Fragment() {
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		api = (activity as MainActivity).api
+		api = (activity as MainActivity).getApi()
 		binding = FragmentVideoCommentsBinding.inflate(inflater)
 		return binding.root
 	}
