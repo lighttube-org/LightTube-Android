@@ -35,7 +35,7 @@ class VideoInfoFragment : Fragment() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		api = (requireActivity() as MainActivity).api
+		api = (requireActivity() as MainActivity).getApi()
 		player = (requireActivity() as MainActivity).player
 		arguments?.let {
 			id = it.getString("id")!!
@@ -93,10 +93,10 @@ class VideoInfoFragment : Fragment() {
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
 		binding.recyclerRecommended.adapter = adapter
+		binding.recyclerRecommended.itemAnimator = null
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
 			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Gson().toJson(video))))
-
 			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("commentsContinuation", video.commentsContinuation)))
 		}.commit()
 

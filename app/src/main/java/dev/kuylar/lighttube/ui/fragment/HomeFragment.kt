@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
 		a.setLoading(true)
 		thread {
 			try {
-				val info = a.api.getInstanceInfo()
+				val info = a.getApi().getInstanceInfo()
 				a.runOnUiThread {
 					a.setLoading(false)
 					binding.homeMotd.text = info.motd

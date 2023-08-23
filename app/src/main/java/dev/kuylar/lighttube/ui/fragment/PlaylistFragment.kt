@@ -46,6 +46,7 @@ class PlaylistFragment : Fragment() {
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerPlaylist.layoutManager = LinearLayoutManager(context)
 		binding.recyclerPlaylist.adapter = adapter
+		binding.recyclerPlaylist.itemAnimator = null
 		binding.recyclerPlaylist.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
