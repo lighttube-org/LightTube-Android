@@ -46,6 +46,7 @@ class VideoCommentsFragment : Fragment() {
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerComments.layoutManager = LinearLayoutManager(context)
 		binding.recyclerComments.adapter = adapter
+		binding.recyclerComments.itemAnimator = null
 		binding.recyclerComments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)

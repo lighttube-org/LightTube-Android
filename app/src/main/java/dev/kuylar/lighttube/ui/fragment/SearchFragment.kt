@@ -47,6 +47,7 @@ class SearchFragment : Fragment() {
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerSearch.layoutManager = LinearLayoutManager(context)
 		binding.recyclerSearch.adapter = adapter
+		binding.recyclerSearch.itemAnimator = null
 		binding.recyclerSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
