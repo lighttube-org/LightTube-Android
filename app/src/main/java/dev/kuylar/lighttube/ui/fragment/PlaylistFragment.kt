@@ -35,7 +35,7 @@ class PlaylistFragment : Fragment() {
 			id = it.getString("id")!!
 		}
 		(activity as MainActivity).apply {
-			this@PlaylistFragment.api = api
+			this@PlaylistFragment.api = getApi()
 			supportActionBar?.title = ""
 		}
 		return binding.root

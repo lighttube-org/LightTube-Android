@@ -34,7 +34,7 @@ class SubscriptionsFragment : Fragment() {
 	): View {
 		binding = FragmentSubscriptionsBinding.inflate(inflater)
 		(activity as MainActivity).apply {
-			this@SubscriptionsFragment.api = api
+			this@SubscriptionsFragment.api = getApi()
 			this@SubscriptionsFragment.player = player
 		}
 		return binding.root

@@ -30,7 +30,7 @@ class LibraryFragment : Fragment() {
 	): View {
 		binding = FragmentLibraryBinding.inflate(inflater)
 		(activity as MainActivity).apply {
-			this@LibraryFragment.api = api
+			this@LibraryFragment.api = getApi()
 			this@LibraryFragment.player = player
 		}
 		return binding.root
