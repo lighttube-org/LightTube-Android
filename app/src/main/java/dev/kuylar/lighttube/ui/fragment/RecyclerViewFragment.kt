@@ -36,7 +36,7 @@ class RecyclerViewFragment : Fragment() {
 	): View {
 		binding = FragmentRecyclerviewBinding.inflate(inflater)
 		(activity as MainActivity).apply {
-			this@RecyclerViewFragment.api = api
+			this@RecyclerViewFragment.api = getApi()
 			this@RecyclerViewFragment.player = player
 		}
 		type = arguments?.getString("type")!!
