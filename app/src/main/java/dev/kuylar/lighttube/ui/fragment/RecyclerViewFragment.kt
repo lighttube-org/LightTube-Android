@@ -71,15 +71,19 @@ class RecyclerViewFragment : Fragment() {
 			thread {
 				try {
 					val (newItems, continuation) = getData(initial)
-					val start = items.size
-					items.addAll(newItems)
 					contKey = continuation
 					runOnUiThread {
 						setLoading(false)
+						items.removeIf { it.getAsJsonPrimitive("type").asString == "continuationItemRenderer" }
+						binding.recycler.adapter!!.notifyItemRemoved(items.size)
+
+						val start = items.size
+						items.addAll(newItems)
 						binding.recycler.adapter!!.notifyItemRangeInserted(
 							start,
 							newItems.size
 						)
+
 						loading = false
 					}
 				} catch (e: IOException) {
