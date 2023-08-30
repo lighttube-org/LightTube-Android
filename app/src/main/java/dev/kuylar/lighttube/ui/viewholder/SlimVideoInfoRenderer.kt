@@ -2,6 +2,7 @@ package dev.kuylar.lighttube.ui.viewholder
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -24,6 +25,9 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 		binding.videoViews.text = video.viewCount
 		binding.videoUploaded.text = video.dateText
 		binding.buttonLike.text = video.likeCount
+		if (video.showCommentsButton)
+			binding.buttonComments.visibility = View.VISIBLE
+
 		Glide
 			.with(activity)
 			.load(video.channel.avatar)

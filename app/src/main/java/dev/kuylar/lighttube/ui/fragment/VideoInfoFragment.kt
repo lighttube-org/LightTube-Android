@@ -29,6 +29,7 @@ class VideoInfoFragment : Fragment() {
 	private var playlistId: String? = null
 	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
 	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
+	private lateinit var adapter: RendererRecyclerAdapter
 	private lateinit var binding: FragmentVideoInfoBinding
 	private lateinit var api: LightTubeApi
 	private lateinit var player: VideoPlayerManager
@@ -90,14 +91,14 @@ class VideoInfoFragment : Fragment() {
 		player.setChapters(video.id, video.chapters)
 		items.add(video.getAsRenderer())
 		items.addAll(video.recommended)
-		val adapter = RendererRecyclerAdapter(items)
+		adapter = RendererRecyclerAdapter(items)
 		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
 		binding.recyclerRecommended.adapter = adapter
 		binding.recyclerRecommended.itemAnimator = null
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
 			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Gson().toJson(video))))
-			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("commentsContinuation", video.commentsContinuation)))
+			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("id", video.id)))
 		}.commit()
 
 		binding.sheetVideoDetailsClose.setOnClickListener {
@@ -125,5 +126,12 @@ class VideoInfoFragment : Fragment() {
 	fun setSheets(details: Boolean, comments: Boolean) {
 		detailsSheet.state = if (details) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
 		commentsSheet.state = if (comments) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
+	}
+
+	fun showCommentsButton() {
+		val video = Gson().fromJson(items[0], LightTubeVideo::class.java)
+		video.showCommentsButton = true
+		items[0] = video.getAsRenderer()
+		adapter.notifyItemChanged(0)
 	}
 }

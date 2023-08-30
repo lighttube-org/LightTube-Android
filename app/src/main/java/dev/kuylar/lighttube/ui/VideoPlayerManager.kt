@@ -442,6 +442,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 	}
 
+	fun showCommentsButton() {
+		try {
+			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton()
+		} catch (e: Exception) { }
+	}
+
 	fun setSheets(details: Boolean, comments: Boolean) {
 		(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).setSheets(
 			details,
