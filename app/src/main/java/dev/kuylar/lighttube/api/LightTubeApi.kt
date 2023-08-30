@@ -16,6 +16,7 @@ import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.api.models.SearchResults
 import dev.kuylar.lighttube.api.models.SearchSuggestions
+import dev.kuylar.lighttube.api.models.SortOrder
 import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -146,7 +147,18 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
-	fun getComments(continuation: String): ApiResponse<ContinuationContainer<JsonObject>> {
+	fun getComments(
+		videoId: String,
+		sortBy: SortOrder
+	): ApiResponse<ContinuationContainer<JsonObject>> {
+		return get(
+			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
+			"comments",
+			hashMapOf(Pair("id", videoId), Pair("sortBy", sortBy.toString()))
+		)
+	}
+
+	fun continueComments(continuation: String): ApiResponse<ContinuationContainer<JsonObject>> {
 		return get(
 			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
 			"comments",

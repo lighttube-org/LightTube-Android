@@ -116,6 +116,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginHorizontal="4dp"
 				android:text="@string/action_comments"
+				android:visibility="gone"
 				app:icon="@drawable/ic_comments" />
 
 			<com.google.android.material.button.MaterialButton

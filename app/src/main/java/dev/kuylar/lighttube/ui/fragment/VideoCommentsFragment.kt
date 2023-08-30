@@ -12,7 +12,9 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.SortOrder
 import dev.kuylar.lighttube.databinding.FragmentVideoCommentsBinding
+import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
@@ -23,12 +25,14 @@ class VideoCommentsFragment : Fragment() {
 	private var loading: Boolean = false
 	private val items: MutableList<JsonObject> = mutableListOf()
 	private lateinit var api: LightTubeApi
+	private lateinit var player: VideoPlayerManager
 	private lateinit var binding: FragmentVideoCommentsBinding
+	private lateinit var id: String
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		arguments?.let {
-			commentsContinuation = it.getString("commentsContinuation")
+			id = it.getString("id")!!
 		}
 	}
 
@@ -37,6 +41,7 @@ class VideoCommentsFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		api = (activity as MainActivity).getApi()
+		player = (activity as MainActivity).player
 		binding = FragmentVideoCommentsBinding.inflate(inflater)
 		return binding.root
 	}
@@ -51,21 +56,22 @@ class VideoCommentsFragment : Fragment() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
 				if (!recyclerView.canScrollVertically(1)) {
-					loadMore()
+					loadMore(false)
 				}
 			}
 		})
-		loadMore()
+		loadMore(true)
 	}
 
-	private fun loadMore() {
+	private fun loadMore(initial: Boolean) {
 		if (loading) return
-		if (commentsContinuation == null) return
+		if (!initial && commentsContinuation == null) return
 		loading = true
 		(activity as MainActivity).setLoading(true)
 		thread {
 			try {
-				val comments = api.getComments(commentsContinuation!!)
+				val comments = if (initial) api.getComments(id, SortOrder.TopComments) else api.continueComments(commentsContinuation!!)
+				if (initial) player.showCommentsButton()
 				val start = items.size
 				items.addAll(comments.data!!.contents)
 				commentsContinuation = comments.data.continuation
@@ -89,7 +95,7 @@ class VideoCommentsFragment : Fragment() {
 						Snackbar.LENGTH_INDEFINITE
 					)
 					sb.setAction(R.string.action_retry) {
-						loadMore()
+						loadMore(initial)
 						sb.dismiss()
 					}
 					sb.show()
@@ -99,17 +105,6 @@ class VideoCommentsFragment : Fragment() {
 				activity?.runOnUiThread {
 					loading = false
 					(activity as MainActivity).setLoading(false)
-					val sb = Snackbar.make(
-						binding.root,
-						getString(R.string.error_lighttube, e.message),
-						Snackbar.LENGTH_INDEFINITE
-					)
-					sb.setTextMaxLines(2)
-					sb.setAction(R.string.action_retry) {
-						loadMore()
-						sb.dismiss()
-					}
-					sb.show()
 				}
 			}
 		}
