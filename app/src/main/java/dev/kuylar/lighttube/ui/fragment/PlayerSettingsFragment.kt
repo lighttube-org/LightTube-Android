@@ -35,6 +35,7 @@ class PlayerSettingsFragment(
 		loadQualityMenu()
 		loadSubtitleMenu()
 		loadSpeedMenu()
+		loadAudioTracksMenu()
 		binding.playerSettingsLoopValue.text =
 			if (player.repeatMode == Player.REPEAT_MODE_ONE) getString(R.string.on)
 			else getString(R.string.off)
@@ -54,7 +55,7 @@ class PlayerSettingsFragment(
 		}
 		binding.playerSettingsButtonAudio.setOnClickListener {
 			binding.playerSettingsMain.visibility = View.GONE
-			binding.playerSettingsTrack.visibility = View.VISIBLE
+			binding.playerSettingsAudio.visibility = View.VISIBLE
 		}
 
 		when (defaultScreen) {
@@ -217,6 +218,45 @@ class PlayerSettingsFragment(
 			1f -> getString(R.string.player_speed_default)
 			2f -> getString(R.string.player_speed_template, "2")
 			else -> getString(R.string.player_speed_template, speed.toString())
+		}
+	}
+
+	private fun loadAudioTracksMenu() {
+		val audioTracks = player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }
+		if (audioTracks.size > 1) {
+			val params =
+				player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_AUDIO }
+
+			binding.playerSettingsAudioValue.text = if (params.isEmpty()) {
+				getString(R.string.off)
+			} else {
+				val f =
+					audioTracks
+						.find { it.mediaTrackGroup.id == params.values.first()!!.mediaTrackGroup.id }
+						?.getTrackFormat(0)
+				f?.label ?: f?.id ?: f?.language ?: getString(R.string.unavailable)
+			}
+
+			for (group in audioTracks) {
+				val index = group.length - 1 // select the HQ one
+				val f = group.getTrackFormat(index)
+				val item = createMenuItem(
+					f.label ?: f.id ?: f.language ?: getString(R.string.unavailable),
+					if (params.isNotEmpty()) params.values.first()!!.mediaTrackGroup.id == group.mediaTrackGroup.id else false
+				) {
+					player.trackSelectionParameters = player.trackSelectionParameters
+						.buildUpon()
+						.clearOverridesOfType(C.TRACK_TYPE_AUDIO)
+						.setOverrideForType(
+							TrackSelectionOverride(group.mediaTrackGroup, index)
+						)
+						.build()
+					dismissNow()
+				}
+				binding.playerSettingsAudio.addView(item)
+			}
+		} else {
+			binding.playerSettingsButtonAudio.visibility = View.GONE
 		}
 	}
 }
