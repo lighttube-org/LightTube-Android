@@ -192,7 +192,7 @@
 					android:text="@string/bullet" />
 
 				<TextView
-					android:id="@+id/player_settings_track_value"
+					android:id="@+id/player_settings_audio_value"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="@string/unavailable" />
@@ -221,7 +221,7 @@
 			android:visibility="gone" />
 
 		<LinearLayout
-			android:id="@+id/player_settings_track"
+			android:id="@+id/player_settings_audio"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
