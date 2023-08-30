@@ -34,6 +34,7 @@ class PlayerSettingsFragment(
 
 		loadQualityMenu()
 		loadSubtitleMenu()
+		loadSpeedMenu()
 		binding.playerSettingsLoopValue.text =
 			if (player.repeatMode == Player.REPEAT_MODE_ONE) getString(R.string.on)
 			else getString(R.string.off)
@@ -192,6 +193,30 @@ class PlayerSettingsFragment(
 			}
 		} else {
 			binding.playerSettingsButtonCaption.visibility = View.GONE
+		}
+	}
+
+	private fun loadSpeedMenu() {
+		val currentSpeed = player.playbackParameters.speed
+
+		binding.playerSettingsSpeedValue.text = formatSpeedString(currentSpeed)
+
+		floatArrayOf(0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f).forEach { speed ->
+			binding.playerSettingsSpeed.addView(createMenuItem(
+				formatSpeedString(speed),
+				currentSpeed == speed
+			) {
+				player.setPlaybackSpeed(speed)
+				dismissNow()
+			})
+		}
+	}
+
+	private fun formatSpeedString(speed: Float): String {
+		return when (speed) {
+			1f -> getString(R.string.player_speed_default)
+			2f -> getString(R.string.player_speed_template, "2")
+			else -> getString(R.string.player_speed_template, speed.toString())
 		}
 	}
 }
