@@ -1,225 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:padding="12dp"
-	tools:context=".ui.fragment.PlayerSettingsFragment">
+	android:layout_height="match_parent">
 
-	<LinearLayout
-		android:id="@+id/player_settings_main"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
-
-		<LinearLayout
-			android:id="@+id/player_settings_button_quality"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:background="?attr/selectableItemBackground"
-			android:gravity="center_vertical"
-			android:orientation="horizontal"
-			android:padding="10dp">
-
-			<ImageView
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:importantForAccessibility="no"
-				android:src="@drawable/ic_settings"
-				app:tint="@color/material_on_background_emphasis_high_type" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="24dp"
-				android:text="@string/player_quality"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="8dp"
-				android:text="@string/bullet" />
-
-			<TextView
-				android:id="@+id/player_settings_quality_value"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/player_quality_auto" />
-		</LinearLayout>
-
-		<LinearLayout
-			android:id="@+id/player_settings_button_caption"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:background="?attr/selectableItemBackground"
-			android:gravity="center_vertical"
-			android:orientation="horizontal"
-			android:padding="10dp">
-
-			<ImageView
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:importantForAccessibility="no"
-				android:src="@drawable/ic_captions"
-				app:tint="@color/material_on_background_emphasis_high_type" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="24dp"
-				android:text="@string/player_captions"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="8dp"
-				android:text="@string/bullet" />
-
-			<TextView
-				android:id="@+id/player_settings_caption_value"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/unavailable" />
-		</LinearLayout>
-
-		<LinearLayout
-			android:id="@+id/player_settings_button_loop"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:background="?attr/selectableItemBackground"
-			android:gravity="center_vertical"
-			android:orientation="horizontal"
-			android:padding="10dp">
-
-			<ImageView
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:importantForAccessibility="no"
-				android:src="@drawable/ic_loop"
-				app:tint="@color/material_on_background_emphasis_high_type" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="24dp"
-				android:text="@string/player_loop"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="8dp"
-				android:text="@string/bullet" />
-
-			<TextView
-				android:id="@+id/player_settings_loop_value"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/off" />
-		</LinearLayout>
-
-		<LinearLayout
-			android:id="@+id/player_settings_button_speed"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:background="?attr/selectableItemBackground"
-			android:gravity="center_vertical"
-			android:orientation="horizontal"
-			android:padding="10dp">
-
-			<ImageView
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:importantForAccessibility="no"
-				android:src="@drawable/ic_speed"
-				app:tint="@color/material_on_background_emphasis_high_type" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="24dp"
-				android:text="@string/player_speed"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="8dp"
-				android:text="@string/bullet" />
-
-			<TextView
-				android:id="@+id/player_settings_speed_value"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/player_speed_default" />
-		</LinearLayout>
-
-		<LinearLayout
-			android:id="@+id/player_settings_button_audio"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:background="?attr/selectableItemBackground"
-			android:gravity="center_vertical"
-			android:orientation="horizontal"
-			android:padding="10dp">
-
-			<ImageView
-				android:layout_width="32dp"
-				android:layout_height="32dp"
-				android:importantForAccessibility="no"
-				android:src="@drawable/ic_audio_track"
-				app:tint="@color/material_on_background_emphasis_high_type" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="24dp"
-				android:text="@string/player_track"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="8dp"
-				android:text="@string/bullet" />
-
-			<TextView
-				android:id="@+id/player_settings_track_value"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/unavailable" />
-		</LinearLayout>
-	</LinearLayout>
-
-	<LinearLayout
-		android:id="@+id/player_settings_quality"
+	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:visibility="gone" />
+		android:padding="12dp"
+		tools:context=".ui.fragment.PlayerSettingsFragment">
 
-	<LinearLayout
-		android:id="@+id/player_settings_caption"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:visibility="gone" />
+		<LinearLayout
+			android:id="@+id/player_settings_main"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
 
-	<LinearLayout
-		android:id="@+id/player_settings_speed"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:visibility="gone" />
+			<LinearLayout
+				android:id="@+id/player_settings_button_quality"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="?attr/selectableItemBackground"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:padding="10dp">
 
-	<LinearLayout
-		android:id="@+id/player_settings_track"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:visibility="gone" />
-</FrameLayout>
+				<ImageView
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:importantForAccessibility="no"
+					android:src="@drawable/ic_settings"
+					app:tint="@color/material_on_background_emphasis_high_type" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="24dp"
+					android:text="@string/player_quality"
+					android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="8dp"
+					android:text="@string/bullet" />
+
+				<TextView
+					android:id="@+id/player_settings_quality_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/player_quality_auto" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/player_settings_button_caption"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="?attr/selectableItemBackground"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:padding="10dp">
+
+				<ImageView
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:importantForAccessibility="no"
+					android:src="@drawable/ic_captions"
+					app:tint="@color/material_on_background_emphasis_high_type" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="24dp"
+					android:text="@string/player_captions"
+					android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="8dp"
+					android:text="@string/bullet" />
+
+				<TextView
+					android:id="@+id/player_settings_caption_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/unavailable" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/player_settings_button_loop"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="?attr/selectableItemBackground"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:padding="10dp">
+
+				<ImageView
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:importantForAccessibility="no"
+					android:src="@drawable/ic_loop"
+					app:tint="@color/material_on_background_emphasis_high_type" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="24dp"
+					android:text="@string/player_loop"
+					android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="8dp"
+					android:text="@string/bullet" />
+
+				<TextView
+					android:id="@+id/player_settings_loop_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/off" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/player_settings_button_speed"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="?attr/selectableItemBackground"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:padding="10dp">
+
+				<ImageView
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:importantForAccessibility="no"
+					android:src="@drawable/ic_speed"
+					app:tint="@color/material_on_background_emphasis_high_type" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="24dp"
+					android:text="@string/player_speed"
+					android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="8dp"
+					android:text="@string/bullet" />
+
+				<TextView
+					android:id="@+id/player_settings_speed_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/player_speed_default" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/player_settings_button_audio"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="?attr/selectableItemBackground"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:padding="10dp">
+
+				<ImageView
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:importantForAccessibility="no"
+					android:src="@drawable/ic_audio_track"
+					app:tint="@color/material_on_background_emphasis_high_type" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="24dp"
+					android:text="@string/player_track"
+					android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="8dp"
+					android:text="@string/bullet" />
+
+				<TextView
+					android:id="@+id/player_settings_track_value"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/unavailable" />
+			</LinearLayout>
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/player_settings_quality"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:visibility="gone" />
+
+		<LinearLayout
+			android:id="@+id/player_settings_caption"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:visibility="gone" />
+
+		<LinearLayout
+			android:id="@+id/player_settings_speed"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:visibility="gone" />
+
+		<LinearLayout
+			android:id="@+id/player_settings_track"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:visibility="gone" />
+	</FrameLayout>
+</androidx.core.widget.NestedScrollView>
