@@ -2,6 +2,7 @@ package dev.kuylar.lighttube.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,14 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
@@ -234,5 +239,39 @@ class MainActivity : AppCompatActivity() {
 			binding.loadingBar.visibility = if (loading) View.VISIBLE else View.GONE
 		} catch (_: Exception) {
 		}
+	}
+
+	@Suppress("DEPRECATION")
+	fun enterFullscreen(player: Player, playerView: PlayerView, isPortrait: Boolean) {
+		PlayerView.switchTargetView(player, playerView, binding.fullscreenPlayer)
+		binding.fullscreenPlayerContainer.visibility = View.VISIBLE
+		binding.fullscreenPlayer.visibility = View.VISIBLE
+		miniplayer.isDraggable = false
+		requestedOrientation =
+			if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+
+		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+		binding.fullscreenPlayer.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
+			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen_exit, theme)
+			setOnClickListener {
+				exitFullscreen(player, playerView)
+			}
+		}
+	}
+
+	@Suppress("DEPRECATION")
+	fun exitFullscreen(player: Player, playerView: PlayerView) {
+		PlayerView.switchTargetView(player, binding.fullscreenPlayer, playerView)
+		binding.fullscreenPlayerContainer.visibility = View.GONE
+		binding.fullscreenPlayer.visibility = View.GONE
+		miniplayer.isDraggable = true
+		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+
+		window.decorView.systemUiVisibility = (
+				View.SYSTEM_UI_FLAG_FULLSCREEN
+						or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+						or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+				)
 	}
 }

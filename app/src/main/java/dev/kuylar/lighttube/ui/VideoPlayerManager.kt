@@ -1,6 +1,5 @@
 package dev.kuylar.lighttube.ui
 
-import android.content.pm.ActivityInfo
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -22,7 +21,6 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -383,36 +381,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	private fun toggleFullscreen() {
-		if (fullscreen) {
-			(fullscreenPlayer.parent as View).visibility = View.GONE
-			fullscreenPlayer.visibility = View.GONE
-			PlayerView.switchTargetView(player, fullscreenPlayer, exoplayerView)
-			activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-			activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-			getActivePlayerView().findViewById<MaterialButton>(R.id.player_fullscreen).icon =
-				ContextCompat.getDrawable(
-					activity,
-					R.drawable.ic_fullscreen_exit
-				)
-			fullscreen = false
+		fullscreen = if (fullscreen) {
+			activity.exitFullscreen(player, exoplayerView)
+			false
 		} else {
-			(fullscreenPlayer.parent as View).visibility = View.VISIBLE
-			fullscreenPlayer.visibility = View.VISIBLE
-			PlayerView.switchTargetView(player, exoplayerView, fullscreenPlayer)
-			activity.requestedOrientation =
-				if (getAspectRatio() < 1) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-				else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-			activity.window.decorView.systemUiVisibility = (
-					View.SYSTEM_UI_FLAG_FULLSCREEN
-							or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-							or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-					)
-			getActivePlayerView().findViewById<MaterialButton>(R.id.player_fullscreen).icon =
-				ContextCompat.getDrawable(
-					activity,
-					R.drawable.ic_fullscreen
-				)
-			fullscreen = true
+			activity.enterFullscreen(player, exoplayerView, getAspectRatio() < 1)
+			true
 		}
 	}
 
