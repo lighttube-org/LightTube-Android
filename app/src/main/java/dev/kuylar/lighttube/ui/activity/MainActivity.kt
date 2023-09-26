@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -22,8 +23,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
@@ -249,37 +248,51 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	@Suppress("DEPRECATION")
-	fun enterFullscreen(player: Player, playerView: PlayerView, isPortrait: Boolean) {
+	fun enterFullscreen(playerView: ViewGroup, isPortrait: Boolean) {
+		val parentToMove = playerView.parent as View
+		(parentToMove.parent as ViewGroup).removeView(parentToMove)
+		binding.fullscreenPlayerContainer.addView(parentToMove)
+		/*
 		PlayerView.switchTargetView(player, playerView, binding.fullscreenPlayer)
-		binding.fullscreenPlayerContainer.visibility = View.VISIBLE
 		binding.fullscreenPlayer.visibility = View.VISIBLE
+
+		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+		*/
+		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
+			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen_exit, theme)
+			setOnClickListener {
+				exitFullscreen(playerView)
+			}
+		}
+		binding.fullscreenPlayerContainer.visibility = View.VISIBLE
 		miniplayer.isDraggable = false
 		requestedOrientation =
 			if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
-		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-		binding.fullscreenPlayer.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
-			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen_exit, theme)
-			setOnClickListener {
-				exitFullscreen(player, playerView)
-			}
-		}
 	}
 
-	@Suppress("DEPRECATION")
-	fun exitFullscreen(player: Player, playerView: PlayerView) {
+	fun exitFullscreen(playerView: ViewGroup) {
+		val parentToMove = playerView.parent as View
+		(parentToMove.parent as ViewGroup).removeView(parentToMove)
+		findViewById<ViewGroup>(R.id.player_container).addView(parentToMove)
+		/*
 		PlayerView.switchTargetView(player, binding.fullscreenPlayer, playerView)
-		binding.fullscreenPlayerContainer.visibility = View.GONE
 		binding.fullscreenPlayer.visibility = View.GONE
-		miniplayer.isDraggable = true
-		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
 
 		window.decorView.systemUiVisibility = (
 				View.SYSTEM_UI_FLAG_FULLSCREEN
 						or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 						or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 				)
+		 */
+		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
+			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen, theme)
+			setOnClickListener {
+				enterFullscreen(playerView, player.getAspectRatio() < 1)
+			}
+		}
+		binding.fullscreenPlayerContainer.visibility = View.GONE
+		miniplayer.isDraggable = true
+		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
 	}
 }

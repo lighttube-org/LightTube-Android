@@ -43,14 +43,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private val playerHandler: Handler
 	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
 	private val doubleTapView: YouTubeOverlay = activity.findViewById(R.id.player_overlay)
-	private val fullscreenPlayer: DoubleTapPlayerView =
-		activity.findViewById(R.id.fullscreen_player)
-	private val fullscreenDoubleTapView: YouTubeOverlay =
-		activity.findViewById(R.id.fullscreen_player_overlay)
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
 		setHandleAudioBecomingNoisy(true)
 	}.build()
-	private lateinit var api: LightTubeApi
+	private var api: LightTubeApi
 	private val fragmentManager = activity.supportFragmentManager
 
 	private val miniplayerTitle: TextView = activity.findViewById(R.id.miniplayer_video_title)
@@ -126,42 +122,24 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
 			timeBar.addSegmentListener(this)
 
-			if (isFullscreen) {
-				fullscreenDoubleTapView
-					.player(player)
-					.performListener(object : YouTubeOverlay.PerformListener {
-						override fun onAnimationStart() {
-							view.useController = false
-							fullscreenDoubleTapView.visibility = View.VISIBLE
-						}
+			doubleTapView.player(player)
+				.performListener(object : YouTubeOverlay.PerformListener {
+					override fun onAnimationStart() {
+						view.useController = false
+						doubleTapView.visibility = View.VISIBLE
+					}
 
-						override fun onAnimationEnd() {
-							fullscreenDoubleTapView.visibility = View.GONE
-							view.useController = true
-						}
-					})
-				view.controller(fullscreenDoubleTapView)
-			} else {
-				doubleTapView.player(player)
-					.performListener(object : YouTubeOverlay.PerformListener {
-						override fun onAnimationStart() {
-							view.useController = false
-							doubleTapView.visibility = View.VISIBLE
-						}
-
-						override fun onAnimationEnd() {
-							doubleTapView.visibility = View.GONE
-							view.useController = true
-						}
-					})
-				view.controller(doubleTapView)
-			}
+					override fun onAnimationEnd() {
+						doubleTapView.visibility = View.GONE
+						view.useController = true
+					}
+				})
+			view.controller(doubleTapView)
 		}
 	}
 
 	private fun forAllPlayerViews(runnable: ((DoubleTapPlayerView, Boolean) -> Unit)) {
 		runnable.invoke(exoplayerView, false)
-		runnable.invoke(fullscreenPlayer, true)
 	}
 
 	private fun setCaptionsButtonState(buttonState: Int) {
@@ -194,7 +172,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	private fun getActivePlayerView(): DoubleTapPlayerView {
-		return if (fullscreen) fullscreenPlayer else exoplayerView
+		return exoplayerView
 	}
 
 	fun playVideo(id: String) {
@@ -256,10 +234,6 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			exoplayerView.findViewById<TextView>(R.id.player_title).text =
 				player.currentMediaItem?.mediaMetadata?.title
 			exoplayerView.findViewById<TextView>(R.id.player_subtitle).text =
-				player.currentMediaItem?.mediaMetadata?.artist
-			fullscreenPlayer.findViewById<TextView>(R.id.player_title).text =
-				player.currentMediaItem?.mediaMetadata?.title
-			fullscreenPlayer.findViewById<TextView>(R.id.player_subtitle).text =
 				player.currentMediaItem?.mediaMetadata?.artist
 			if (player.currentMediaItem?.mediaId != null)
 				setSponsors(player.currentMediaItem?.mediaId!!)
@@ -382,15 +356,15 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	private fun toggleFullscreen() {
 		fullscreen = if (fullscreen) {
-			activity.exitFullscreen(player, exoplayerView)
+			activity.exitFullscreen(exoplayerView)
 			false
 		} else {
-			activity.enterFullscreen(player, exoplayerView, getAspectRatio() < 1)
+			activity.enterFullscreen(exoplayerView, getAspectRatio() < 1)
 			true
 		}
 	}
 
-	private fun getAspectRatio(): Float {
+	fun getAspectRatio(): Float {
 		return try {
 			player.videoSize.width.toFloat() / player.videoSize.height.toFloat()
 		} catch (e: Exception) {
@@ -419,7 +393,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	fun showCommentsButton() {
 		try {
 			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton()
-		} catch (e: Exception) { }
+		} catch (e: Exception) {
+		}
 	}
 
 	fun setSheets(details: Boolean, comments: Boolean) {
@@ -435,12 +410,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		if (chapters != null) {
 			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
 				chapters
-			fullscreenPlayer.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
-				chapters
 		} else {
 			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
-				listOf(VideoChapter(null, emptyList(), 0))
-			fullscreenPlayer.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
 				listOf(VideoChapter(null, emptyList(), 0))
 		}
 	}
