@@ -1,3 +1,7 @@
+// TODO: Migrate to media3
+// Blocked by com.github.vkay94.timebar.YouTubeTimeBar
+@file:Suppress("DEPRECATION")
+
 package dev.kuylar.lighttube.api.models
 
 import android.os.Bundle

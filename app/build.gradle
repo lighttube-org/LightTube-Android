@@ -75,10 +75,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.15.1'
 
     // https://maven.google.com/web/index.html#com.google.android.exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.19.1'
 
     // https://github.com/vkay94/YouTubeTimeBar
     implementation 'com.github.vkay94:YouTubeTimeBar:0.2.2'
