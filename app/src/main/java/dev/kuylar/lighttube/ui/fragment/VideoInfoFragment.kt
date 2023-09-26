@@ -110,12 +110,12 @@ class VideoInfoFragment : Fragment() {
 	}
 
 	fun closeSheets(): Boolean {
-		if (commentsSheet.state != BottomSheetBehavior.STATE_HIDDEN) {
+		if (commentsSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
 			commentsSheet.state = BottomSheetBehavior.STATE_HIDDEN
 			return true
 		}
 
-		if (detailsSheet.state != BottomSheetBehavior.STATE_HIDDEN) {
+		if (detailsSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
 			detailsSheet.state = BottomSheetBehavior.STATE_HIDDEN
 			return true
 		}

@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -82,26 +81,12 @@ class MainActivity : AppCompatActivity() {
 		setupActionBarWithNavController(navController, appBarConfiguration)
 		navView.setupWithNavController(navController)
 
-		val version = packageManager.getPackageInfo(packageName, 0).versionName
 		onBackPressedDispatcher.addCallback(this) {
-			if (version == "1.0") {
-				if (player.closeSheets())
-					Toast.makeText(this@MainActivity, "closed player sheets", Toast.LENGTH_LONG).show()
-				else if (player.exitFullscreen())
-					Toast.makeText(this@MainActivity, "exited fullscreen", Toast.LENGTH_LONG).show()
-				else if (minimizePlayer())
-					Toast.makeText(this@MainActivity, "minimized player", Toast.LENGTH_LONG).show()
-				else if (navController.popBackStack())
-					Toast.makeText(this@MainActivity, "pop back stack", Toast.LENGTH_LONG).show()
-				else
-					Toast.makeText(this@MainActivity, "nothing else to do", Toast.LENGTH_LONG).show()
-			} else {
-				if (!player.closeSheets()) // attempt to close details/comments
-					if (!player.exitFullscreen()) // attempt to exit fullscreen
-						if (!minimizePlayer()) // attempt to minimize the player sheet
-							if (!navController.popBackStack()) // attempt to go back on the fragment history
-								finish() // close the app
-			}
+			if (!player.closeSheets()) // attempt to close details/comments
+				if (!player.exitFullscreen()) // attempt to exit fullscreen
+					if (!minimizePlayer()) // attempt to minimize the player sheet
+						if (!navController.popBackStack()) // attempt to go back on the fragment history
+							finish() // close the app
 		}
 
 		val miniplayerView: View = findViewById(R.id.miniplayer)
