@@ -267,6 +267,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			}
 		}
 
+		if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
+			activity.updateVideoAspectRatio(getAspectRatio())
+		}
+
 		if (player.currentTracks.groups.none { it.type == C.TRACK_TYPE_TEXT }) {
 			setCaptionsButtonState(0)
 		} else if (player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_TEXT }

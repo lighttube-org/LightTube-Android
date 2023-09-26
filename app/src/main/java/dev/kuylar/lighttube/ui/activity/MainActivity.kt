@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.View
@@ -129,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 				else
 					binding.navView.visibility = View.VISIBLE
 
-				player.toggleControls(slideOffset * 5 > 0.9)
+				player.toggleControls(slideOffset * 5 >= 1)
 			}
 		})
 
@@ -246,7 +247,8 @@ class MainActivity : AppCompatActivity() {
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		WindowInsetsControllerCompat(window, window.decorView).let { controller ->
 			controller.hide(WindowInsetsCompat.Type.systemBars())
-			controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+			controller.systemBarsBehavior =
+				WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 		}
 
 		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
@@ -270,7 +272,10 @@ class MainActivity : AppCompatActivity() {
 		findViewById<ViewGroup>(R.id.player_container).addView(parentToMove)
 
 		WindowCompat.setDecorFitsSystemWindows(window, true)
-		WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+		WindowInsetsControllerCompat(
+			window,
+			window.decorView
+		).show(WindowInsetsCompat.Type.systemBars())
 
 		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
 			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen, theme)
@@ -290,5 +295,24 @@ class MainActivity : AppCompatActivity() {
 			return true
 		}
 		return false
+	}
+
+	fun updateVideoAspectRatio(aspectRatio: Float) {
+		val clampedAspectRatio = if (aspectRatio.isNaN()) 16f / 9f else aspectRatio.coerceIn(1f, 2f)
+		Log.i(
+			"VideoPlayer",
+			"Updating player aspect ratio to $clampedAspectRatio (original: $aspectRatio)"
+		)
+		miniplayerScene.getConstraintSet(R.id.end)?.let {
+			it.setDimensionRatio(R.id.player_container, clampedAspectRatio.toString())
+			miniplayerScene.updateState(R.id.end, it)
+			miniplayerScene.rebuildScene()
+
+			// SORRY BUT I COULDNT UPDATE THE LAYOUT OTHERWISE 😭😭😭
+			miniplayerScene.setProgress(0.999f, 10f)
+			Handler(mainLooper).postDelayed({
+				miniplayerScene.progress = 1f
+			}, 10)
+		}
 	}
 }
