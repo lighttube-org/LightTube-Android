@@ -27,10 +27,13 @@
 
 		<LinearLayout
 			android:id="@+id/player_metadata"
-			android:layout_width="wrap_content"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
-			android:orientation="vertical">
+			android:layout_weight="1"
+			android:orientation="vertical"
+			android:visibility="invisible"
+			tools:visibility="visible">
 
 			<TextView
 				android:id="@+id/player_title"
@@ -48,11 +51,6 @@
 				android:textColor="#fff"
 				tools:text="Video Subtitle" />
 		</LinearLayout>
-
-		<Space
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1" />
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/player_captions"
@@ -190,13 +188,6 @@
 		app:iconTint="#fff"
 		app:layout_constraintBottom_toTopOf="@id/exo_progress"
 		app:layout_constraintEnd_toEndOf="parent" />
-
-	<FrameLayout
-		app:layout_constraintBottom_toTopOf="@id/exo_progress"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-
-	</FrameLayout>
 
 	<com.github.vkay94.timebar.YouTubeTimeBar
 		android:id="@id/exo_progress"

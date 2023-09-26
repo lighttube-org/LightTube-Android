@@ -16,6 +16,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 	lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
+	private var fullscreen = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -83,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
 		onBackPressedDispatcher.addCallback(this) {
 			if (!player.closeSheets()) // attempt to close details/comments
-				if (!player.exitFullscreen()) // attempt to exit fullscreen
+				if (!tryExitFullscreen()) // attempt to exit fullscreen
 					if (!minimizePlayer()) // attempt to minimize the player sheet
 						if (!navController.popBackStack()) // attempt to go back on the fragment history
 							finish() // close the app
@@ -173,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 			searchView.findViewById(androidx.appcompat.R.id.search_src_text) as SearchAutoComplete
 
 		searchAutoComplete.onItemClickListener =
-			OnItemClickListener { adapterView, view, itemIndex, id ->
+			OnItemClickListener { adapterView, _, itemIndex, _ ->
 				val queryString = adapterView.getItemAtPosition(itemIndex) as String
 				searchAutoComplete.setText(queryString)
 				searchAutoComplete.setSelection(queryString.length)
@@ -233,22 +237,25 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	fun enterFullscreen(playerView: ViewGroup, isPortrait: Boolean) {
+	fun enterFullscreen(playerView: View, isPortrait: Boolean) {
+		fullscreen = true
 		val parentToMove = playerView.parent as View
 		(parentToMove.parent as ViewGroup).removeView(parentToMove)
 		binding.fullscreenPlayerContainer.addView(parentToMove)
-		/*
-		PlayerView.switchTargetView(player, playerView, binding.fullscreenPlayer)
-		binding.fullscreenPlayer.visibility = View.VISIBLE
 
-		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-		*/
+		WindowCompat.setDecorFitsSystemWindows(window, false)
+		WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+			controller.hide(WindowInsetsCompat.Type.systemBars())
+			controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+		}
+
 		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
 			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen_exit, theme)
 			setOnClickListener {
 				exitFullscreen(playerView)
 			}
 		}
+		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.VISIBLE
 		binding.fullscreenPlayerContainer.visibility = View.VISIBLE
 		miniplayer.isDraggable = false
 		requestedOrientation =
@@ -256,28 +263,32 @@ class MainActivity : AppCompatActivity() {
 			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 	}
 
-	fun exitFullscreen(playerView: ViewGroup) {
+	fun exitFullscreen(playerView: View) {
+		fullscreen = false
 		val parentToMove = playerView.parent as View
 		(parentToMove.parent as ViewGroup).removeView(parentToMove)
 		findViewById<ViewGroup>(R.id.player_container).addView(parentToMove)
-		/*
-		PlayerView.switchTargetView(player, binding.fullscreenPlayer, playerView)
-		binding.fullscreenPlayer.visibility = View.GONE
 
-		window.decorView.systemUiVisibility = (
-				View.SYSTEM_UI_FLAG_FULLSCREEN
-						or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-						or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-				)
-		 */
+		WindowCompat.setDecorFitsSystemWindows(window, true)
+		WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+
 		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
 			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen, theme)
 			setOnClickListener {
 				enterFullscreen(playerView, player.getAspectRatio() < 1)
 			}
 		}
+		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.INVISIBLE
 		binding.fullscreenPlayerContainer.visibility = View.GONE
 		miniplayer.isDraggable = true
 		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+	}
+
+	private fun tryExitFullscreen(): Boolean {
+		if (fullscreen) {
+			exitFullscreen(findViewById(R.id.player))
+			return true
+		}
+		return false
 	}
 }

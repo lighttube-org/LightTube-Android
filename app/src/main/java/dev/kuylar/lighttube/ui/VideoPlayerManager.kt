@@ -55,7 +55,6 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		activity.findViewById(R.id.miniplayer_progress_bar)
 	private val miniplayer: BottomSheetBehavior<View> = activity.miniplayer
 	private val playerControls = exoplayerView.findViewById<View>(R.id.player_controls)
-	private var fullscreen = false
 	private var chapters: ArrayList<VideoChapter>? = null
 	private var storyboard: StoryboardInfo? = null
 
@@ -90,89 +89,73 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 		playerHandler.post(r)
 
-		// im sorry for this monstrosity too
-		forAllPlayerViews { view, isFullscreen ->
-			view.findViewById<MaterialButton>(R.id.player_play_pause).setOnClickListener {
-				if (player.isPlaying) player.pause() else player.play()
-			}
-
-			view.findViewById<MaterialButton>(R.id.player_fullscreen).setOnClickListener {
-				toggleFullscreen()
-			}
-
-			view.findViewById<MaterialButton>(R.id.player_settings).setOnClickListener {
-				PlayerSettingsFragment(player).show(fragmentManager, null)
-			}
-
-			view.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
-				if (player.currentTracks.groups.any { it.type == C.TRACK_TYPE_TEXT })
-					PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
-			}
-
-			view.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
-				if (fullscreen) toggleFullscreen()
-				else miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
-			}
-
-			if (!isFullscreen) {
-				view.findViewById<View>(R.id.player_metadata).visibility = View.GONE
-			}
-
-			val timeBar =
-				view.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
-			timeBar.addSegmentListener(this)
-
-			doubleTapView.player(player)
-				.performListener(object : YouTubeOverlay.PerformListener {
-					override fun onAnimationStart() {
-						view.useController = false
-						doubleTapView.visibility = View.VISIBLE
-					}
-
-					override fun onAnimationEnd() {
-						doubleTapView.visibility = View.GONE
-						view.useController = true
-					}
-				})
-			view.controller(doubleTapView)
+		exoplayerView.findViewById<MaterialButton>(R.id.player_play_pause).setOnClickListener {
+			if (player.isPlaying) player.pause() else player.play()
 		}
+
+		exoplayerView.findViewById<MaterialButton>(R.id.player_fullscreen).setOnClickListener {
+			activity.enterFullscreen(exoplayerView, getAspectRatio() < 1)
+		}
+
+		exoplayerView.findViewById<MaterialButton>(R.id.player_settings).setOnClickListener {
+			PlayerSettingsFragment(player).show(fragmentManager, null)
+		}
+
+		exoplayerView.findViewById<MaterialButton>(R.id.player_captions).setOnClickListener {
+			if (player.currentTracks.groups.any { it.type == C.TRACK_TYPE_TEXT })
+				PlayerSettingsFragment(player, "caption").show(fragmentManager, null)
+		}
+
+		exoplayerView.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
+			activity.exitFullscreen(exoplayerView)
+			miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+		}
+
+		val timeBar =
+			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
+		timeBar.addSegmentListener(this)
+
+		doubleTapView.player(player)
+			.performListener(object : YouTubeOverlay.PerformListener {
+				override fun onAnimationStart() {
+					exoplayerView.useController = false
+					doubleTapView.visibility = View.VISIBLE
+				}
+
+				override fun onAnimationEnd() {
+					doubleTapView.visibility = View.GONE
+					exoplayerView.useController = true
+				}
+			})
+		exoplayerView.controller(doubleTapView)
 	}
 
-	private fun forAllPlayerViews(runnable: ((DoubleTapPlayerView, Boolean) -> Unit)) {
-		runnable.invoke(exoplayerView, false)
-	}
 
 	private fun setCaptionsButtonState(buttonState: Int) {
-		forAllPlayerViews { playerView, _ ->
-			val button =
-				playerView.findViewById<MaterialButton>(R.id.player_captions)
-			when (buttonState) {
-				0 -> {
-					button.alpha = 0.5f
-					button.isEnabled = false
-					button.icon =
-						ContextCompat.getDrawable(activity, R.drawable.ic_captions)
-				}
+		val button =
+			exoplayerView.findViewById<MaterialButton>(R.id.player_captions)
+		when (buttonState) {
+			0 -> {
+				button.alpha = 0.5f
+				button.isEnabled = false
+				button.icon =
+					ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+			}
 
-				1 -> {
-					button.alpha = 1f
-					button.isEnabled = true
-					button.icon =
-						ContextCompat.getDrawable(activity, R.drawable.ic_captions)
-				}
+			1 -> {
+				button.alpha = 1f
+				button.isEnabled = true
+				button.icon =
+					ContextCompat.getDrawable(activity, R.drawable.ic_captions)
+			}
 
-				2 -> {
-					button.alpha = 1f
-					button.isEnabled = true
-					button.icon =
-						ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
-				}
+			2 -> {
+				button.alpha = 1f
+				button.isEnabled = true
+				button.icon =
+					ContextCompat.getDrawable(activity, R.drawable.ic_captions_on)
 			}
 		}
-	}
-
-	private fun getActivePlayerView(): DoubleTapPlayerView {
-		return exoplayerView
 	}
 
 	fun playVideo(id: String) {
@@ -253,7 +236,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 
 		if (events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
-			getActivePlayerView().keepScreenOn = !(player.playbackState == Player.STATE_IDLE ||
+			exoplayerView.keepScreenOn = !(player.playbackState == Player.STATE_IDLE ||
 					player.playbackState == Player.STATE_ENDED ||
 					!player.playWhenReady || !player.isPlaying)
 		}
@@ -289,13 +272,13 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			setCaptionsButtonState(1)
 		}
 
-		getActivePlayerView().findViewById<MaterialButton>(R.id.player_play_pause).icon =
+		exoplayerView.findViewById<MaterialButton>(R.id.player_play_pause).icon =
 			AppCompatResources.getDrawable(
 				activity,
 				if (player.isPlaying) R.drawable.ic_pause else R.drawable.ic_play
 			)
 
-		getActivePlayerView().findViewById<CircularProgressIndicator>(R.id.player_buffering_progress).visibility =
+		exoplayerView.findViewById<CircularProgressIndicator>(R.id.player_buffering_progress).visibility =
 			if (player.playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
 	}
 
@@ -309,14 +292,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		thread {
 			val sponsors = Utils.getSponsorBlockInfo(videoId)
 			activity.runOnUiThread {
-				forAllPlayerViews { player, _ ->
-					if (sponsors != null) {
-						player.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
-							sponsors.segments
-					} else {
-						player.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
-							listOf(SponsorBlockSegment("", "", listOf(0.0, 0.0), "", 0.0, 0, 0, ""))
-					}
+				if (sponsors != null) {
+					exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
+						sponsors.segments
+				} else {
+					exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
+						listOf(SponsorBlockSegment("", "", listOf(0.0, 0.0), "", 0.0, 0, 0, ""))
 				}
 			}
 		}
@@ -354,28 +335,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		playerControls.visibility = if (visible) View.VISIBLE else View.GONE
 	}
 
-	private fun toggleFullscreen() {
-		fullscreen = if (fullscreen) {
-			activity.exitFullscreen(exoplayerView)
-			false
-		} else {
-			activity.enterFullscreen(exoplayerView, getAspectRatio() < 1)
-			true
-		}
-	}
-
 	fun getAspectRatio(): Float {
 		return try {
 			player.videoSize.width.toFloat() / player.videoSize.height.toFloat()
 		} catch (e: Exception) {
 			Float.MAX_VALUE
 		}
-	}
-
-	fun exitFullscreen(): Boolean {
-		if (!fullscreen) return false
-		toggleFullscreen()
-		return true
 	}
 
 	fun setVolume(volume: Float) {
