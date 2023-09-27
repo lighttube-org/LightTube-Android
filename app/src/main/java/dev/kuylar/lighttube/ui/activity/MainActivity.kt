@@ -16,11 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -39,10 +41,10 @@ import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
-
 	private lateinit var navController: NavController
 	private lateinit var binding: ActivityMainBinding
 	lateinit var miniplayer: BottomSheetBehavior<View>
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
 	private var fullscreen = false
+	private lateinit var sponsorBlockButton: MaterialButton
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
+		sponsorBlockButton = findViewById(R.id.player_skip)
 
 		val navView: BottomNavigationView = binding.navView
 		navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -151,6 +155,18 @@ class MainActivity : AppCompatActivity() {
 				}
 			}
 		}
+
+		val handler = Handler(mainLooper)
+		var sponsorblockRunnable = Runnable {}
+		sponsorblockRunnable = Runnable {
+			try {
+				player.updateSkipButton(player.getCurrentSegment())
+			} catch (e: Exception) {
+				Log.e("SponsorBlockLoop", "Failed to update SponsorBlock skip button", e)
+			}
+			handler.postDelayed(sponsorblockRunnable, 100)
+		}
+		handler.postDelayed(sponsorblockRunnable, 100)
 	}
 
 	private fun setApi() {
@@ -263,6 +279,11 @@ class MainActivity : AppCompatActivity() {
 		requestedOrientation =
 			if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+
+		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
+			bottomMargin =
+				resources.getDimension(R.dimen.sponsorblock_margin_bottom_fullscreen).roundToInt()
+		}
 	}
 
 	fun exitFullscreen(playerView: View) {
@@ -287,6 +308,11 @@ class MainActivity : AppCompatActivity() {
 		binding.fullscreenPlayerContainer.visibility = View.GONE
 		miniplayer.isDraggable = true
 		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+
+		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
+			bottomMargin =
+				resources.getDimension(R.dimen.sponsorblock_margin_bottom_default).roundToInt()
+		}
 	}
 
 	private fun tryExitFullscreen(): Boolean {

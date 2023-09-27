@@ -63,6 +63,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private var chapters: ArrayList<VideoChapter>? = null
 	private var storyboard: StoryboardInfo? = null
 
+	private val timeBar: YouTubeTimeBar =
+		exoplayerView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
 	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
 	private val sponsorblockSkipButton: MaterialButton = playerBox.findViewById(R.id.player_skip)
 	private val bufferingIndicator: CircularProgressIndicator =
@@ -122,7 +124,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 
 		val timeBar =
-			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress)
+			timeBar
 		timeBar.addSegmentListener(this)
 
 		doubleTapView.player(player)
@@ -312,10 +314,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			val sponsors = Utils.getSponsorBlockInfo(videoId)
 			activity.runOnUiThread {
 				if (sponsors != null) {
-					exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
+					timeBar.segments =
 						sponsors.segments.map { SponsorBlockSegment(it) }
 				} else {
-					exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
+					timeBar.segments =
 						emptyList()
 				}
 			}
@@ -392,10 +394,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		if (videoId != player.currentMediaItem?.mediaId) return
 		this.chapters = chapters
 		if (chapters != null) {
-			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
+			timeBar.chapters =
 				chapters
 		} else {
-			exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).chapters =
+			timeBar.chapters =
 				listOf(VideoChapter(null, emptyList(), 0))
 		}
 	}
@@ -405,12 +407,26 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	override fun onSegmentChanged(timeBar: LibTimeBar, newSegment: YouTubeSegment?) {
-		(timeBar as YouTubeTimeBar)
-		if (newSegment != null)
-			Toast.makeText(
-				activity,
-				(newSegment as SponsorBlockSegment).category,
-				Toast.LENGTH_LONG
-			).show()
+		// this is not used as it can skip segments if they are very short
+	}
+
+	fun getCurrentSegment(): SponsorBlockSegment? {
+		return timeBar.segments.firstOrNull { player.currentPosition in it.startTimeMs..it.endTimeMs } as SponsorBlockSegment?
+	}
+
+	fun updateSkipButton(segment: SponsorBlockSegment?) {
+		if (segment == null) {
+			sponsorblockSkipButton.visibility = View.GONE
+			sponsorblockSkipButton.setOnClickListener {}
+		} else {
+			sponsorblockSkipButton.text = activity.getString(
+				R.string.sponsorblock_skip_template,
+				activity.getString(segment.getCategoryTextId())
+			)
+			sponsorblockSkipButton.setOnClickListener {
+				player.seekTo(segment.endTimeMs)
+			}
+			sponsorblockSkipButton.visibility = View.VISIBLE
+		}
 	}
 }

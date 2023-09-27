@@ -43,6 +43,18 @@ class SponsorBlockSegment(
 		this.endTimeMs = (segment.segment[1] * 1000).roundToLong()
 		this.startTimeMs = (segment.segment[0] * 1000).roundToLong()
 	}
+	fun getCategoryTextId(): Int {
+		return when (category) {
+			"sponsor" -> R.string.sponsorblock_category_sponsor
+			"selfpromo" -> R.string.sponsorblock_category_selfpromo
+			"interaction" -> R.string.sponsorblock_category_interaction
+			"intro" -> R.string.sponsorblock_category_intro
+			"outro" -> R.string.sponsorblock_category_outro
+			"preview" -> R.string.sponsorblock_category_preview
+			"music_offtopic" -> R.string.sponsorblock_category_music_offtopic
+			else -> R.string.sponsorblock_category_unknown
+		}
+	}
 
 	companion object {
 		private const val DEFAULT_SPONSOR_COLOR = 0xFF00D400.toInt()

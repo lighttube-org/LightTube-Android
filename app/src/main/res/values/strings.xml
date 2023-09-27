@@ -102,11 +102,12 @@ Your data is stored in the instance you chose (%s).</string>
 
 	<!-- SponsorBlock -->
 	<string name="sponsorblock_skip_template">Skip %s</string>
-	<string name="sponsorblock_category_sponsor">Sponsor</string>
-	<string name="sponsorblock_category_selfpromo">Self Promotion</string>
-	<string name="sponsorblock_category_interaction">Interaction</string>
-	<string name="sponsorblock_category_intro">Intro</string>
-	<string name="sponsorblock_category_outro">Outro</string>
-	<string name="sponsorblock_category_preview">Preview</string>
-	<string name="sponsorblock_category_music_offtopic">Non-Music Section</string>
+	<string name="sponsorblock_category_sponsor">sponsor</string>
+	<string name="sponsorblock_category_selfpromo">self promotion</string>
+	<string name="sponsorblock_category_interaction">interaction</string>
+	<string name="sponsorblock_category_intro">intro</string>
+	<string name="sponsorblock_category_outro">outro</string>
+	<string name="sponsorblock_category_preview">preview</string>
+	<string name="sponsorblock_category_music_offtopic">non-music section</string>
+	<string name="sponsorblock_category_unknown">segment</string>
 </resources>
