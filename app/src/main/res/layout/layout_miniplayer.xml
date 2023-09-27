@@ -22,29 +22,10 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar">
 
-		<FrameLayout
-			android:id="@+id/player_box"
+		<include
+			layout="@layout/layout_player"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			tools:ignore="UselessParent">
-
-			<com.github.vkay94.dtpv.DoubleTapPlayerView
-				android:id="@+id/player"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:background="#000000"
-				app:animation_enabled="false"
-				app:controller_layout_id="@layout/exo_playback_control_view" />
-
-			<com.github.vkay94.dtpv.youtube.YouTubeOverlay
-				android:id="@+id/player_overlay"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:background="#77000000"
-				android:visibility="invisible"
-				app:yt_playerView="@id/player"
-				tools:visibility="visible" />
-		</FrameLayout>
+			android:layout_height="match_parent" />
 	</FrameLayout>
 
 	<LinearLayout

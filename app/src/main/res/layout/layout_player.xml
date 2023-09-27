@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/player_box"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:ignore="UselessParent">
+
+	<com.github.vkay94.dtpv.DoubleTapPlayerView
+		android:id="@+id/player"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#000000"
+		app:animation_enabled="false"
+		app:controller_layout_id="@layout/exo_playback_control_view" />
+
+	<com.github.vkay94.dtpv.youtube.YouTubeOverlay
+		android:id="@+id/player_overlay"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#77000000"
+		android:visibility="invisible"
+		app:yt_playerView="@id/player" />
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.progressindicator.CircularProgressIndicator
+			android:id="@+id/player_buffering_progress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:indeterminate="true"
+			app:indicatorColor="#fff"
+			app:indicatorSize="56dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/player_skip"
+			style="?attr/materialButtonOutlinedStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="-32dp"
+			android:layout_marginBottom="96dp"
+			android:paddingRight="64dp"
+			android:text="@string/sponsorblock_skip_template"
+			android:textColor="#fff"
+			android:visibility="gone"
+			app:backgroundTint="#55000000"
+			app:icon="@drawable/ic_next"
+			app:iconTint="#fff"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			tools:ignore="RtlHardcoded,RtlSymmetry"
+			tools:visibility="visible" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

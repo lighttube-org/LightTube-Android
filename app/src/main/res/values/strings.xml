@@ -99,4 +99,14 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="update_download">Download</string>
 	<string name="update_skip">Skip this version</string>
 	<string name="update_skip_notice">Update skipped. You can always re-check updates under Settings → About → Check for Updates</string>
+
+	<!-- SponsorBlock -->
+	<string name="sponsorblock_skip_template">Skip %s</string>
+	<string name="sponsorblock_category_sponsor">Sponsor</string>
+	<string name="sponsorblock_category_selfpromo">Self Promotion</string>
+	<string name="sponsorblock_category_interaction">Interaction</string>
+	<string name="sponsorblock_category_intro">Intro</string>
+	<string name="sponsorblock_category_outro">Outro</string>
+	<string name="sponsorblock_category_preview">Preview</string>
+	<string name="sponsorblock_category_music_offtopic">Non-Music Section</string>
 </resources>
