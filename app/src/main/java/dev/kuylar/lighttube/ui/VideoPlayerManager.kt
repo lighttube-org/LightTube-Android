@@ -45,6 +45,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	LibTimeBar.SegmentListener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
+	private val playerBox: View = activity.findViewById(R.id.player_box)
 	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
 	private val doubleTapView: YouTubeOverlay = activity.findViewById(R.id.player_overlay)
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
@@ -61,6 +62,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private val playerControls = exoplayerView.findViewById<View>(R.id.player_controls)
 	private var chapters: ArrayList<VideoChapter>? = null
 	private var storyboard: StoryboardInfo? = null
+
+	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
+	private val sponsorblockSkipButton: MaterialButton = playerBox.findViewById(R.id.player_skip)
+	private val bufferingIndicator: CircularProgressIndicator =
+		playerBox.findViewById(R.id.player_buffering_progress)
 
 	init {
 		exoplayerView.player = player
@@ -280,14 +286,19 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			setCaptionsButtonState(1)
 		}
 
-		exoplayerView.findViewById<MaterialButton>(R.id.player_play_pause).icon =
+		playPauseButton.icon =
 			AppCompatResources.getDrawable(
 				activity,
 				if (player.isPlaying) R.drawable.ic_pause else R.drawable.ic_play
 			)
 
-		exoplayerView.findViewById<CircularProgressIndicator>(R.id.player_buffering_progress).visibility =
-			if (player.playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
+		if (player.playbackState == Player.STATE_BUFFERING) {
+			playPauseButton.visibility = View.INVISIBLE
+			bufferingIndicator.visibility = View.VISIBLE
+		} else {
+			playPauseButton.visibility = View.VISIBLE
+			bufferingIndicator.visibility = View.GONE
+		}
 	}
 
 	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
