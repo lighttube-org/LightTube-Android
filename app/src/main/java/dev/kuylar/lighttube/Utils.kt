@@ -93,7 +93,7 @@ class Utils {
 								0,
 								4
 							)
-						}?category=sponsor&category=selfpromo&category=interaction&category=intro&category=outro&category=preview&category=music_offtopic&category=filler"
+						}?category=sponsor&category=selfpromo&category=interaction&category=intro&category=outro&category=preview&category=music_offtopic"
 					)
 					header(
 						"User-Agent",

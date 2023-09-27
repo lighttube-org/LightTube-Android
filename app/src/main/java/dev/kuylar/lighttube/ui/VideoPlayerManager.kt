@@ -302,10 +302,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			activity.runOnUiThread {
 				if (sponsors != null) {
 					exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
-						sponsors.segments
+						sponsors.segments.map { SponsorBlockSegment(it) }
 				} else {
 					exoplayerView.findViewById<YouTubeTimeBar>(com.google.android.exoplayer2.ui.R.id.exo_progress).segments =
-						listOf(SponsorBlockSegment("", "", listOf(0.0, 0.0), "", 0.0, 0, 0, ""))
+						emptyList()
 				}
 			}
 		}
@@ -394,10 +394,11 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	override fun onSegmentChanged(timeBar: LibTimeBar, newSegment: YouTubeSegment?) {
+		(timeBar as YouTubeTimeBar)
 		if (newSegment != null)
 			Toast.makeText(
 				activity,
-				(newSegment as SponsorBlockSegment).actionType,
+				(newSegment as SponsorBlockSegment).category,
 				Toast.LENGTH_LONG
 			).show()
 	}
