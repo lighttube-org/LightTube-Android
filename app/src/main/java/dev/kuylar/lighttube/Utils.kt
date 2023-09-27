@@ -62,14 +62,14 @@ class Utils {
 			).asString!!
 		}
 
+		private fun getUserAgent(): String =
+			"LightTube-Android/${BuildConfig.VERSION_NAME} (https://github.com/kuylar/lighttube-android)"
+
 		fun getDislikeCount(videoId: String): Long {
 			try {
 				val req = Request.Builder().apply {
 					url("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
-					header(
-						"User-Agent",
-						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
-					)
+					header("User-Agent", getUserAgent())
 				}.build()
 
 				http.newCall(req).execute().use { response ->
@@ -95,10 +95,7 @@ class Utils {
 							)
 						}?category=sponsor&category=selfpromo&category=interaction&category=intro&category=outro&category=preview&category=music_offtopic"
 					)
-					header(
-						"User-Agent",
-						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
-					)
+					header("User-Agent", getUserAgent())
 				}.build()
 
 				http.newCall(req).execute().use { response ->
@@ -117,10 +114,7 @@ class Utils {
 			try {
 				val req = Request.Builder().apply {
 					url("https://api.github.com/repos/kuylar/lighttube-android/releases")
-					header(
-						"User-Agent",
-						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
-					)
+					header("User-Agent", getUserAgent())
 				}.build()
 
 				http.newCall(req).execute().use { response ->
