@@ -7,12 +7,14 @@ package dev.kuylar.lighttube.ui
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import com.bumptech.glide.Glide
 import com.github.vkay94.dtpv.DoubleTapPlayerView
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.github.vkay94.timebar.LibTimeBar
@@ -25,6 +27,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.ui.TimeBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -42,7 +45,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
-	LibTimeBar.SegmentListener {
+	LibTimeBar.SegmentListener, TimeBar.OnScrubListener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val playerBox: View = activity.findViewById(R.id.player_box)
@@ -65,6 +68,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	private val timeBar: YouTubeTimeBar =
 		exoplayerView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
+	private val storyboardView: ImageView =
+		playerBox.findViewById(R.id.player_storyboard)
 	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
 	private val sponsorblockSkipButton: MaterialButton = playerBox.findViewById(R.id.player_skip)
 	private val bufferingIndicator: CircularProgressIndicator =
@@ -123,9 +128,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
 		}
 
-		val timeBar =
-			timeBar
 		timeBar.addSegmentListener(this)
+		timeBar.addListener(this)
 
 		doubleTapView.player(player)
 			.performListener(object : YouTubeOverlay.PerformListener {
@@ -303,12 +307,6 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 	}
 
-	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
-		return //FIXME: disabled until i write a working storyboard view
-		// if (levels == null || length == null || recommendedLevel == null) storyboard = null
-		// storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
-	}
-
 	private fun setSponsors(videoId: String) {
 		thread {
 			val sponsors = Utils.getSponsorBlockInfo(videoId)
@@ -428,5 +426,37 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			}
 			sponsorblockSkipButton.visibility = View.VISIBLE
 		}
+	}
+
+	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
+		if (levels == null || length == null || recommendedLevel == null) storyboard = null
+		storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
+	}
+
+	private fun updateStoryboardImage(imageView: ImageView, position: Long) {
+		if (storyboard == null) return
+		try {
+			Glide.with(activity)
+				.load(storyboard!!.getImageUrl(position))
+				//.override(SIZE_ORIGINAL, SIZE_ORIGINAL)
+				//.diskCacheStrategy(DiskCacheStrategy.ALL)
+				.transform(storyboard!!.getTransformation(position))
+				.into(imageView)
+		} catch (e: Exception) {
+			Log.e("Storyboard", "Failed to update storyboard", e)
+		}
+	}
+
+	override fun onScrubStart(timeBar: TimeBar, position: Long) {
+		storyboardView.visibility = View.VISIBLE
+	}
+
+	override fun onScrubMove(timeBar: TimeBar, position: Long) {
+		if (storyboard?.throttle(position) == true)
+			updateStoryboardImage(storyboardView, position)
+	}
+
+	override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+		storyboardView.visibility = View.GONE
 	}
 }
