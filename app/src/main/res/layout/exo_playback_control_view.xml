@@ -183,13 +183,14 @@
 		app:layout_constraintBottom_toTopOf="@id/exo_progress"
 		app:layout_constraintStart_toStartOf="parent">
 
-		<ImageView
+		<com.github.vkay94.timebar.YouTubeTimeBarPreview
 			android:id="@+id/player_storyboard"
-			android:layout_width="160dp"
-			android:layout_height="90dp"
-			android:background="#000"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:paddingHorizontal="16dp"
-			app:yt_chapter_title_max_width="240dp" />
+			app:yt_chapter_title_max_width="240dp"
+			app:yt_preview_height="90dp"
+			app:yt_preview_width="160dp" />
 	</FrameLayout>
 
 	<com.github.vkay94.timebar.YouTubeTimeBar

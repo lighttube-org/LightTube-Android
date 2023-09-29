@@ -24,7 +24,8 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.TimeBar
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -42,7 +43,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
-	LibTimeBar.SegmentListener, TimeBar.OnScrubListener {
+	LibTimeBar.SegmentListener, YouTubeTimeBarPreview.Listener {
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val playerBox: View = activity.findViewById(R.id.player_box)
@@ -65,7 +66,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	private val timeBar: YouTubeTimeBar =
 		exoplayerView.findViewById(androidx.media3.ui.R.id.exo_progress)
-	private val storyboardView: ImageView =
+	private val timeBarPreview: YouTubeTimeBarPreview =
 		playerBox.findViewById(R.id.player_storyboard)
 	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
 	private val sponsorblockSkipButton: MaterialButton = playerBox.findViewById(R.id.player_skip)
@@ -126,7 +127,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 
 		timeBar.addSegmentListener(this)
-		timeBar.addListener(this)
+		timeBar.timeBarPreview(timeBarPreview)
+		timeBarPreview.previewListener(this)
 
 		doubleTapView.player(player)
 			.performListener(object : YouTubeOverlay.PerformListener {
@@ -429,35 +431,20 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
 		if (levels == null || length == null || recommendedLevel == null) storyboard = null
 		storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
+		timeBarPreview.durationPerFrame(storyboard!!.msPerFrame.toLong())
 	}
 
-	private fun updateStoryboardImage(imageView: ImageView, position: Long) {
+	override fun loadThumbnail(imageView: ImageView, position: Long) {
 		if (storyboard == null) return
 		try {
 			Glide.with(activity)
 				.load(storyboard!!.getImageUrl(position))
 				//.override(SIZE_ORIGINAL, SIZE_ORIGINAL)
-				//.diskCacheStrategy(DiskCacheStrategy.ALL)
+				.diskCacheStrategy(DiskCacheStrategy.ALL)
 				.transform(storyboard!!.getTransformation(position))
 				.into(imageView)
 		} catch (e: Exception) {
 			Log.e("Storyboard", "Failed to update storyboard", e)
 		}
-	}
-
-	@UnstableApi
-	override fun onScrubStart(timeBar: TimeBar, position: Long) {
-		storyboardView.visibility = View.VISIBLE
-	}
-
-	@UnstableApi
-	override fun onScrubMove(timeBar: TimeBar, position: Long) {
-		if (storyboard?.throttle(position) == true)
-			updateStoryboardImage(storyboardView, position)
-	}
-
-	@UnstableApi
-	override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
-		storyboardView.visibility = View.GONE
 	}
 }
