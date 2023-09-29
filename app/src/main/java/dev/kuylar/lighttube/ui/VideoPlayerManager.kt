@@ -1,7 +1,3 @@
-// TODO: Migrate to media3
-// Blocked by com.github.vkay94.timebar.YouTubeTimeBar
-@file:Suppress("DEPRECATION")
-
 package dev.kuylar.lighttube.ui
 
 import android.os.Handler
@@ -21,13 +17,14 @@ import com.github.vkay94.timebar.LibTimeBar
 import com.github.vkay94.timebar.YouTubeChapter
 import com.github.vkay94.timebar.YouTubeSegment
 import com.github.vkay94.timebar.YouTubeTimeBar
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Tracks
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.ui.TimeBar
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.TimeBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -67,7 +64,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private var storyboard: StoryboardInfo? = null
 
 	private val timeBar: YouTubeTimeBar =
-		exoplayerView.findViewById(com.google.android.exoplayer2.ui.R.id.exo_progress)
+		exoplayerView.findViewById(androidx.media3.ui.R.id.exo_progress)
 	private val storyboardView: ImageView =
 		playerBox.findViewById(R.id.player_storyboard)
 	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
@@ -224,6 +221,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}.build()
 	}
 
+	@UnstableApi
 	override fun onEvents(player: Player, events: Player.Events) {
 		super.onEvents(player, events)
 
@@ -447,15 +445,18 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		}
 	}
 
+	@UnstableApi
 	override fun onScrubStart(timeBar: TimeBar, position: Long) {
 		storyboardView.visibility = View.VISIBLE
 	}
 
+	@UnstableApi
 	override fun onScrubMove(timeBar: TimeBar, position: Long) {
 		if (storyboard?.throttle(position) == true)
 			updateStoryboardImage(storyboardView, position)
 	}
 
+	@UnstableApi
 	override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
 		storyboardView.visibility = View.GONE
 	}

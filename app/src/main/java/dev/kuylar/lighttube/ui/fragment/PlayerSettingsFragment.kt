@@ -10,10 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Tracks
-import com.google.android.exoplayer2.trackselection.TrackSelectionOverride
+import androidx.media3.common.C
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.TrackSelectionOverride
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.databinding.FragmentPlayerSettingsBinding
