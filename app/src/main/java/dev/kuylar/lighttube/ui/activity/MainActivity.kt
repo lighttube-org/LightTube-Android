@@ -35,9 +35,11 @@ import com.google.android.material.elevation.SurfaceColors
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
+import java.io.IOException
 import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
@@ -140,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
 		// check for updates
 		thread {
-			val update = Utils.checkForUpdates(this)
+			val update = Utils.checkForUpdates()
 			if (update != null) {
 				val skippedUpdate = sp.getString("skippedUpdate", null)
 				if (skippedUpdate == update.latestVersion) {
@@ -240,7 +242,9 @@ class MainActivity : AppCompatActivity() {
 						searchAutoComplete.showDropDown()
 					loadingSuggestions = false
 				}
-			} catch (e: Exception) {
+			} catch (e: LightTubeException) {
+				loadingSuggestions = false
+			} catch (e: IOException) {
 				loadingSuggestions = false
 			}
 		}

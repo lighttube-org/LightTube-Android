@@ -1,6 +1,5 @@
 package dev.kuylar.lighttube
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -109,11 +108,11 @@ class Utils {
 			}
 		}
 
-		fun checkForUpdates(context: Context): UpdateInfo? {
+		fun checkForUpdates(): UpdateInfo? {
 			var updateInfo: UpdateInfo? = null
 			try {
 				val req = Request.Builder().apply {
-					url("https://api.github.com/repos/kuylar/lighttube-android/releases")
+					url("https://api.github.com/repos/kuylar/lighttube-android/releases/latest")
 					header("User-Agent", getUserAgent())
 				}.build()
 
@@ -123,11 +122,9 @@ class Utils {
 						.create()
 						.fromJson(
 							response.body!!.string(),
-							object : TypeToken<List<GithubRelease>>() {})
-					val latestVer = res.first().tagName.substring(1)
-					@Suppress("DEPRECATION")
-					val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-					val version = pInfo.versionName.split(" ").first()
+							GithubRelease::class.java)
+					val latestVer = res.tagName.substring(1)
+					val version = BuildConfig.VERSION_NAME.split(" ").first()
 					val latestVersionCode = latestVer.replace(".", "").toInt()
 					val currentVersionCode = version.replace(".", "").toInt()
 					if (latestVersionCode > currentVersionCode) {
@@ -135,7 +132,7 @@ class Utils {
 						updateInfo = UpdateInfo(
 							version,
 							latestVer,
-							res.first().assets.first().browserDownloadUrl
+							res.assets.first().browserDownloadUrl
 						)
 					}
 				}
