@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
@@ -68,28 +67,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:elevation="10dp"
-		android:visibility="gone">
-
-		<com.github.vkay94.dtpv.DoubleTapPlayerView
-			android:id="@+id/fullscreen_player"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:background="#000000"
-			android:clickable="true"
-			android:focusable="true"
-			app:animation_enabled="false"
-			app:controller_layout_id="@layout/exo_playback_control_view"
-			app:show_subtitle_button="true"
-			tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-		<com.github.vkay94.dtpv.youtube.YouTubeOverlay
-			android:id="@+id/fullscreen_player_overlay"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:background="#77000000"
-			android:visibility="invisible"
-			app:yt_playerView="@id/fullscreen_player"
-			tools:visibility="visible" />
-	</FrameLayout>
+		android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

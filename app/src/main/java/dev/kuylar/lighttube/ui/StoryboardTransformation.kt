@@ -10,12 +10,12 @@ import java.security.MessageDigest
 class StoryboardTransformation(
 	private val x: Int,
 	private val y: Int,
-	private val w: Int,
-	private val h: Int
+	private val r: Int,
+	private val c: Int
 ) :
 	BitmapTransformation() {
-	private val ID = "dev.kuylar.lighttube.ui.StoryboardTransformation"
-	private val ID_BYTES = ID.toByteArray(Charset.forName("UTF-8"))
+	private fun getCacheKey(): String =
+		"dev.kuylar.lighttube.ui.StoryboardTransformation($x,$y,$r,$c)"
 
 	override fun transform(
 		pool: BitmapPool,
@@ -24,17 +24,24 @@ class StoryboardTransformation(
 		outHeight: Int
 	): Bitmap = Bitmap.createBitmap(
 		toTransform,
-		x * (toTransform.width / 5),
-		y * 90, // hardcoded cus youtube sometimes doesnt has < 5 rows
-		w,
-		h
+		x * toTransform.width / c,
+		y * toTransform.height / r,
+		toTransform.width / c,
+		toTransform.height / r
 	)
 
+
 	override fun hashCode(): Int {
-		return ID.hashCode()
+		return getCacheKey().hashCode()
+	}
+
+	override fun equals(other: Any?): Boolean {
+		return if (other is StoryboardTransformation) {
+			other.x == x && other.y == y && other.r == r && other.c == c
+		} else false
 	}
 
 	override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-		messageDigest.update(ID_BYTES)
+		messageDigest.update(getCacheKey().toByteArray(Charset.forName("UTF-8")))
 	}
 }

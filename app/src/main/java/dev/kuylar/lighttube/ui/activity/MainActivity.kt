@@ -2,10 +2,13 @@ package dev.kuylar.lighttube.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import androidx.activity.addCallback
@@ -13,7 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -21,20 +30,23 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
+import java.io.IOException
 import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
-
 	private lateinit var navController: NavController
 	private lateinit var binding: ActivityMainBinding
 	lateinit var miniplayer: BottomSheetBehavior<View>
@@ -42,6 +54,8 @@ class MainActivity : AppCompatActivity() {
 	lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
+	private var fullscreen = false
+	private lateinit var sponsorBlockButton: MaterialButton
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -62,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
+		sponsorBlockButton = findViewById(R.id.player_skip)
 
 		val navView: BottomNavigationView = binding.navView
 		navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -78,18 +93,8 @@ class MainActivity : AppCompatActivity() {
 		navView.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
-//			if (player.closeSheets())
-//				Toast.makeText(this@MainActivity, "closed player sheets", Toast.LENGTH_LONG).show()
-//			else if (player.exitFullscreen())
-//				Toast.makeText(this@MainActivity, "exited fullscreen", Toast.LENGTH_LONG).show()
-//			else if (minimizePlayer())
-//				Toast.makeText(this@MainActivity, "minimized player", Toast.LENGTH_LONG).show()
-//			else if (navController.popBackStack())
-//				Toast.makeText(this@MainActivity, "pop back stack", Toast.LENGTH_LONG).show()
-//			else
-//				Toast.makeText(this@MainActivity, "nothing else to do", Toast.LENGTH_LONG).show()
 			if (!player.closeSheets()) // attempt to close details/comments
-				if (!player.exitFullscreen()) // attempt to exit fullscreen
+				if (!tryExitFullscreen()) // attempt to exit fullscreen
 					if (!minimizePlayer()) // attempt to minimize the player sheet
 						if (!navController.popBackStack()) // attempt to go back on the fragment history
 							finish() // close the app
@@ -131,17 +136,20 @@ class MainActivity : AppCompatActivity() {
 				else
 					binding.navView.visibility = View.VISIBLE
 
-				player.toggleControls(slideOffset * 5 > 0.9)
+				player.toggleControls(slideOffset * 5 >= 1)
 			}
 		})
 
 		// check for updates
 		thread {
-			val update = Utils.checkForUpdates(this)
+			val update = Utils.checkForUpdates()
 			if (update != null) {
 				val skippedUpdate = sp.getString("skippedUpdate", null)
 				if (skippedUpdate == update.latestVersion) {
-					Log.i("UpdateChecker", "User skipped update $skippedUpdate. Not showing the update dialog.")
+					Log.i(
+						"UpdateChecker",
+						"User skipped update $skippedUpdate. Not showing the update dialog."
+					)
 				} else {
 					runOnUiThread {
 						UpdateFragment(update).show(supportFragmentManager, null)
@@ -149,6 +157,18 @@ class MainActivity : AppCompatActivity() {
 				}
 			}
 		}
+
+		val handler = Handler(mainLooper)
+		var sponsorblockRunnable = Runnable {}
+		sponsorblockRunnable = Runnable {
+			try {
+				player.updateSkipButton(player.getCurrentSegment())
+			} catch (e: Exception) {
+				Log.e("SponsorBlockLoop", "Failed to update SponsorBlock skip button", e)
+			}
+			handler.postDelayed(sponsorblockRunnable, 100)
+		}
+		handler.postDelayed(sponsorblockRunnable, 100)
 	}
 
 	private fun setApi() {
@@ -176,7 +196,7 @@ class MainActivity : AppCompatActivity() {
 			searchView.findViewById(androidx.appcompat.R.id.search_src_text) as SearchAutoComplete
 
 		searchAutoComplete.onItemClickListener =
-			OnItemClickListener { adapterView, view, itemIndex, id ->
+			OnItemClickListener { adapterView, _, itemIndex, _ ->
 				val queryString = adapterView.getItemAtPosition(itemIndex) as String
 				searchAutoComplete.setText(queryString)
 				searchAutoComplete.setSelection(queryString.length)
@@ -222,7 +242,9 @@ class MainActivity : AppCompatActivity() {
 						searchAutoComplete.showDropDown()
 					loadingSuggestions = false
 				}
-			} catch (e: Exception) {
+			} catch (e: LightTubeException) {
+				loadingSuggestions = false
+			} catch (e: IOException) {
 				loadingSuggestions = false
 			}
 		}
@@ -233,6 +255,94 @@ class MainActivity : AppCompatActivity() {
 		try {
 			binding.loadingBar.visibility = if (loading) View.VISIBLE else View.GONE
 		} catch (_: Exception) {
+		}
+	}
+
+	fun enterFullscreen(playerView: View, isPortrait: Boolean) {
+		fullscreen = true
+		val parentToMove = playerView.parent as View
+		(parentToMove.parent as ViewGroup).removeView(parentToMove)
+		binding.fullscreenPlayerContainer.addView(parentToMove)
+
+		WindowCompat.setDecorFitsSystemWindows(window, false)
+		WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+			controller.hide(WindowInsetsCompat.Type.systemBars())
+			controller.systemBarsBehavior =
+				WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+		}
+
+		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
+			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen_exit, theme)
+			setOnClickListener {
+				exitFullscreen(playerView)
+			}
+		}
+		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.VISIBLE
+		binding.fullscreenPlayerContainer.visibility = View.VISIBLE
+		miniplayer.isDraggable = false
+		requestedOrientation =
+			if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+
+		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
+			bottomMargin =
+				resources.getDimension(R.dimen.sponsorblock_margin_bottom_fullscreen).roundToInt()
+		}
+	}
+
+	fun exitFullscreen(playerView: View) {
+		fullscreen = false
+		val parentToMove = playerView.parent as View
+		(parentToMove.parent as ViewGroup).removeView(parentToMove)
+		findViewById<ViewGroup>(R.id.player_container).addView(parentToMove)
+
+		WindowCompat.setDecorFitsSystemWindows(window, true)
+		WindowInsetsControllerCompat(
+			window,
+			window.decorView
+		).show(WindowInsetsCompat.Type.systemBars())
+
+		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
+			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen, theme)
+			setOnClickListener {
+				enterFullscreen(playerView, player.getAspectRatio() < 1)
+			}
+		}
+		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.INVISIBLE
+		binding.fullscreenPlayerContainer.visibility = View.GONE
+		miniplayer.isDraggable = true
+		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+
+		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
+			bottomMargin =
+				resources.getDimension(R.dimen.sponsorblock_margin_bottom_default).roundToInt()
+		}
+	}
+
+	private fun tryExitFullscreen(): Boolean {
+		if (fullscreen) {
+			exitFullscreen(findViewById(R.id.player))
+			return true
+		}
+		return false
+	}
+
+	fun updateVideoAspectRatio(aspectRatio: Float) {
+		val clampedAspectRatio = if (aspectRatio.isNaN()) 16f / 9f else aspectRatio.coerceIn(1f, 2f)
+		Log.i(
+			"VideoPlayer",
+			"Updating player aspect ratio to $clampedAspectRatio (original: $aspectRatio)"
+		)
+		miniplayerScene.getConstraintSet(R.id.end)?.let {
+			it.setDimensionRatio(R.id.player_container, clampedAspectRatio.toString())
+			miniplayerScene.updateState(R.id.end, it)
+			miniplayerScene.rebuildScene()
+
+			// SORRY BUT I COULDNT UPDATE THE LAYOUT OTHERWISE 😭😭😭
+			miniplayerScene.setProgress(0.999f, 10f)
+			Handler(mainLooper).postDelayed({
+				miniplayerScene.progress = 1f
+			}, 10)
 		}
 	}
 }

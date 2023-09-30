@@ -1,6 +1,5 @@
 package dev.kuylar.lighttube
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -62,14 +61,14 @@ class Utils {
 			).asString!!
 		}
 
+		private fun getUserAgent(): String =
+			"LightTube-Android/${BuildConfig.VERSION_NAME} (https://github.com/kuylar/lighttube-android)"
+
 		fun getDislikeCount(videoId: String): Long {
 			try {
 				val req = Request.Builder().apply {
 					url("https://returnyoutubedislikeapi.com/votes?videoId=$videoId")
-					header(
-						"User-Agent",
-						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
-					)
+					header("User-Agent", getUserAgent())
 				}.build()
 
 				http.newCall(req).execute().use { response ->
@@ -93,12 +92,9 @@ class Utils {
 								0,
 								4
 							)
-						}?category=sponsor&category=selfpromo&category=interaction&category=intro&category=outro&category=preview&category=music_offtopic&category=filler"
+						}?category=sponsor&category=selfpromo&category=interaction&category=intro&category=outro&category=preview&category=music_offtopic"
 					)
-					header(
-						"User-Agent",
-						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
-					)
+					header("User-Agent", getUserAgent())
 				}.build()
 
 				http.newCall(req).execute().use { response ->
@@ -112,15 +108,12 @@ class Utils {
 			}
 		}
 
-		fun checkForUpdates(context: Context): UpdateInfo? {
+		fun checkForUpdates(): UpdateInfo? {
 			var updateInfo: UpdateInfo? = null
 			try {
 				val req = Request.Builder().apply {
-					url("https://api.github.com/repos/kuylar/lighttube-android/releases")
-					header(
-						"User-Agent",
-						"LightTube-Android/1.0 (https://github.com/kuylar/lighttube-android)"
-					)
+					url("https://api.github.com/repos/kuylar/lighttube-android/releases/latest")
+					header("User-Agent", getUserAgent())
 				}.build()
 
 				http.newCall(req).execute().use { response ->
@@ -129,11 +122,9 @@ class Utils {
 						.create()
 						.fromJson(
 							response.body!!.string(),
-							object : TypeToken<List<GithubRelease>>() {})
-					val latestVer = res.first().tagName.substring(1)
-					@Suppress("DEPRECATION")
-					val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-					val version = pInfo.versionName.split(" ").first()
+							GithubRelease::class.java)
+					val latestVer = res.tagName.substring(1)
+					val version = BuildConfig.VERSION_NAME.split(" ").first()
 					val latestVersionCode = latestVer.replace(".", "").toInt()
 					val currentVersionCode = version.replace(".", "").toInt()
 					if (latestVersionCode > currentVersionCode) {
@@ -141,7 +132,7 @@ class Utils {
 						updateInfo = UpdateInfo(
 							version,
 							latestVer,
-							res.first().assets.first().browserDownloadUrl
+							res.assets.first().browserDownloadUrl
 						)
 					}
 				}

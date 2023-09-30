@@ -1,8 +1,8 @@
 package dev.kuylar.lighttube.ui.viewholder
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -40,12 +40,10 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			activity.player.setSheets(details = true, comments = false)
 		}
 
-		binding.channelAvatar.setOnClickListener {
+		binding.channelContainer.setOnClickListener {
 			activity.miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
-			val b = Bundle()
-			b.putString("id", video.channel.id)
 			activity.findNavController(R.id.nav_host_fragment_activity_main)
-				.navigate(R.id.navigation_channel, b)
+				.navigate(R.id.navigation_channel, bundleOf(Pair("id", video.channel.id)))
 		}
 
 		binding.buttonShare.setOnClickListener {

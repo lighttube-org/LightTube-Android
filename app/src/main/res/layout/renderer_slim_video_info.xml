@@ -8,24 +8,55 @@
 	android:paddingBottom="8dp">
 
 	<LinearLayout
-		android:id="@+id/video_details"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?attr/selectableItemBackground"
 		android:orientation="vertical">
 
-		<TextView
-			android:id="@+id/video_title"
-			style="@style/TextAppearance.AppCompat.Body1"
+		<LinearLayout
+			android:id="@+id/video_details"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textSize="20sp"
-			android:textStyle="bold"
-			tools:text="Video Title" />
+			android:background="?attr/selectableItemBackground"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/video_title"
+				style="@style/TextAppearance.AppCompat.Body1"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textSize="20sp"
+				android:textStyle="bold"
+				tools:text="Video Title" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:paddingVertical="8dp">
+
+				<TextView
+					android:id="@+id/video_views"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					tools:text="123K views" />
+
+				<TextView
+					android:id="@+id/video_uploaded"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="12dp"
+					android:maxLines="1"
+					tools:text="6d ago" />
+			</LinearLayout>
+		</LinearLayout>
 
 		<LinearLayout
+			android:id="@+id/channel_container"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:background="?attr/selectableItemBackground"
 			android:gravity="center_vertical"
 			android:orientation="horizontal"
 			android:paddingVertical="8dp">
@@ -40,39 +71,13 @@
 			<TextView
 				android:id="@+id/channel_title"
 				style="@style/TextAppearance.AppCompat.Body1"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="12dp"
-				android:maxLines="1"
-				tools:text="Channel Title" />
-
-			<TextView
-				android:id="@+id/video_views"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="12dp"
-				android:maxLines="1"
-				tools:text="123K views" />
-
-			<TextView
-				android:id="@+id/video_uploaded"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="12dp"
-				android:maxLines="1"
-				tools:text="6d ago" />
-
-			<TextView
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="12dp"
 				android:layout_weight="1"
 				android:maxLines="1"
-				android:text="@string/video_info_more"
-				android:textAlignment="viewEnd" />
+				tools:text="Channel Title" />
 		</LinearLayout>
-
-
 	</LinearLayout>
 
 	<HorizontalScrollView

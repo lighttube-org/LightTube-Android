@@ -1,7 +1,7 @@
 package dev.kuylar.lighttube.api.models
 
 import android.os.Bundle
-import com.google.android.exoplayer2.MediaMetadata
+import androidx.media3.common.MediaMetadata
 import java.net.URLEncoder
 
 class VideoDetails(
