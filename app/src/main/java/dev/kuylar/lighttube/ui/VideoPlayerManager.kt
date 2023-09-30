@@ -429,9 +429,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	private fun setStoryboards(levels: String?, recommendedLevel: String?, length: Long?) {
-		if (levels == null || length == null || recommendedLevel == null) storyboard = null
-		storyboard = StoryboardInfo(levels!!, recommendedLevel!!, length!!)
-		timeBarPreview.durationPerFrame(storyboard!!.msPerFrame.toLong())
+		if (levels != null && length != null && recommendedLevel != null && length >= 0) {
+			storyboard = StoryboardInfo(levels, recommendedLevel, length)
+			timeBarPreview.durationPerFrame(storyboard!!.msPerFrame.toLong())
+			return
+		}
+		storyboard = null
 	}
 
 	override fun loadThumbnail(imageView: ImageView, position: Long) {

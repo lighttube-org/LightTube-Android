@@ -2,7 +2,6 @@ package dev.kuylar.lighttube
 
 import dev.kuylar.lighttube.ui.StoryboardTransformation
 import java.net.URLDecoder
-import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.truncate
@@ -12,12 +11,12 @@ class StoryboardInfo(
 	var recommendedLevel: String,
 	videoLength: Long
 ) {
-	val levels: HashMap<String, String> = HashMap()
-	val storyboardCount: Double
-	val secondsPerIndex: Double
-	val secondsPerFrame: Double
+	private val levels: HashMap<String, String> = HashMap()
+	private val storyboardCount: Double
+	private val secondsPerIndex: Double
+	private val secondsPerFrame: Double
 	val msPerFrame: Double
-	var lastPosition = -1L
+	private var indexes = ArrayList<Pair<Int, Int>>()
 
 	init {
 		levelsString.split("&").forEach {
@@ -29,7 +28,7 @@ class StoryboardInfo(
 		}
 		storyboardCount = if (videoLength < 250) {
 			ceil((videoLength / 2) / 25.0)
-		} else if (videoLength in 250..1000) {
+		} else if (videoLength in 250 ..1000) {
 			ceil((videoLength / 4) / 25.0)
 		} else {
 			ceil((videoLength / 10) / 25.0)
@@ -37,12 +36,27 @@ class StoryboardInfo(
 
 		if (recommendedLevel == "2") {
 			secondsPerIndex = 125.0
-			secondsPerFrame = secondsPerIndex / 25
-			msPerFrame = secondsPerFrame * 1000
+			secondsPerFrame = 5.0
+			msPerFrame = 5000.0
+
+			val frameCount = floor(videoLength / 5f).toInt() + 1
+			val indexCount = ceil(frameCount / 25f).toInt()
+
+			val lastIndexFrameCount = if (frameCount % 25 == 0) 25 else frameCount % 25
+
+			val lastIndexRows = ceil(lastIndexFrameCount / 5f).toInt()
+			val lastIndexColumns = if (lastIndexRows > 1) 5 else frameCount % 5
+
+			for (i in 1 until indexCount) {
+				indexes.add(Pair(5, 5))
+			}
+			indexes.add(Pair(lastIndexRows, lastIndexColumns))
 		} else {
 			secondsPerIndex = videoLength.toDouble()
 			secondsPerFrame = secondsPerIndex / 100
 			msPerFrame = secondsPerFrame * 1000
+
+			indexes.add(Pair(10, 10))
 		}
 	}
 
@@ -61,28 +75,15 @@ class StoryboardInfo(
 	}
 
 	fun getTransformation(position: Long): StoryboardTransformation {
-		return if (recommendedLevel == "2") {
-			val n = position / 1000 / secondsPerIndex
+		val index = indexes[getStoryboardIndex(position)]
+		val n = position / 1000 / secondsPerIndex
+		val xy = if (recommendedLevel == "2") {
 			val positionInFrame = (n - truncate(n)) * 25
-			val x = floor(positionInFrame % 5).toInt()
-			val y = floor(positionInFrame / 5).toInt()
-			StoryboardTransformation(x, y, 96, 54)
+			Pair(floor(positionInFrame % 5).toInt(), floor(positionInFrame / 5).toInt())
 		} else {
-			val n = position / 1000 / secondsPerIndex
 			val positionInFrame = (n - truncate(n)) * 100
-			val x = floor(positionInFrame % 10).toInt()
-			val y = floor(positionInFrame / 10).toInt()
-			StoryboardTransformation(x, y, 48, 27)
+			Pair(floor(positionInFrame % 10).toInt(), floor(positionInFrame / 10).toInt())
 		}
-	}
-
-	fun throttle(position: Long): Boolean {
-		if (lastPosition == -1L) {
-			lastPosition = position
-			return true
-		}
-		if (abs(lastPosition - position) < msPerFrame) return false
-		lastPosition = position
-		return true
+		return StoryboardTransformation(xy.first, xy.second, index.first, index.second)
 	}
 }

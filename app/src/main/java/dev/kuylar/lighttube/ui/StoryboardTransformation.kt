@@ -10,12 +10,12 @@ import java.security.MessageDigest
 class StoryboardTransformation(
 	private val x: Int,
 	private val y: Int,
-	private val w: Int,
-	private val h: Int
+	private val r: Int,
+	private val c: Int
 ) :
 	BitmapTransformation() {
 	private fun getCacheKey(): String =
-		"dev.kuylar.lighttube.ui.StoryboardTransformation($x,$y,$w,$h)"
+		"dev.kuylar.lighttube.ui.StoryboardTransformation($x,$y,$r,$c)"
 
 	override fun transform(
 		pool: BitmapPool,
@@ -24,10 +24,10 @@ class StoryboardTransformation(
 		outHeight: Int
 	): Bitmap = Bitmap.createBitmap(
 		toTransform,
-		x * w,
-		y * h,
-		w,
-		h
+		x * toTransform.width / c,
+		y * toTransform.height / r,
+		toTransform.width / c,
+		toTransform.height / r
 	)
 
 
@@ -37,7 +37,7 @@ class StoryboardTransformation(
 
 	override fun equals(other: Any?): Boolean {
 		return if (other is StoryboardTransformation) {
-			other.x == x && other.y == y && other.w == w && other.h == h
+			other.x == x && other.y == y && other.r == r && other.c == c
 		} else false
 	}
 
