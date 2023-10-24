@@ -11,9 +11,11 @@ devices
 |:-------------------------------------------------|:--------:|
 | Video Playback                                   | Complete |
 | Subscription Feeds                               | Complete |
+| Dislike Counts (using [ReturnYouTubeDislike][2]) | Complete |
+| [SponsorBlock][3]                                | Complete |
 | Video Downloads & Offline Playback               | Planned  |
-| Dislike Counts (using [ReturnYouTubeDislike][2]) | Planned  |
-| [SponsorBlock][3]                                | Planned  |
+| Background playback                              | Planned  |
+| Playlists                                        | Planned  |
 | More to possibly come soon                       |          |
 
 ## Installing
