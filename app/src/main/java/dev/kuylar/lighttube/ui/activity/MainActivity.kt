@@ -93,11 +93,7 @@ class MainActivity : AppCompatActivity() {
 		navView.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
-			if (!player.closeSheets()) // attempt to close details/comments
-				if (!tryExitFullscreen()) // attempt to exit fullscreen
-					if (!minimizePlayer()) // attempt to minimize the player sheet
-						if (!navController.popBackStack()) // attempt to go back on the fragment history
-							finish() // close the app
+			goBack(true)
 		}
 
 		val miniplayerView: View = findViewById(R.id.miniplayer)
@@ -169,6 +165,22 @@ class MainActivity : AppCompatActivity() {
 			handler.postDelayed(sponsorblockRunnable, 100)
 		}
 		handler.postDelayed(sponsorblockRunnable, 100)
+	}
+
+	private fun goBack(closeApp: Boolean): Boolean {
+		if (!player.closeSheets()) // attempt to close details/comments
+			if (!tryExitFullscreen()) // attempt to exit fullscreen
+				if (!minimizePlayer()) // attempt to minimize the player sheet
+					if (!navController.popBackStack()) { // attempt to go back on the fragment history
+						// close the app
+						if (closeApp) finish()
+						return true
+					}
+		return false
+	}
+
+	override fun onSupportNavigateUp(): Boolean {
+		return goBack(false)
 	}
 
 	private fun setApi() {
