@@ -10,7 +10,8 @@
 		android:id="@+id/recycler_recommended"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:padding="8dp"
+		android:paddingBottom="8dp"
+		android:clipToPadding="false"
 		tools:listitem="@layout/renderer_video" />
 
 	<FrameLayout

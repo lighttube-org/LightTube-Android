@@ -4,6 +4,7 @@
 	android:id="@+id/recycler_feed"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingHorizontal="8dp"
+	android:paddingVertical="8dp"
+	android:clipToPadding="false"
 	tools:context=".ui.activity.MainActivity"
 	tools:listitem="@layout/item_subscription_video"/>
