@@ -21,7 +21,7 @@
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="#0000"
+			app:backgroundTint="#0000"
 			app:icon="@drawable/ic_minimize"
 			app:iconTint="#fff" />
 
@@ -58,8 +58,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:alpha=".5"
-			android:background="#0000"
 			android:enabled="false"
+			app:backgroundTint="#0000"
 			app:icon="@drawable/ic_captions"
 			app:iconTint="#fff" />
 
@@ -68,7 +68,7 @@
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="#0000"
+			app:backgroundTint="#0000"
 			app:icon="@drawable/ic_settings"
 			app:iconTint="#fff" />
 
@@ -171,7 +171,7 @@
 		style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="#0000"
+		app:backgroundTint="#0000"
 		app:icon="@drawable/ic_fullscreen"
 		app:iconTint="#fff"
 		app:layout_constraintBottom_toTopOf="@id/exo_progress"
