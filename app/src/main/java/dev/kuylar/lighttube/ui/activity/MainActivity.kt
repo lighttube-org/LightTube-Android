@@ -16,13 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
-import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -41,9 +39,9 @@ import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
 import kotlin.concurrent.thread
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -339,10 +337,19 @@ class MainActivity : AppCompatActivity() {
 			miniplayerScene.rebuildScene()
 
 			// SORRY BUT I COULDNT UPDATE THE LAYOUT OTHERWISE 😭😭😭
-			miniplayerScene.setProgress(0.999f, 10f)
-			Handler(mainLooper).postDelayed({
-				miniplayerScene.progress = 1f
-			}, 10)
+			if (abs(miniplayerScene.progress - 1f) < 0.1f) {
+				miniplayerScene.setProgress(0.999f, 10f)
+				Handler(mainLooper).postDelayed({
+					miniplayerScene.progress = 1f
+				}, 10)
+			} else if (miniplayerScene.progress < 0.1f) {
+				miniplayerScene.setProgress(0.001f, 10f)
+				Handler(mainLooper).postDelayed({
+					miniplayerScene.progress = 0f
+				}, 10)
+			} else {
+				// compiler doesnt shut up otherwise
+			}
 		}
 	}
 }
