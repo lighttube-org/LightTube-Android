@@ -4,7 +4,6 @@
 	android:id="@+id/miniplayer_motion"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:animateLayoutChanges="true"
 	app:layoutDescription="@xml/miniplayer_motion_scene">
 
 	<com.google.android.material.progressindicator.LinearProgressIndicator
@@ -19,7 +18,6 @@
 		android:id="@+id/player_container"
 		android:layout_width="0dp"
 		android:layout_height="60dp"
-		android:animateLayoutChanges="true"
 		app:layout_constraintDimensionRatio="V,16:9"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar">

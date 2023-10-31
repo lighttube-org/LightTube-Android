@@ -4,7 +4,6 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/player_box"
 	android:layout_width="match_parent"
-	android:animateLayoutChanges="true"
 	android:layout_height="match_parent"
 	tools:ignore="UselessParent">
 
