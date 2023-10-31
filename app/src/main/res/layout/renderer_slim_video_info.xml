@@ -34,7 +34,8 @@
 				android:layout_height="wrap_content"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:padding="8dp">
+				android:paddingHorizontal="8dp"
+				android:paddingBottom="8dp">
 
 				<TextView
 					android:id="@+id/video_views"
