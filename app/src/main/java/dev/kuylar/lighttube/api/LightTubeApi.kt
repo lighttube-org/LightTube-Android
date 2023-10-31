@@ -17,9 +17,14 @@ import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.api.models.SearchResults
 import dev.kuylar.lighttube.api.models.SearchSuggestions
 import dev.kuylar.lighttube.api.models.SortOrder
+import dev.kuylar.lighttube.api.models.SubscriptionChannel
 import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
+import dev.kuylar.lighttube.api.models.UpdateSubscriptionsResponse
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.net.URLEncoder
 
@@ -71,6 +76,40 @@ class LightTubeApi(context: Context) {
 			return r
 		}
 	}
+
+	@Throws(LightTubeException::class, IOException::class)
+	private fun <T> post(
+		token: TypeToken<ApiResponse<T>>,
+		method: String,
+		path: String,
+		query: HashMap<String, String> = HashMap(),
+		body: RequestBody
+	): ApiResponse<T> {
+		val request: Request = Request.Builder().apply {
+			url("$host/api/$path${query.toUrl()}")
+			method(method, body)
+			if (refreshToken != null) {
+				header("Authorization", "Bearer ${UtilityApi.getToken(host, refreshToken)}")
+			}
+		}.build()
+
+		client.newCall(request).execute().use { response ->
+			if (!response.headers["Content-Type"]?.contains("json")!!)
+				throw LightTubeException(0, "Received non-JSON response")
+			val r = gson.fromJson<ApiResponse<T>>(
+				response.body!!.string(),
+				token.type
+			)
+			if (r.error != null)
+				throw r.error
+			if (r.data == null)
+				throw LightTubeException(0, "Received null date")
+			return r
+		}
+	}
+
+	private fun jsonBody(data: Any?) =
+		gson.toJson(data).toRequestBody("application/json".toMediaType())
 
 	@Throws(LightTubeException::class, IOException::class)
 	fun getCurrentUser(): ApiResponse<LightTubeUserInfo> {
@@ -217,6 +256,29 @@ class LightTubeApi(context: Context) {
 			object : TypeToken<ApiResponse<LightTubeChannel>>() {},
 			"channel",
 			hashMapOf(Pair("continuation", contKey))
+		)
+	}
+
+	// ======= OAUTH RELATED STUFF =======
+	fun getSubscriptions(channel: String? = null): ApiResponse<Map<String, SubscriptionChannel>> {
+		return get(
+			object : TypeToken<ApiResponse<Map<String, SubscriptionChannel>>>() {},
+			"subscriptions",
+			if (channel != null) hashMapOf(Pair("channel", channel.toString())) else hashMapOf()
+		)
+	}
+
+	fun subscribe(channelId: String, subscribed: Boolean, enableNotifications: Boolean): ApiResponse<UpdateSubscriptionsResponse> {
+		return post(
+			object : TypeToken<ApiResponse<UpdateSubscriptionsResponse>>() {},
+			"PUT",
+			"subscriptions",
+			hashMapOf(),
+			jsonBody(mapOf(
+				Pair("channelId", channelId),
+				Pair("subscribed", subscribed),
+				Pair("enableNotifications", enableNotifications)
+			))
 		)
 	}
 }
