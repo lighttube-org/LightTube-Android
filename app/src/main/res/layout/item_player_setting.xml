@@ -7,7 +7,8 @@
 	android:background="?attr/selectableItemBackground"
 	android:gravity="center_vertical"
 	android:orientation="horizontal"
-	android:padding="10dp">
+	android:paddingHorizontal="22dp"
+	android:paddingVertical="10dp">
 
 	<ImageView
 		android:id="@+id/player_setting_check"
@@ -24,6 +25,6 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="24dp"
-		tools:text="Setting Name"
-		android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+		android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+		tools:text="Setting Name" />
 </LinearLayout>

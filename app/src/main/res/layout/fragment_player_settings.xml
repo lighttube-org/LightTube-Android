@@ -8,8 +8,9 @@
 	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:clipToPadding="false"
 		android:orientation="vertical"
-		android:padding="12dp"
+		android:paddingTop="12dp"
 		tools:context=".ui.fragment.PlayerSettingsFragment">
 
 		<LinearLayout
@@ -25,7 +26,8 @@
 				android:background="?attr/selectableItemBackground"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:padding="10dp">
+				android:paddingHorizontal="22dp"
+				android:paddingVertical="10dp">
 
 				<ImageView
 					android:layout_width="32dp"
@@ -61,7 +63,8 @@
 				android:background="?attr/selectableItemBackground"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:padding="10dp">
+				android:paddingHorizontal="22dp"
+				android:paddingVertical="10dp">
 
 				<ImageView
 					android:layout_width="32dp"
@@ -97,7 +100,8 @@
 				android:background="?attr/selectableItemBackground"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:padding="10dp">
+				android:paddingHorizontal="22dp"
+				android:paddingVertical="10dp">
 
 				<ImageView
 					android:layout_width="32dp"
@@ -133,7 +137,8 @@
 				android:background="?attr/selectableItemBackground"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:padding="10dp">
+				android:paddingHorizontal="22dp"
+				android:paddingVertical="10dp">
 
 				<ImageView
 					android:layout_width="32dp"
@@ -169,7 +174,8 @@
 				android:background="?attr/selectableItemBackground"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:padding="10dp">
+				android:paddingHorizontal="22dp"
+				android:paddingVertical="10dp">
 
 				<ImageView
 					android:layout_width="32dp"
