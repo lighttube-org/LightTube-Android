@@ -286,8 +286,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 		if (player.currentTracks.groups.none { it.type == C.TRACK_TYPE_TEXT }) {
 			setCaptionsButtonState(0)
-		} else if (player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_TEXT }
-				.isNotEmpty()) {
+		} else if (player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }.any { it.isSelected }) {
 			setCaptionsButtonState(2)
 		} else {
 			setCaptionsButtonState(1)
@@ -378,7 +377,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	fun showCommentsButton() {
 		try {
 			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton()
-		} catch (e: Exception) { }
+		} catch (_: Exception) { }
 	}
 
 	fun setSheets(details: Boolean, comments: Boolean) {

@@ -1,7 +1,3 @@
-// TODO: Migrate to media3
-// Blocked by com.github.vkay94.timebar.YouTubeTimeBar
-@file:Suppress("DEPRECATION")
-
 package dev.kuylar.lighttube.ui.fragment
 
 import android.annotation.SuppressLint
@@ -157,15 +153,12 @@ class PlayerSettingsFragment(
 		if (textTracks.isNotEmpty()) {
 			val params =
 				player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_TEXT }
-
+			val selected = player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }
+				.firstOrNull { it.isSelected }?.getTrackFormat(0)
 			binding.playerSettingsCaptionValue.text = if (params.isEmpty()) {
 				getString(R.string.off)
 			} else {
-				val f =
-					textTracks
-						.find { it.mediaTrackGroup.id == params.values.first()!!.mediaTrackGroup.id }
-						?.getTrackFormat(0)
-				f?.label ?: f?.id ?: f?.language ?: getString(R.string.unavailable)
+				selected?.label ?: selected?.id ?: selected?.language ?: getString(R.string.unavailable)
 			}
 
 			binding.playerSettingsCaption.addView(createMenuItem(
@@ -183,7 +176,7 @@ class PlayerSettingsFragment(
 				val f = group.getTrackFormat(0)
 				val item = createMenuItem(
 					f.label ?: f.id ?: f.language ?: getString(R.string.unavailable),
-					if (params.isNotEmpty()) params.values.first()!!.mediaTrackGroup.id == group.mediaTrackGroup.id else false
+					if (selected != null) group.isSelected else false
 				) {
 					player.trackSelectionParameters = player.trackSelectionParameters
 						.buildUpon()
