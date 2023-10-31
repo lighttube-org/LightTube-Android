@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
 	private var fullscreen = false
-	private lateinit var sponsorBlockButton: MaterialButton
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -76,7 +75,6 @@ class MainActivity : AppCompatActivity() {
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-		sponsorBlockButton = findViewById(R.id.player_skip)
 
 		val navView: BottomNavigationView = binding.navView
 		navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -295,11 +293,6 @@ class MainActivity : AppCompatActivity() {
 		requestedOrientation =
 			if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
-		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
-			bottomMargin =
-				resources.getDimension(R.dimen.sponsorblock_margin_bottom_fullscreen).roundToInt()
-		}
 	}
 
 	fun exitFullscreen(playerView: View) {
@@ -324,11 +317,6 @@ class MainActivity : AppCompatActivity() {
 		binding.fullscreenPlayerContainer.visibility = View.GONE
 		miniplayer.isDraggable = true
 		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
-
-		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
-			bottomMargin =
-				resources.getDimension(R.dimen.sponsorblock_margin_bottom_default).roundToInt()
-		}
 	}
 
 	private fun tryExitFullscreen(): Boolean {
