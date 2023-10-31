@@ -158,7 +158,8 @@ class PlayerSettingsFragment(
 			binding.playerSettingsCaptionValue.text = if (params.isEmpty()) {
 				getString(R.string.off)
 			} else {
-				selected?.label ?: selected?.id ?: selected?.language ?: getString(R.string.unavailable)
+				selected?.label ?: selected?.id ?: selected?.language
+				?: getString(R.string.unavailable)
 			}
 
 			binding.playerSettingsCaption.addView(createMenuItem(
@@ -221,25 +222,16 @@ class PlayerSettingsFragment(
 	private fun loadAudioTracksMenu() {
 		val audioTracks = player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_AUDIO }
 		if (audioTracks.size > 1) {
-			val params =
-				player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_AUDIO }
+			val selected = audioTracks.firstOrNull { it.isSelected }?.getTrackFormat(0)
 
-			binding.playerSettingsAudioValue.text = if (params.isEmpty()) {
-				getString(R.string.off)
-			} else {
-				val f =
-					audioTracks
-						.find { it.mediaTrackGroup.id == params.values.first()!!.mediaTrackGroup.id }
-						?.getTrackFormat(0)
-				f?.label ?: f?.id ?: f?.language ?: getString(R.string.unavailable)
-			}
+			binding.playerSettingsAudioValue.text = selected?.label ?: selected?.id ?: selected?.language ?: getString(R.string.unavailable)
 
 			for (group in audioTracks) {
 				val index = group.length - 1 // select the HQ one
 				val f = group.getTrackFormat(index)
 				val item = createMenuItem(
 					f.label ?: f.id ?: f.language ?: getString(R.string.unavailable),
-					if (params.isNotEmpty()) params.values.first()!!.mediaTrackGroup.id == group.mediaTrackGroup.id else false
+					group.isSelected
 				) {
 					player.trackSelectionParameters = player.trackSelectionParameters
 						.buildUpon()
