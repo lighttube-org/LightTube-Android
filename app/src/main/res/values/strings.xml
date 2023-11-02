@@ -56,6 +56,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="live">Live</string>
 	<string name="comment_pinnedby">Pinned by video author</string>
 	<string name="playlist">Playlist</string>
+	<string name="unsubscribe">Unsubscribe</string>
 	<string name="subscribe">Subscribe</string>
 	<string name="subscribed">Subscribed</string>
 
@@ -110,4 +111,9 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="sponsorblock_category_preview">preview</string>
 	<string name="sponsorblock_category_music_offtopic">non-music section</string>
 	<string name="sponsorblock_category_unknown">segment</string>
+
+	<!-- Notifications -->
+	<string name="notifications">Notifications</string>
+	<string name="notifications_on">All</string>
+	<string name="notifications_off">None</string>
 </resources>

@@ -1,8 +1,11 @@
 package dev.kuylar.lighttube
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.button.MaterialButton
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -10,6 +13,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.LightTubeImage
+import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
@@ -23,6 +27,8 @@ import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelVideoPlayerRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
@@ -41,6 +47,7 @@ import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
+import kotlin.concurrent.thread
 
 
 class Utils {
@@ -122,7 +129,8 @@ class Utils {
 						.create()
 						.fromJson(
 							response.body!!.string(),
-							GithubRelease::class.java)
+							GithubRelease::class.java
+						)
 					val latestVer = res.tagName.substring(1)
 					val version = BuildConfig.VERSION_NAME.split(" ").first()
 					val latestVersionCode = latestVer.replace(".", "").toInt()
@@ -140,6 +148,25 @@ class Utils {
 				Log.e("UpdateChecker", e.message, e)
 			}
 			return updateInfo
+		}
+
+		fun updateSubscriptionButton(
+			context: Context,
+			button: MaterialButton,
+			subscriptionInfo: SubscriptionInfo
+		) {
+			if (!subscriptionInfo.subscribed) {
+				button.text = context.getString(R.string.subscribe)
+				button.setIconResource(0)
+				return
+			}
+
+			button.text = context.getString(R.string.subscribed)
+			if (subscriptionInfo.notifications) {
+				button.setIconResource(R.drawable.ic_notifications_on)
+			} else {
+				button.setIconResource(R.drawable.ic_notifications_off)
+			}
 		}
 
 		fun getViewHolder(
@@ -284,6 +311,49 @@ class Utils {
 				)
 
 				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
+			}
+		}
+
+		fun subscribe(
+			context: Context,
+			channelId: String,
+			subscriptionInfo: SubscriptionInfo,
+			button: MaterialButton,
+			after: (SubscriptionInfo) -> Unit
+		) {
+			if (!subscriptionInfo.subscribed) {
+				button.isEnabled = false
+				thread {
+					with((context as MainActivity)) {
+						getApi().subscribe(
+							channelId,
+							subscribed = true,
+							enableNotifications = true
+						)
+						runOnUiThread {
+							after.invoke(SubscriptionInfo(
+								subscribed = true,
+								notifications = true
+							))
+							updateSubscriptionButton(
+								this,
+								button,
+								subscriptionInfo
+							)
+							button.isEnabled = true
+						}
+					}
+				}
+			} else {
+				val sheet = ManageSubscriptionFragment(channelId, subscriptionInfo) {
+					after.invoke(it)
+					updateSubscriptionButton(
+						context,
+						button,
+						it
+					)
+				}
+				sheet.show((context as FragmentActivity).supportFragmentManager, null)
 			}
 		}
 	}

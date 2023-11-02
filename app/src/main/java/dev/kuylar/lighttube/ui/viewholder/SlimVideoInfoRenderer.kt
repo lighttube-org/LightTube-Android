@@ -11,6 +11,7 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.LightTubeVideo
+import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -21,6 +22,11 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 	override fun bind(item: JsonObject, userData: UserData?) {
 		val activity = binding.root.context as MainActivity
 		val video = Gson().fromJson(item, LightTubeVideo::class.java)
+		var subscriptionInfo =
+			userData?.channels?.get(video.channel.id) ?: SubscriptionInfo(
+				subscribed = false,
+				notifications = false
+			)
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
 		binding.videoViews.text = video.viewCount
@@ -46,6 +52,23 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			activity.findNavController(R.id.nav_host_fragment_activity_main)
 				.navigate(R.id.navigation_channel, bundleOf(Pair("id", video.channel.id)))
 		}
+
+		binding.buttonSubscribe.setOnClickListener {
+			Utils.subscribe(
+				binding.root.context,
+				video.channel.id,
+				subscriptionInfo,
+				binding.buttonSubscribe
+			) {
+				subscriptionInfo = it
+			}
+		}
+
+		Utils.updateSubscriptionButton(
+			binding.root.context,
+			binding.buttonSubscribe,
+			subscriptionInfo
+		)
 
 		binding.buttonShare.setOnClickListener {
 			val sendIntent: Intent = Intent().apply {

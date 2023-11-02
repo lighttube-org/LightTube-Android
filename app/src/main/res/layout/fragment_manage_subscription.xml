@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		android:orientation="vertical">
+
+		<TextView
+			style="?textAppearanceTitleLarge"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingHorizontal="16dp"
+			android:paddingVertical="8dp"
+			android:text="@string/notifications" />
+
+		<LinearLayout
+			android:id="@+id/subscription_notifications_on"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="?selectableItemBackground"
+			android:clickable="true"
+			android:focusable="true"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:layout_width="36dp"
+				android:layout_height="36dp"
+				android:layout_margin="8dp"
+				android:importantForAccessibility="no"
+				android:padding="4dp"
+				android:src="@drawable/ic_notifications_on" />
+
+			<TextView
+				style="?textAppearanceBodyLarge"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/notifications_on" />
+
+			<ImageView
+				android:id="@+id/subscription_notifications_on_check"
+				android:layout_width="36dp"
+				android:layout_height="36dp"
+				android:layout_margin="8dp"
+				android:importantForAccessibility="no"
+				android:padding="4dp"
+				android:src="@drawable/ic_check"
+				android:visibility="gone"
+				app:tint="@color/material_on_background_emphasis_high_type"
+				tools:visibility="visible" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/subscription_notifications_off"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="?selectableItemBackground"
+			android:clickable="true"
+			android:focusable="true"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:layout_width="36dp"
+				android:layout_height="36dp"
+				android:layout_margin="8dp"
+				android:importantForAccessibility="no"
+				android:padding="4dp"
+				android:src="@drawable/ic_notifications_off" />
+
+			<TextView
+				style="?textAppearanceBodyLarge"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/notifications_off" />
+
+			<ImageView
+				android:id="@+id/subscription_notifications_off_check"
+				android:layout_width="36dp"
+				android:layout_height="36dp"
+				android:layout_margin="8dp"
+				android:importantForAccessibility="no"
+				android:padding="4dp"
+				android:src="@drawable/ic_check"
+				android:visibility="gone"
+				app:tint="@color/material_on_background_emphasis_high_type"
+				tools:visibility="visible" />
+		</LinearLayout>
+
+
+		<View
+			android:id="@+id/divider"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:alpha="0.5"
+			android:background="?colorControlNormal" />
+
+		<LinearLayout
+			android:id="@+id/subscription_notifications_unsubscribe"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="?selectableItemBackground"
+			android:clickable="true"
+			android:focusable="true"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:layout_width="36dp"
+				android:layout_height="36dp"
+				android:layout_margin="8dp"
+				android:importantForAccessibility="no"
+				android:padding="4dp"
+				android:src="@drawable/ic_unsubscribe" />
+
+			<TextView
+				style="?textAppearanceBodyLarge"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/unsubscribe" />
+
+			<ImageView
+				android:id="@+id/subscription_notifications_unsubscribe_check"
+				android:layout_width="36dp"
+				android:layout_height="36dp"
+				android:layout_margin="8dp"
+				android:importantForAccessibility="no"
+				android:padding="4dp"
+				android:src="@drawable/ic_check"
+				android:visibility="gone"
+				app:tint="@color/material_on_background_emphasis_high_type"
+				tools:visibility="visible" />
+		</LinearLayout>
+	</LinearLayout>
+</FrameLayout>
