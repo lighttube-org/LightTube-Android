@@ -12,6 +12,7 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.FragmentRecyclerviewBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -21,6 +22,7 @@ import kotlin.concurrent.thread
 
 class RecyclerViewFragment : Fragment() {
 	private val items: MutableList<JsonObject> = mutableListOf()
+	private var userData: UserData? = null
 	private lateinit var binding: FragmentRecyclerviewBinding
 	private lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
@@ -78,10 +80,11 @@ class RecyclerViewFragment : Fragment() {
 						binding.recycler.adapter!!.notifyItemRemoved(items.size)
 
 						val start = items.size
-						items.addAll(newItems)
+						items.addAll(newItems.first)
+						(binding.recycler.adapter!! as RendererRecyclerAdapter).updateUserData(newItems.second)
 						binding.recycler.adapter!!.notifyItemRangeInserted(
 							start,
-							newItems.size
+							newItems.first.size
 						)
 
 						loading = false
@@ -124,17 +127,19 @@ class RecyclerViewFragment : Fragment() {
 		}
 	}
 
-	private fun getData(initial: Boolean): Pair<List<JsonObject>, String?> {
+	private fun getData(initial: Boolean): Pair<Pair<List<JsonObject>, UserData?>, String?> {
 		when (type) {
 			"channel" -> {
 				val channel =
 					if (initial) api.getChannel(args, params ?: "home")
 					else api.continueChannel(contKey ?: "")
-				return Pair(channel.data!!.contents, channel.data.continuation)
+				if (initial) userData = channel.userData
+				else userData!!.channels.putAll(channel.userData?.channels ?: emptyMap())
+				return Pair(Pair(channel.data!!.contents, channel.userData), channel.data.continuation)
 			}
 
 			else -> {
-				return Pair(emptyList(), null)
+				return Pair(Pair(emptyList(), null), null)
 			}
 		}
 	}

@@ -7,10 +7,11 @@ import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 
 class ChannelRenderer(val binding: RendererChannelBinding) : RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject) {
+	override fun bind(item: JsonObject, userData: UserData?) {
 		val context = (binding.root.context as Activity)
 		binding.channelTitle.text = item.getAsJsonPrimitive("title").asString
 		if (item.getAsJsonPrimitive("type").asString == "gridChannelRenderer")

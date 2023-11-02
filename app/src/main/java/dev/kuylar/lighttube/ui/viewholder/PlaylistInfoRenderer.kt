@@ -6,12 +6,13 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.LightTubePlaylist
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 
 class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 	RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject) {
+	override fun bind(item: JsonObject, userData: UserData?) {
 		val activity = binding.root.context as MainActivity
 		val playlist = Gson().fromJson(item, LightTubePlaylist::class.java)
 		binding.playlistTitle.text = playlist.title

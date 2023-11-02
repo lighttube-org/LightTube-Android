@@ -11,13 +11,14 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.LightTubeVideo
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import kotlin.concurrent.thread
 
 open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBinding) :
 	RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject) {
+	override fun bind(item: JsonObject, userData: UserData?) {
 		val activity = binding.root.context as MainActivity
 		val video = Gson().fromJson(item, LightTubeVideo::class.java)
 		binding.videoTitle.text = video.title

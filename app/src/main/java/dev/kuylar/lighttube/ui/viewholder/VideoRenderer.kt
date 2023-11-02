@@ -7,11 +7,12 @@ import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 
 class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject) {
+	override fun bind(item: JsonObject, userData: UserData?) {
 		binding.videoTitle.text = item.getAsJsonPrimitive("title").asString
 		var durText = item.getAsJsonPrimitive("duration").asString
 		if (durText.startsWith("00:")) durText = durText.substring(3)

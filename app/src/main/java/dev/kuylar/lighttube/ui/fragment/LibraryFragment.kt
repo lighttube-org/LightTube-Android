@@ -53,6 +53,7 @@ class LibraryFragment : Fragment() {
 				try {
 					val playlists = api.getLibraryPlaylists()
 					items.addAll(playlists.data ?: emptyList())
+					(binding.recyclerLibrary.adapter as RendererRecyclerAdapter).updateUserData(playlists.userData)
 					runOnUiThread {
 						binding.recyclerLibrary.adapter!!.notifyItemRangeInserted(
 							0,

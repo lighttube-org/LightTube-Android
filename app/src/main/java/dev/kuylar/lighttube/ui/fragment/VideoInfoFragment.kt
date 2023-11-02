@@ -16,6 +16,7 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubeVideo
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.FragmentVideoInfoBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -59,7 +60,7 @@ class VideoInfoFragment : Fragment() {
 				try {
 					val video = api.getVideo(id, playlistId)
 					activity?.runOnUiThread {
-						fillData(video.data!!)
+						fillData(video.data!!, video.userData)
 					}
 				} catch (e: IOException) {
 					activity?.runOnUiThread {
@@ -87,11 +88,12 @@ class VideoInfoFragment : Fragment() {
 		//todo: placeholder shimmer thing?
 	}
 
-	private fun fillData(video: LightTubeVideo) {
+	private fun fillData(video: LightTubeVideo, userData: UserData?) {
 		player.setChapters(video.id, video.chapters)
 		items.add(video.getAsRenderer())
 		items.addAll(video.recommended)
 		adapter = RendererRecyclerAdapter(items)
+		adapter.updateUserData(userData)
 		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
 		binding.recyclerRecommended.adapter = adapter
 		binding.recyclerRecommended.itemAnimator = null

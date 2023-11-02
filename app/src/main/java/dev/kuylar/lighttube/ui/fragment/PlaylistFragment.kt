@@ -66,8 +66,10 @@ class PlaylistFragment : Fragment() {
 			setLoading(true)
 			thread {
 				try {
-					val playlist = if (initial) api.getPlaylist(id) else api.continuePlaylist(contKey!!)
+					val playlist =
+						if (initial) api.getPlaylist(id) else api.continuePlaylist(contKey!!)
 					val start = items.size
+					(binding.recyclerPlaylist.adapter!! as RendererRecyclerAdapter).updateUserData(playlist.userData)
 					if (initial)
 						items.add(0, playlist.data!!.getAsRenderer())
 					playlist.data!!.alerts.forEach {
