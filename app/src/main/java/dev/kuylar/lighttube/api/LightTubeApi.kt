@@ -39,6 +39,7 @@ class LightTubeApi(context: Context) {
 	private val gson = GsonBuilder().apply {
 		setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
 	}.create()
+	var currentUser: LightTubeUserInfo? = null
 
 	val host: String
 	private val refreshToken: String?
