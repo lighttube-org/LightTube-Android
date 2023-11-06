@@ -1,12 +1,16 @@
 package dev.kuylar.lighttube
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -384,6 +388,52 @@ class Utils {
 				PlaylistVisibility.Unlisted -> unlistedText
 				PlaylistVisibility.Private -> privateText
 			}
+		}
+
+		fun showPlaylistDialog(
+			context: Context,
+			layoutInflater: LayoutInflater,
+			header: String,
+			title: String,
+			description: String,
+			visibility: PlaylistVisibility,
+			positiveButtonText: String,
+			negativeButtonText: String,
+			positiveAction: (dialog: DialogInterface, title: String, description: String, visibility: PlaylistVisibility) -> Unit
+		) {
+			val v = layoutInflater.inflate(R.layout.dialog_edit_playlist, null)
+			val titleView = v.findViewById<TextInputLayout>(R.id.playlist_title)
+			val descriptionView =
+				v.findViewById<TextInputLayout>(R.id.playlist_description)
+			val visibilityView =
+				v.findViewById<TextInputLayout>(R.id.playlist_visibility)
+
+			titleView.editText!!.setText(title)
+			descriptionView.editText!!.setText(description)
+			(visibilityView.editText!! as MaterialAutoCompleteTextView).setText(
+				getPlaylistVisibility(
+					visibility,
+					context.resources
+				), false
+			)
+
+			MaterialAlertDialogBuilder(context)
+				.setTitle(header)
+				.setView(v)
+				.setPositiveButton(positiveButtonText) { dialog, _ ->
+					positiveAction(
+						dialog, titleView.editText!!.editableText.toString(),
+						descriptionView.editText!!.editableText.toString(),
+						parsePlaylistVisibility(
+							visibilityView.editText!!.editableText.toString(),
+							context.resources
+						)
+					)
+				}
+				.setNegativeButton(negativeButtonText) { dialog, _ ->
+					dialog.dismiss()
+				}
+				.show()
 		}
 	}
 }
