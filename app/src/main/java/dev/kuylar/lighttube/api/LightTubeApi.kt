@@ -100,8 +100,9 @@ class LightTubeApi(context: Context) {
 		client.newCall(request).execute().use { response ->
 			if (!response.headers["Content-Type"]?.contains("json")!!)
 				throw LightTubeException(0, "Received non-JSON response")
+			val json = response.body!!.string()
 			val r = gson.fromJson<ApiResponse<T>>(
-				response.body!!.string(),
+				json,
 				token.type
 			)
 			if (r.error != null)
@@ -114,14 +115,6 @@ class LightTubeApi(context: Context) {
 
 	private fun jsonBody(data: Any?) =
 		gson.toJson(data).toRequestBody("application/json".toMediaType())
-
-	@Throws(LightTubeException::class, IOException::class)
-	fun getCurrentUser(): ApiResponse<LightTubeUserInfo> {
-		return get(
-			object : TypeToken<ApiResponse<LightTubeUserInfo>>() {},
-			"currentUser"
-		)
-	}
 
 	@Throws(LightTubeException::class, IOException::class, Exception::class)
 	fun getInstanceInfo(): InstanceInfo {
@@ -210,26 +203,6 @@ class LightTubeApi(context: Context) {
 	}
 
 	@Throws(LightTubeException::class, IOException::class)
-	fun getSubscriptionFeed(
-		skip: Int = 0,
-		limit: Int = 50
-	): ApiResponse<List<SubscriptionFeedItem>> {
-		return get(
-			object : TypeToken<ApiResponse<List<SubscriptionFeedItem>>>() {},
-			"feed",
-			hashMapOf(Pair("skip", skip.toString()), Pair("limit", limit.toString()))
-		)
-	}
-
-	@Throws(LightTubeException::class, IOException::class)
-	fun getLibraryPlaylists(): ApiResponse<List<JsonObject>> {
-		return get(
-			object : TypeToken<ApiResponse<List<JsonObject>>>() {},
-			"playlists"
-		)
-	}
-
-	@Throws(LightTubeException::class, IOException::class)
 	fun getPlaylist(id: String): ApiResponse<LightTubePlaylist> {
 		return get(
 			object : TypeToken<ApiResponse<LightTubePlaylist>>() {},
@@ -264,6 +237,14 @@ class LightTubeApi(context: Context) {
 	}
 
 	// ======= OAUTH RELATED STUFF =======
+	@Throws(LightTubeException::class, IOException::class)
+	fun getCurrentUser(): ApiResponse<LightTubeUserInfo> {
+		return get(
+			object : TypeToken<ApiResponse<LightTubeUserInfo>>() {},
+			"currentUser"
+		)
+	}
+
 	fun getSubscriptions(channel: String? = null): ApiResponse<Map<String, SubscriptionChannel>> {
 		return get(
 			object : TypeToken<ApiResponse<Map<String, SubscriptionChannel>>>() {},
@@ -289,6 +270,18 @@ class LightTubeApi(context: Context) {
 					Pair("enableNotifications", enableNotifications)
 				)
 			)
+		)
+	}
+
+	@Throws(LightTubeException::class, IOException::class)
+	fun getSubscriptionFeed(
+		skip: Int = 0,
+		limit: Int = 50
+	): ApiResponse<List<SubscriptionFeedItem>> {
+		return get(
+			object : TypeToken<ApiResponse<List<SubscriptionFeedItem>>>() {},
+			"feed",
+			hashMapOf(Pair("skip", skip.toString()), Pair("limit", limit.toString()))
 		)
 	}
 
