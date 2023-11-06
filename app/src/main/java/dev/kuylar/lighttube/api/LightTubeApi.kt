@@ -286,6 +286,14 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	@Throws(LightTubeException::class, IOException::class)
+	fun getLibraryPlaylists(): ApiResponse<List<JsonObject>> {
+		return get(
+			object : TypeToken<ApiResponse<List<JsonObject>>>() {},
+			"playlists"
+		)
+	}
+
 	fun createPlaylist(
 		title: String,
 		description: String?,
