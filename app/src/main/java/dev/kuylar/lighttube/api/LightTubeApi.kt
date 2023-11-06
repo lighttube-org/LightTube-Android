@@ -14,17 +14,21 @@ import dev.kuylar.lighttube.api.models.LightTubePlayer
 import dev.kuylar.lighttube.api.models.LightTubePlaylist
 import dev.kuylar.lighttube.api.models.LightTubeUserInfo
 import dev.kuylar.lighttube.api.models.LightTubeVideo
+import dev.kuylar.lighttube.api.models.ModifyPlaylistContentResponse
+import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SearchResults
 import dev.kuylar.lighttube.api.models.SearchSuggestions
 import dev.kuylar.lighttube.api.models.SortOrder
 import dev.kuylar.lighttube.api.models.SubscriptionChannel
 import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import dev.kuylar.lighttube.api.models.UpdateSubscriptionsResponse
+import dev.kuylar.lighttube.api.models.UserPlaylist
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.EMPTY_REQUEST
 import java.io.IOException
 import java.net.URLEncoder
 
@@ -268,17 +272,81 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
-	fun subscribe(channelId: String, subscribed: Boolean, enableNotifications: Boolean): ApiResponse<UpdateSubscriptionsResponse> {
+	fun subscribe(
+		channelId: String,
+		subscribed: Boolean,
+		enableNotifications: Boolean
+	): ApiResponse<UpdateSubscriptionsResponse> {
 		return post(
 			object : TypeToken<ApiResponse<UpdateSubscriptionsResponse>>() {},
 			"PUT",
 			"subscriptions",
 			hashMapOf(),
-			jsonBody(mapOf(
-				Pair("channelId", channelId),
-				Pair("subscribed", subscribed),
-				Pair("enableNotifications", enableNotifications)
-			))
+			jsonBody(
+				mapOf(
+					Pair("channelId", channelId),
+					Pair("subscribed", subscribed),
+					Pair("enableNotifications", enableNotifications)
+				)
+			)
+		)
+	}
+
+	fun createPlaylist(
+		title: String,
+		description: String?,
+		visibility: PlaylistVisibility
+	): ApiResponse<UserPlaylist> {
+		return post(
+			object : TypeToken<ApiResponse<UserPlaylist>>() {},
+			"PUT",
+			"playlists",
+			hashMapOf(),
+			jsonBody(
+				mapOf(
+					Pair("title", title),
+					Pair("description", description),
+					Pair("visibility", visibility)
+				)
+			)
+		)
+	}
+
+	fun deletePlaylist(
+		id: String
+	): ApiResponse<String> {
+		return post(
+			object : TypeToken<ApiResponse<String>>() {},
+			"DELETE",
+			"playlists/$id",
+			hashMapOf(),
+			EMPTY_REQUEST
+		)
+	}
+
+	fun addVideoToPlaylist(
+		playlistId: String,
+		videoId: String
+	): ApiResponse<ModifyPlaylistContentResponse> {
+		return post(
+			object : TypeToken<ApiResponse<ModifyPlaylistContentResponse>>() {},
+			"PUT",
+			"playlists/$playlistId/$videoId",
+			hashMapOf(),
+			EMPTY_REQUEST
+		)
+	}
+
+	fun deleteVideoFromPlaylist(
+		playlistId: String,
+		videoId: String
+	): ApiResponse<String> {
+		return post(
+			object : TypeToken<ApiResponse<String>>() {},
+			"DELETE",
+			"playlists/$playlistId/$videoId",
+			hashMapOf(),
+			EMPTY_REQUEST
 		)
 	}
 }
