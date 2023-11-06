@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:paddingTop="16dp"
+	android:paddingHorizontal="24dp">
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/playlist_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/edit_playlist_name">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/playlist_description"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="8dp"
+		android:hint="@string/edit_playlist_description">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/playlist_visibility"
+		style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/edit_playlist_visibility"
+		android:labelFor="@+id/playlist_visibility_actv">
+
+		<AutoCompleteTextView
+			android:id="@+id/playlist_visibility_actv"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:inputType="none"
+			app:simpleItems="@array/playlist_visibility" />
+
+	</com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

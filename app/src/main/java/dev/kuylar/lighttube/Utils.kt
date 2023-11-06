@@ -1,6 +1,7 @@
 package dev.kuylar.lighttube
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.LightTubeImage
+import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
@@ -331,10 +333,12 @@ class Utils {
 							enableNotifications = true
 						)
 						runOnUiThread {
-							after.invoke(SubscriptionInfo(
-								subscribed = true,
-								notifications = true
-							))
+							after.invoke(
+								SubscriptionInfo(
+									subscribed = true,
+									notifications = true
+								)
+							)
 							updateSubscriptionButton(
 								this,
 								button,
@@ -354,6 +358,31 @@ class Utils {
 					)
 				}
 				sheet.show((context as FragmentActivity).supportFragmentManager, null)
+			}
+		}
+
+		fun parsePlaylistVisibility(text: String, resources: Resources): PlaylistVisibility {
+			val arr = resources.getStringArray(R.array.playlist_visibility)
+			val visibleText = arr[2]
+			val unlistedText = arr[1]
+			val privateText = arr[0]
+			return when (text) {
+				visibleText -> PlaylistVisibility.Visible
+				unlistedText -> PlaylistVisibility.Unlisted
+				privateText -> PlaylistVisibility.Private
+				else -> PlaylistVisibility.Private
+			}
+		}
+
+		fun getPlaylistVisibility(visibility: PlaylistVisibility, resources: Resources): String {
+			val arr = resources.getStringArray(R.array.playlist_visibility)
+			val visibleText = arr[2]
+			val unlistedText = arr[1]
+			val privateText = arr[0]
+			return when (visibility) {
+				PlaylistVisibility.Visible -> visibleText
+				PlaylistVisibility.Unlisted -> unlistedText
+				PlaylistVisibility.Private -> privateText
 			}
 		}
 	}

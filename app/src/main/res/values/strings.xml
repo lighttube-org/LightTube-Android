@@ -116,4 +116,22 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="notifications">Notifications</string>
 	<string name="notifications_on">All</string>
 	<string name="notifications_off">None</string>
+
+	<!-- Playlists -->
+	<string name="edit_playlist_title">Edit playlist</string>
+	<string name="edit_playlist_submit">Edit</string>
+	<string name="edit_playlist_cancel">Cancel</string>
+	<string name="edit_playlist_name">Playlist Title</string>
+	<string name="edit_playlist_description">Playlist Description</string>
+	<string name="edit_playlist_visibility">Playlist Visibility</string>
+	<string name="delete_playlist_title">Delete \"%s\"?</string>
+	<string name="delete_playlist_body">This action is irreversible.</string>
+	<string name="delete_playlist_cancel">Cancel</string>
+	<string name="delete_playlist">Delete</string>
+	<string name="delete_playlist_success">Playlist deleted.</string>
+	<string-array name="playlist_visibility">
+		<item>Private</item>
+		<item>Unlisted</item>
+		<item>Public</item>
+	</string-array>
 </resources>
