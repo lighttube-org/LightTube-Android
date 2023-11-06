@@ -306,6 +306,27 @@ class LightTubeApi(context: Context) {
 		)
 	}
 
+	fun updatePlaylist(
+		id: String,
+		title: String,
+		description: String?,
+		visibility: PlaylistVisibility
+	): ApiResponse<UserPlaylist> {
+		return post(
+			object : TypeToken<ApiResponse<UserPlaylist>>() {},
+			"PATCH",
+			"playlists/$id",
+			hashMapOf(),
+			jsonBody(
+				mapOf(
+					Pair("title", title),
+					Pair("description", description),
+					Pair("visibility", visibility)
+				)
+			)
+		)
+	}
+
 	fun deletePlaylist(
 		id: String
 	): ApiResponse<String> {
