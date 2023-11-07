@@ -96,6 +96,7 @@ class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 			}
 		} else {
 			binding.buttonEditPlaylist.visibility = View.GONE
+			binding.buttonDeletePlaylist.visibility = View.GONE
 		}
 	}
 }
