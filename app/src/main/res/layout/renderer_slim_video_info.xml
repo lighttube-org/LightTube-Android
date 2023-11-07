@@ -67,6 +67,7 @@
 				android:id="@+id/channel_avatar"
 				android:layout_width="32dp"
 				android:layout_height="32dp"
+				android:background="?colorControlHighlight"
 				app:shapeAppearanceOverlay="@style/avatarImageView"
 				tools:src="@tools:sample/avatars" />
 
@@ -85,8 +86,8 @@
 	<HorizontalScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:paddingHorizontal="8dp"
 		android:clipToPadding="false"
+		android:paddingHorizontal="8dp"
 		android:scrollbars="none">
 
 		<LinearLayout

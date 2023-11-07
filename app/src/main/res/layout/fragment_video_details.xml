@@ -20,8 +20,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginVertical="8dp"
-		android:orientation="horizontal"
-		android:baselineAligned="false">
+		android:baselineAligned="false"
+		android:orientation="horizontal">
 
 		<LinearLayout
 			android:id="@+id/like_container"
@@ -156,6 +156,7 @@
 				android:id="@+id/channel_avatar"
 				android:layout_width="64dp"
 				android:layout_height="64dp"
+				android:background="?colorControlHighlight"
 				app:shapeAppearanceOverlay="@style/avatarImageView"
 				tools:src="@tools:sample/avatars" />
 
