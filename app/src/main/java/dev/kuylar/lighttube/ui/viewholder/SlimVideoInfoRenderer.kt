@@ -15,6 +15,7 @@ import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.fragment.AddVideoToPlaylistFragment
 import kotlin.concurrent.thread
 
 open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBinding) :
@@ -79,6 +80,11 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 
 			val shareIntent = Intent.createChooser(sendIntent, null)
 			activity.startActivity(shareIntent)
+		}
+
+		binding.buttonSave.setOnClickListener {
+			val sheet = AddVideoToPlaylistFragment(video.id)
+			sheet.show(activity.supportFragmentManager, null)
 		}
 
 		thread {

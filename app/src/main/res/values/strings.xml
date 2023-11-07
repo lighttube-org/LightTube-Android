@@ -131,8 +131,11 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="delete_playlist_cancel">Cancel</string>
 	<string name="delete_playlist">Delete</string>
 	<string name="delete_playlist_success">Playlist deleted.</string>
-	<string name="create_playlist">Create Playlist</string>
+	<string name="create_playlist">New Playlist</string>
 	<string name="create_playlist_default_title">New Playlist</string>
+	<string name="playlist_add_video">Save video to…</string>
+	<string name="playlist_video_added">Added to %s.</string>
+	<string name="playlist_video_add_failed">Failed to add video (%s)</string>
 	<string-array name="playlist_visibility">
 		<item>Private</item>
 		<item>Unlisted</item>
