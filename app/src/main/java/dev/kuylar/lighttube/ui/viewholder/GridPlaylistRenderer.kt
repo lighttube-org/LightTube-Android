@@ -38,7 +38,7 @@ class GridPlaylistRenderer(val binding: RendererGridPlaylistBinding) :
 						PlaylistVisibility.Private,
 						getString(R.string.action_playlist_create),
 						getString(R.string.action_cancel)
-					) { dialog, title, description, visibility ->
+					) { _, title, description, visibility ->
 						thread {
 							val createPlaylist =
 								getApi().createPlaylist(title, description, visibility)
