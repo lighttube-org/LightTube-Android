@@ -2,6 +2,7 @@ package dev.kuylar.lighttube.ui.viewholder
 
 import android.view.View
 import android.widget.Toast
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
@@ -82,6 +83,7 @@ class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 										R.string.delete_playlist_success,
 										Toast.LENGTH_LONG
 									).show()
+									findNavController(R.id.nav_host_fragment_activity_main).navigateUp()
 									dialog.dismiss()
 								}
 							}
