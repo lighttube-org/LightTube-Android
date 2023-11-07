@@ -205,11 +205,16 @@ class LightTubeApi(context: Context) {
 
 	@Throws(LightTubeException::class, IOException::class)
 	fun getPlaylist(id: String): ApiResponse<LightTubePlaylist> {
-		return get(
+		val res = get(
 			object : TypeToken<ApiResponse<LightTubePlaylist>>() {},
 			"playlist",
 			hashMapOf(Pair("id", id))
 		)
+		if (res.userData != null) {
+			res.userData.editable = res.userData.user?.ltChannelID == res.data?.channel?.id
+			res.userData.playlistId = res.data?.id
+		}
+		return res
 	}
 
 	@Throws(LightTubeException::class, IOException::class)

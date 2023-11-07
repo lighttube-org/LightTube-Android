@@ -14,7 +14,8 @@ class RendererRecyclerAdapter(
 ) :
 	RecyclerView.Adapter<RendererViewHolder>() {
 
-	private var userData = UserData(null, hashMapOf())
+	private var userData = UserData(null, hashMapOf(), false, null)
+
 	// forgive me other android devs that obviously
 	// know better than me, but i had to do this :(
 	override fun getItemViewType(position: Int): Int {
@@ -47,5 +48,7 @@ class RendererRecyclerAdapter(
 		if (newUserData == null) return
 		userData.user = newUserData.user
 		userData.channels.putAll(newUserData.channels)
+		userData.editable = newUserData.editable
+		userData.playlistId = newUserData.playlistId
 	}
 }

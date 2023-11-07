@@ -25,12 +25,13 @@
 		tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 	<LinearLayout
+		android:id="@+id/linearLayout4"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 		android:paddingHorizontal="8dp"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/button_delete_video"
 		app:layout_constraintStart_toEndOf="@+id/video_thumbnail"
 		app:layout_constraintTop_toTopOf="@+id/video_thumbnail"
 		app:layout_constraintVertical_bias="0.0">
@@ -70,5 +71,16 @@
 		app:layout_constraintBottom_toBottomOf="@+id/video_thumbnail"
 		app:layout_constraintEnd_toEndOf="@+id/video_thumbnail"
 		tools:text="12:34" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_delete_video"
+		style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:backgroundTint="#0000"
+		app:icon="@drawable/ic_delete"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
