@@ -70,4 +70,24 @@
 		app:layout_constraintStart_toStartOf="@+id/playlist_thumbnail"
 		tools:text="12 videos" />
 
+	<FrameLayout
+		android:id="@+id/playlist_icon_container"
+		android:layout_width="0dp"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="@+id/playlist_thumbnail"
+		app:layout_constraintEnd_toEndOf="@+id/playlist_thumbnail"
+		app:layout_constraintStart_toStartOf="@+id/playlist_thumbnail"
+		app:layout_constraintTop_toTopOf="@id/playlist_thumbnail">
+
+		<ImageView
+			android:id="@+id/playlist_icon_create"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_gravity="center"
+			android:src="@drawable/ic_create"
+			android:importantForAccessibility="no" />
+	</FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

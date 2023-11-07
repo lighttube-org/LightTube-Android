@@ -34,8 +34,10 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="action_comments">Comments</string>
 	<string name="action_close">Close</string>
 	<string name="action_retry">Retry</string>
+	<string name="action_cancel">Cancel</string>
 	<string name="action_playlist_play">Play all</string>
 	<string name="action_playlist_shuffle">Shuffle</string>
+	<string name="action_playlist_create">Create</string>
 
 	<!-- Templates -->
 	<string name="template_instance_info">API: %s | Accounts: %s</string>
@@ -129,6 +131,8 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="delete_playlist_cancel">Cancel</string>
 	<string name="delete_playlist">Delete</string>
 	<string name="delete_playlist_success">Playlist deleted.</string>
+	<string name="create_playlist">Create Playlist</string>
+	<string name="create_playlist_default_title">New Playlist</string>
 	<string-array name="playlist_visibility">
 		<item>Private</item>
 		<item>Unlisted</item>
