@@ -73,6 +73,7 @@ class SearchFragment : Fragment() {
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
 					(activity as MainActivity).setLoading(false)
+					(binding.recyclerSearch.adapter!! as RendererRecyclerAdapter).updateUserData(feed.userData)
 					binding.recyclerSearch.adapter!!.notifyItemRangeInserted(
 						start,
 						feed.data.searchResults.size

@@ -150,6 +150,11 @@ class MainActivity : AppCompatActivity() {
 			}
 		}
 
+		// set current user
+		thread {
+			updateCurrentUser()
+		}
+
 		val handler = Handler(mainLooper)
 		var sponsorblockRunnable = Runnable {}
 		sponsorblockRunnable = Runnable {
@@ -350,6 +355,17 @@ class MainActivity : AppCompatActivity() {
 			} else {
 				// compiler doesnt shut up otherwise
 			}
+		}
+	}
+
+	private fun updateCurrentUser(retryCount: Int = 0) {
+		try {
+			val user = api.getCurrentUser().data
+			if (user != null)
+				api.currentUser = user
+		} catch (_: Exception) {
+			if (retryCount < 5)
+				updateCurrentUser(retryCount + 1)
 		}
 	}
 }

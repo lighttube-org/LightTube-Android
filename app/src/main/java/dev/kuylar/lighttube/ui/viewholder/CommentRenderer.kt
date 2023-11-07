@@ -6,10 +6,11 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 
 class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject) {
+	override fun bind(item: JsonObject, userData: UserData?) {
 		if (item.getAsJsonPrimitive("pinned").asBoolean) {
 			binding.commentPinned.visibility = View.VISIBLE
 		}

@@ -3,11 +3,12 @@ package dev.kuylar.lighttube.ui.viewholder
 import android.app.Activity
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
 
 class ItemSectionRenderer(val binding: RendererItemSectionBinding) :
 	RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject) {
+	override fun bind(item: JsonObject, userData: UserData?) {
 		if (item.get("contents") != null)
 			item.getAsJsonArray("contents").forEach {
 				val holder = Utils.getViewHolder(
@@ -15,7 +16,7 @@ class ItemSectionRenderer(val binding: RendererItemSectionBinding) :
 					(binding.root.context as Activity).layoutInflater,
 					binding.root
 				)
-				holder.bind(it.asJsonObject)
+				holder.bind(it.asJsonObject, userData)
 				binding.root.addView(holder.itemView)
 			}
 		else if (item.get("items") != null)
@@ -25,7 +26,7 @@ class ItemSectionRenderer(val binding: RendererItemSectionBinding) :
 					(binding.root.context as Activity).layoutInflater,
 					binding.root
 				)
-				holder.bind(it.asJsonObject)
+				holder.bind(it.asJsonObject, userData)
 				binding.root.addView(holder.itemView)
 			}
 	}

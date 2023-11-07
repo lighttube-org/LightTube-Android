@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.fragment.AddVideoToPlaylistFragment">
+
+	<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="16dp"
+					android:layout_weight="1"
+					android:text="@string/playlist_add_video"
+					android:textAppearance="?textAppearanceTitleMedium"
+					android:textStyle="bold" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_new_playlist"
+					style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/create_playlist"
+					app:backgroundTint="#0000"
+					app:icon="@drawable/ic_create" />
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="?android:attr/listDivider" />
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recycler_playlists"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1"
+				android:clipToPadding="false"
+				android:paddingVertical="8dp"
+				tools:listitem="@layout/item_menu_playlist" />
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+</FrameLayout>

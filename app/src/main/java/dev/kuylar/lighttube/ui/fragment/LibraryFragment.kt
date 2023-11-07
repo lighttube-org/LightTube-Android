@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.JsonArray
+import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
@@ -52,7 +54,30 @@ class LibraryFragment : Fragment() {
 			thread {
 				try {
 					val playlists = api.getLibraryPlaylists()
+					items.add(0, JsonObject().apply {
+						addProperty("type", "gridPlaylistRenderer")
+						addProperty("id", "!ACTION_NewPlaylist")
+						addProperty("title", getString(R.string.create_playlist))
+						addProperty("videoCount", 0)
+						add("thumbnails", JsonArray().apply {
+							add(JsonObject().apply {
+								addProperty("width", 0)
+								addProperty("height", 0)
+								addProperty("url", "")
+							})
+						})
+						add("channel", JsonObject().apply {
+							add("id", JsonNull.INSTANCE)
+							add("title", JsonNull.INSTANCE)
+							add("avatar", JsonNull.INSTANCE)
+							add("subscribers", JsonNull.INSTANCE)
+							add("badges", JsonArray(0))
+						})
+					})
 					items.addAll(playlists.data ?: emptyList())
+					(binding.recyclerLibrary.adapter as RendererRecyclerAdapter).updateUserData(
+						playlists.userData
+					)
 					runOnUiThread {
 						binding.recyclerLibrary.adapter!!.notifyItemRangeInserted(
 							0,

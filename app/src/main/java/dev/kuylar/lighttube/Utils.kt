@@ -1,8 +1,16 @@
 package dev.kuylar.lighttube
 
+import android.content.Context
+import android.content.DialogInterface
+import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -10,6 +18,8 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.LightTubeImage
+import dev.kuylar.lighttube.api.models.PlaylistVisibility
+import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
@@ -23,6 +33,8 @@ import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelVideoPlayerRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
@@ -41,6 +53,7 @@ import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
+import kotlin.concurrent.thread
 
 
 class Utils {
@@ -122,7 +135,8 @@ class Utils {
 						.create()
 						.fromJson(
 							response.body!!.string(),
-							GithubRelease::class.java)
+							GithubRelease::class.java
+						)
 					val latestVer = res.tagName.substring(1)
 					val version = BuildConfig.VERSION_NAME.split(" ").first()
 					val latestVersionCode = latestVer.replace(".", "").toInt()
@@ -140,6 +154,25 @@ class Utils {
 				Log.e("UpdateChecker", e.message, e)
 			}
 			return updateInfo
+		}
+
+		fun updateSubscriptionButton(
+			context: Context,
+			button: MaterialButton,
+			subscriptionInfo: SubscriptionInfo
+		) {
+			if (!subscriptionInfo.subscribed) {
+				button.text = context.getString(R.string.subscribe)
+				button.setIconResource(0)
+				return
+			}
+
+			button.text = context.getString(R.string.subscribed)
+			if (subscriptionInfo.notifications) {
+				button.setIconResource(R.drawable.ic_notifications_on)
+			} else {
+				button.setIconResource(R.drawable.ic_notifications_off)
+			}
 		}
 
 		fun getViewHolder(
@@ -285,6 +318,122 @@ class Utils {
 
 				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 			}
+		}
+
+		fun subscribe(
+			context: Context,
+			channelId: String,
+			subscriptionInfo: SubscriptionInfo,
+			button: MaterialButton,
+			after: (SubscriptionInfo) -> Unit
+		) {
+			if (!subscriptionInfo.subscribed) {
+				button.isEnabled = false
+				thread {
+					with((context as MainActivity)) {
+						getApi().subscribe(
+							channelId,
+							subscribed = true,
+							enableNotifications = true
+						)
+						runOnUiThread {
+							after.invoke(
+								SubscriptionInfo(
+									subscribed = true,
+									notifications = true
+								)
+							)
+							updateSubscriptionButton(
+								this,
+								button,
+								subscriptionInfo
+							)
+							button.isEnabled = true
+						}
+					}
+				}
+			} else {
+				val sheet = ManageSubscriptionFragment(channelId, subscriptionInfo) {
+					after.invoke(it)
+					updateSubscriptionButton(
+						context,
+						button,
+						it
+					)
+				}
+				sheet.show((context as FragmentActivity).supportFragmentManager, null)
+			}
+		}
+
+		fun parsePlaylistVisibility(text: String, resources: Resources): PlaylistVisibility {
+			val arr = resources.getStringArray(R.array.playlist_visibility)
+			val visibleText = arr[2]
+			val unlistedText = arr[1]
+			val privateText = arr[0]
+			return when (text) {
+				visibleText -> PlaylistVisibility.Visible
+				unlistedText -> PlaylistVisibility.Unlisted
+				privateText -> PlaylistVisibility.Private
+				else -> PlaylistVisibility.Private
+			}
+		}
+
+		fun getPlaylistVisibility(visibility: PlaylistVisibility, resources: Resources): String {
+			val arr = resources.getStringArray(R.array.playlist_visibility)
+			val visibleText = arr[2]
+			val unlistedText = arr[1]
+			val privateText = arr[0]
+			return when (visibility) {
+				PlaylistVisibility.Visible -> visibleText
+				PlaylistVisibility.Unlisted -> unlistedText
+				PlaylistVisibility.Private -> privateText
+			}
+		}
+
+		fun showPlaylistDialog(
+			context: Context,
+			layoutInflater: LayoutInflater,
+			header: String,
+			title: String,
+			description: String,
+			visibility: PlaylistVisibility,
+			positiveButtonText: String,
+			negativeButtonText: String,
+			positiveAction: (dialog: DialogInterface, title: String, description: String, visibility: PlaylistVisibility) -> Unit
+		) {
+			val v = layoutInflater.inflate(R.layout.dialog_edit_playlist, null)
+			val titleView = v.findViewById<TextInputLayout>(R.id.playlist_title)
+			val descriptionView =
+				v.findViewById<TextInputLayout>(R.id.playlist_description)
+			val visibilityView =
+				v.findViewById<TextInputLayout>(R.id.playlist_visibility)
+
+			titleView.editText!!.setText(title)
+			descriptionView.editText!!.setText(description)
+			(visibilityView.editText!! as MaterialAutoCompleteTextView).setText(
+				getPlaylistVisibility(
+					visibility,
+					context.resources
+				), false
+			)
+
+			MaterialAlertDialogBuilder(context)
+				.setTitle(header)
+				.setView(v)
+				.setPositiveButton(positiveButtonText) { dialog, _ ->
+					positiveAction(
+						dialog, titleView.editText!!.editableText.toString(),
+						descriptionView.editText!!.editableText.toString(),
+						parsePlaylistVisibility(
+							visibilityView.editText!!.editableText.toString(),
+							context.resources
+						)
+					)
+				}
+				.setNegativeButton(negativeButtonText) { dialog, _ ->
+					dialog.dismiss()
+				}
+				.show()
 		}
 	}
 }

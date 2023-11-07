@@ -1,6 +1,8 @@
 package dev.kuylar.lighttube.api.models
 
 class UserData(
-	val user: LightTubeUserInfo,
-	val channels: HashMap<String, SubscriptionInfo>
+	var user: LightTubeUserInfo?,
+	val channels: HashMap<String, SubscriptionInfo>,
+	var editable: Boolean, ///todo: send this from the API in the future
+	var playlistId: String?
 )

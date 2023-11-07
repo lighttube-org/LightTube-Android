@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
 
 class RendererRecyclerAdapter(
@@ -12,6 +13,8 @@ class RendererRecyclerAdapter(
 	private val requestMore: ((String) -> Unit)? = null
 ) :
 	RecyclerView.Adapter<RendererViewHolder>() {
+
+	private var userData = UserData(null, hashMapOf(), false, null)
 
 	// forgive me other android devs that obviously
 	// know better than me, but i had to do this :(
@@ -36,8 +39,16 @@ class RendererRecyclerAdapter(
 					requestMore?.invoke(token.asString)
 			}
 
-			"richItemRenderer" -> holder.bind(renderer.getAsJsonObject("content"))
-			else -> holder.bind(renderer)
+			"richItemRenderer" -> holder.bind(renderer.getAsJsonObject("content"), userData)
+			else -> holder.bind(renderer, userData)
 		}
+	}
+
+	fun updateUserData(newUserData: UserData?) {
+		if (newUserData == null) return
+		userData.user = newUserData.user
+		userData.channels.putAll(newUserData.channels)
+		userData.editable = newUserData.editable
+		userData.playlistId = newUserData.playlistId
 	}
 }

@@ -3,6 +3,7 @@ package dev.kuylar.lighttube.api.models
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import dev.kuylar.lighttube.api.LightTubeApi
 
 class LightTubePlaylist(
 	val id: String,
@@ -18,7 +19,10 @@ class LightTubePlaylist(
 	val continuation: String? = null,
 	val videos: List<JsonObject>
 ) {
-	fun getAsRenderer() : JsonObject {
+	var editable: Boolean = false
+
+	fun getAsRenderer(api: LightTubeApi) : JsonObject {
+		editable = api.currentUser?.ltChannelID == channel.id
 		val gson = Gson()
 		val asJson = gson.fromJson(gson.toJson(this), JsonObject::class.java)
 		asJson.add("type", JsonPrimitive("playlistInfoRenderer"))
