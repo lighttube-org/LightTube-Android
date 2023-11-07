@@ -4,12 +4,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:layout_marginHorizontal="8dp"
+	android:layout_marginBottom="8dp"
 	android:padding="8dp">
 
 	<com.google.android.material.imageview.ShapeableImageView
 		android:id="@+id/comment_avatar"
 		android:layout_width="32dp"
 		android:layout_height="32dp"
+		android:background="?colorControlHighlight"
 		app:shapeAppearanceOverlay="@style/avatarImageView"
 		tools:srcCompat="@tools:sample/avatars" />
 

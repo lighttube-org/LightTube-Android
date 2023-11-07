@@ -4,6 +4,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:id="@+id/recycler_comments"
-	android:padding="8dp"
-	tools:listitem="@layout/renderer_unknown"
+	android:paddingVertical="8dp"
+	android:clipToPadding="false"
+	tools:listitem="@layout/renderer_comment"
 	tools:context=".ui.fragment.VideoCommentsFragment"/>

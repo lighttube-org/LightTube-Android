@@ -16,13 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
-import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -41,9 +39,9 @@ import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
 import kotlin.concurrent.thread
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -55,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
 	private var fullscreen = false
-	private lateinit var sponsorBlockButton: MaterialButton
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -76,7 +73,6 @@ class MainActivity : AppCompatActivity() {
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-		sponsorBlockButton = findViewById(R.id.player_skip)
 
 		val navView: BottomNavigationView = binding.navView
 		navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -93,11 +89,7 @@ class MainActivity : AppCompatActivity() {
 		navView.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
-			if (!player.closeSheets()) // attempt to close details/comments
-				if (!tryExitFullscreen()) // attempt to exit fullscreen
-					if (!minimizePlayer()) // attempt to minimize the player sheet
-						if (!navController.popBackStack()) // attempt to go back on the fragment history
-							finish() // close the app
+			goBack(true)
 		}
 
 		val miniplayerView: View = findViewById(R.id.miniplayer)
@@ -169,6 +161,22 @@ class MainActivity : AppCompatActivity() {
 			handler.postDelayed(sponsorblockRunnable, 100)
 		}
 		handler.postDelayed(sponsorblockRunnable, 100)
+	}
+
+	private fun goBack(closeApp: Boolean): Boolean {
+		if (!player.closeSheets()) // attempt to close details/comments
+			if (!tryExitFullscreen()) // attempt to exit fullscreen
+				if (!minimizePlayer()) // attempt to minimize the player sheet
+					if (!navController.popBackStack()) { // attempt to go back on the fragment history
+						// close the app
+						if (closeApp) finish()
+						return true
+					}
+		return false
+	}
+
+	override fun onSupportNavigateUp(): Boolean {
+		return goBack(false)
 	}
 
 	private fun setApi() {
@@ -283,11 +291,6 @@ class MainActivity : AppCompatActivity() {
 		requestedOrientation =
 			if (isPortrait) ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 			else ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
-		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
-			bottomMargin =
-				resources.getDimension(R.dimen.sponsorblock_margin_bottom_fullscreen).roundToInt()
-		}
 	}
 
 	fun exitFullscreen(playerView: View) {
@@ -312,11 +315,6 @@ class MainActivity : AppCompatActivity() {
 		binding.fullscreenPlayerContainer.visibility = View.GONE
 		miniplayer.isDraggable = true
 		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
-
-		sponsorBlockButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
-			bottomMargin =
-				resources.getDimension(R.dimen.sponsorblock_margin_bottom_default).roundToInt()
-		}
 	}
 
 	private fun tryExitFullscreen(): Boolean {
@@ -339,10 +337,19 @@ class MainActivity : AppCompatActivity() {
 			miniplayerScene.rebuildScene()
 
 			// SORRY BUT I COULDNT UPDATE THE LAYOUT OTHERWISE 😭😭😭
-			miniplayerScene.setProgress(0.999f, 10f)
-			Handler(mainLooper).postDelayed({
-				miniplayerScene.progress = 1f
-			}, 10)
+			if (abs(miniplayerScene.progress - 1f) < 0.1f) {
+				miniplayerScene.setProgress(0.999f, 10f)
+				Handler(mainLooper).postDelayed({
+					miniplayerScene.progress = 1f
+				}, 10)
+			} else if (miniplayerScene.progress < 0.1f) {
+				miniplayerScene.setProgress(0.001f, 10f)
+				Handler(mainLooper).postDelayed({
+					miniplayerScene.progress = 0f
+				}, 10)
+			} else {
+				// compiler doesnt shut up otherwise
+			}
 		}
 	}
 }

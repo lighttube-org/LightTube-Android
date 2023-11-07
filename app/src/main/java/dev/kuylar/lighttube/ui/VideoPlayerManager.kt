@@ -70,6 +70,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		playerBox.findViewById(R.id.player_storyboard)
 	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
 	private val sponsorblockSkipButton: MaterialButton = playerBox.findViewById(R.id.player_skip)
+	private val sponsorblockSkipButtonGhost: MaterialButton = playerBox.findViewById(R.id.player_skip_ghost)
 	private val bufferingIndicator: CircularProgressIndicator =
 		playerBox.findViewById(R.id.player_buffering_progress)
 
@@ -285,8 +286,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 		if (player.currentTracks.groups.none { it.type == C.TRACK_TYPE_TEXT }) {
 			setCaptionsButtonState(0)
-		} else if (player.trackSelectionParameters.overrides.filter { it.key.type == C.TRACK_TYPE_TEXT }
-				.isNotEmpty()) {
+		} else if (player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }.any { it.isSelected }) {
 			setCaptionsButtonState(2)
 		} else {
 			setCaptionsButtonState(1)
@@ -377,7 +377,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	fun showCommentsButton() {
 		try {
 			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton()
-		} catch (e: Exception) { }
+		} catch (_: Exception) { }
 	}
 
 	fun setSheets(details: Boolean, comments: Boolean) {
@@ -414,16 +414,20 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	fun updateSkipButton(segment: SponsorBlockSegment?) {
 		if (segment == null) {
 			sponsorblockSkipButton.visibility = View.GONE
+			sponsorblockSkipButtonGhost.visibility = View.GONE
 			sponsorblockSkipButton.setOnClickListener {}
 		} else {
-			sponsorblockSkipButton.text = activity.getString(
+			val text = activity.getString(
 				R.string.sponsorblock_skip_template,
 				activity.getString(segment.getCategoryTextId())
 			)
+			sponsorblockSkipButton.text = text
+			sponsorblockSkipButtonGhost.text = text
 			sponsorblockSkipButton.setOnClickListener {
-				player.seekTo(segment.endTimeMs)
+				player.seekTo(segment.endTimeMs + 1)
 			}
 			sponsorblockSkipButton.visibility = View.VISIBLE
+			sponsorblockSkipButtonGhost.visibility = View.INVISIBLE
 		}
 	}
 

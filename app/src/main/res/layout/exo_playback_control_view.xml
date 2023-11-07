@@ -5,7 +5,9 @@
 	android:id="@+id/player_controls"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:animateLayoutChanges="true"
 	android:background="#7000"
+	android:clipToPadding="false"
 	android:padding="8dp">
 
 	<LinearLayout
@@ -21,7 +23,7 @@
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="#0000"
+			app:backgroundTint="#0000"
 			app:icon="@drawable/ic_minimize"
 			app:iconTint="#fff" />
 
@@ -58,8 +60,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:alpha=".5"
-			android:background="#0000"
 			android:enabled="false"
+			app:backgroundTint="#0000"
 			app:icon="@drawable/ic_captions"
 			app:iconTint="#fff" />
 
@@ -68,7 +70,7 @@
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:background="#0000"
+			app:backgroundTint="#0000"
 			app:icon="@drawable/ic_settings"
 			app:iconTint="#fff" />
 
@@ -171,11 +173,27 @@
 		style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:background="#0000"
+		app:backgroundTint="#0000"
 		app:icon="@drawable/ic_fullscreen"
 		app:iconTint="#fff"
 		app:layout_constraintBottom_toTopOf="@id/exo_progress"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintEnd_toStartOf="@id/player_skip_ghost" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/player_skip_ghost"
+		style="?attr/materialButtonOutlinedStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="-32dp"
+		android:paddingRight="64dp"
+		android:text="@string/sponsorblock_skip_template"
+		android:textColor="#fff"
+		android:visibility="gone"
+		app:icon="@drawable/ic_next"
+		app:layout_constraintBottom_toTopOf="@id/exo_progress"
+		app:layout_constraintEnd_toEndOf="parent"
+		tools:ignore="RtlHardcoded,RtlSymmetry"
+		tools:visibility="visible" />
 
 	<FrameLayout
 		android:layout_width="match_parent"

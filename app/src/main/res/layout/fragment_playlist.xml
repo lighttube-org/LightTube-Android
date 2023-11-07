@@ -4,7 +4,8 @@
 	android:id="@+id/recycler_playlist"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:padding="8dp"
+	android:paddingVertical="8dp"
+	android:clipToPadding="false"
 	tools:context=".ui.fragment.PlaylistFragment"
 	tools:itemCount="1"
 	tools:listitem="@layout/renderer_playlist_info" />

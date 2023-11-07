@@ -4,8 +4,8 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:paddingBottom="8dp">
+	android:layout_marginBottom="8dp"
+	android:orientation="vertical">
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -24,6 +24,7 @@
 				style="@style/TextAppearance.AppCompat.Body1"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:padding="8dp"
 				android:textSize="20sp"
 				android:textStyle="bold"
 				tools:text="Video Title" />
@@ -33,7 +34,8 @@
 				android:layout_height="wrap_content"
 				android:gravity="center_vertical"
 				android:orientation="horizontal"
-				android:paddingVertical="8dp">
+				android:paddingHorizontal="8dp"
+				android:paddingBottom="8dp">
 
 				<TextView
 					android:id="@+id/video_views"
@@ -59,12 +61,13 @@
 			android:background="?attr/selectableItemBackground"
 			android:gravity="center_vertical"
 			android:orientation="horizontal"
-			android:paddingVertical="8dp">
+			android:padding="8dp">
 
 			<com.google.android.material.imageview.ShapeableImageView
 				android:id="@+id/channel_avatar"
 				android:layout_width="32dp"
 				android:layout_height="32dp"
+				android:background="?colorControlHighlight"
 				app:shapeAppearanceOverlay="@style/avatarImageView"
 				tools:src="@tools:sample/avatars" />
 
@@ -83,12 +86,14 @@
 	<HorizontalScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-
+		android:clipToPadding="false"
+		android:paddingHorizontal="8dp"
 		android:scrollbars="none">
 
 		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
+			android:animateLayoutChanges="true"
 			android:orientation="horizontal">
 
 			<com.google.android.material.button.MaterialButtonToggleGroup

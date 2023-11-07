@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,8 +27,8 @@ class VideoInfoFragment : Fragment() {
 	private val items: MutableList<JsonObject> = mutableListOf()
 	private lateinit var id: String
 	private var playlistId: String? = null
-	private lateinit var detailsSheet: BottomSheetBehavior<LinearLayout>
-	private lateinit var commentsSheet: BottomSheetBehavior<LinearLayout>
+	private lateinit var detailsSheet: BottomSheetBehavior<FrameLayout>
+	private lateinit var commentsSheet: BottomSheetBehavior<FrameLayout>
 	private lateinit var adapter: RendererRecyclerAdapter
 	private lateinit var binding: FragmentVideoInfoBinding
 	private lateinit var api: LightTubeApi
