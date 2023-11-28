@@ -70,8 +70,16 @@ class VideoCommentsFragment : Fragment() {
 		(activity as MainActivity).setLoading(true)
 		thread {
 			try {
-				val comments = if (initial) api.getComments(id, SortOrder.TopComments) else api.continueComments(commentsContinuation!!)
-				if (initial) player.showCommentsButton()
+				val comments = if (initial) api.getComments(
+					id,
+					SortOrder.TopComments
+				) else api.continueComments(commentsContinuation!!)
+				if (initial) with(comments.data!!.contents[0].asJsonObject) {
+					player.showCommentsButton(
+						this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
+						this.getAsJsonPrimitive("content").asString
+					)
+				}
 				val start = items.size
 				items.addAll(comments.data!!.contents)
 				commentsContinuation = comments.data.continuation
@@ -87,6 +95,7 @@ class VideoCommentsFragment : Fragment() {
 			} catch (e: IOException) {
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
+					player.showCommentsButton()
 					loading = false
 					(activity as MainActivity).setLoading(false)
 					val sb = Snackbar.make(
@@ -103,6 +112,7 @@ class VideoCommentsFragment : Fragment() {
 			} catch (e: LightTubeException) {
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
+					player.showCommentsButton()
 					loading = false
 					(activity as MainActivity).setLoading(false)
 				}

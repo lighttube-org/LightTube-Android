@@ -19,6 +19,7 @@ class LightTubeVideo(
 	val chapters: ArrayList<VideoChapter>
 ) {
 	var showCommentsButton: Boolean = false
+	var firstComment: Pair<String, String>? = null
 	fun getAsRenderer() : JsonObject {
 		val gson = Gson()
 		val asJson = gson.fromJson(gson.toJson(this), JsonObject::class.java)

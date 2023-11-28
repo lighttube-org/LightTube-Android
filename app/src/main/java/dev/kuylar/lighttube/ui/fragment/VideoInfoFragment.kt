@@ -130,9 +130,10 @@ class VideoInfoFragment : Fragment() {
 		commentsSheet.state = if (comments) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
 	}
 
-	fun showCommentsButton() {
+	fun showCommentsButton(firstComment: Pair<String, String>?) {
 		val video = Gson().fromJson(items[0], LightTubeVideo::class.java)
 		video.showCommentsButton = true
+		video.firstComment = firstComment
 		items[0] = video.getAsRenderer()
 		adapter.notifyItemChanged(0)
 	}

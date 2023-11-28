@@ -30,18 +30,31 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			)
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
+		binding.channelSubscribers.text = video.channel.subscribers
 		binding.videoViews.text = video.viewCount
 		binding.videoUploaded.text = video.dateText
 		binding.buttonLike.text = video.likeCount
-		if (video.showCommentsButton)
-			binding.buttonComments.visibility = View.VISIBLE
+		if (video.showCommentsButton) {
+			if (video.firstComment != null) {
+				binding.commentsLoading.visibility = View.GONE
+				binding.commentsFirst.visibility = View.VISIBLE
+
+				Glide.with(binding.root)
+					.load(video.firstComment!!.first)
+					.into(binding.channelAvatar)
+				binding.commentText.text = video.firstComment!!.second
+			} else {
+				binding.spinnerComments.visibility = View.GONE
+				binding.textCommentsLoading.setText(R.string.comments_loading_fail)
+			}
+		}
 
 		Glide
 			.with(activity)
 			.load(video.channel.avatar)
 			.into(binding.channelAvatar)
 
-		binding.buttonComments.setOnClickListener {
+		binding.cardComments.setOnClickListener {
 			activity.player.setSheets(details = false, comments = true)
 		}
 		binding.videoDetails.setOnClickListener {
