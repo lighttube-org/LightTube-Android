@@ -435,5 +435,21 @@ class Utils {
 				}
 				.show()
 		}
+
+		fun parseQueryString(query: String): HashMap<String, String> {
+			val queryString = query.trimStart('?')
+			val dict = HashMap<String, String>()
+			queryString.split('&').forEach {
+				val parts = it.split('=')
+				val name = parts.firstOrNull() ?: ""
+				val value = parts.drop(1).joinToString("=")
+				dict[name] = value
+			}
+			return dict
+		}
+
+		fun unwrapAttributionUrl(query: String): String {
+			return parseQueryString(query)["u"] ?: ""
+		}
 	}
 }

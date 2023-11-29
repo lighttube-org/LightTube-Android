@@ -3,6 +3,7 @@ package dev.kuylar.lighttube.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -11,12 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -166,6 +169,69 @@ class MainActivity : AppCompatActivity() {
 			handler.postDelayed(sponsorblockRunnable, 100)
 		}
 		handler.postDelayed(sponsorblockRunnable, 100)
+
+		if (intent != null)
+			handleDeepLinks(intent.action, intent.data)
+	}
+
+	private fun handleDeepLinks(action: String?, data: Uri?) {
+		if (action == null || data == null) return
+		val path = if (data.path == "/attribution_link") Utils.unwrapAttributionUrl(
+			data.query ?: ""
+		) else ((data.path ?: "/") + "?" + (data.query ?: "")).trimEnd('?')
+		val query =
+			if (path.contains('?')) Utils.parseQueryString(path.split("?")[1]) else HashMap()
+
+		fun video(id: String, time: String?, playlist: String?) {
+			player.playVideo(id) //todo: time, playlist
+		}
+
+		fun channel(id: String, tab: String?) {
+			val realTab = if (tab == "featured" || tab == null) "home" else tab
+			findNavController(R.id.nav_host_fragment_activity_main)
+				.navigate(R.id.navigation_channel, bundleOf(Pair("id", id), Pair("tab", realTab)))
+		}
+
+		fun playlist(id: String) {
+			findNavController(R.id.nav_host_fragment_activity_main)
+				.navigate(R.id.navigation_playlist, bundleOf(Pair("id", id)))
+		}
+
+		try {
+			if (path.startsWith("/watch")) {
+				video(query["v"]!!, query["t"], query["list"])
+			} else if (path.startsWith("/v/")) {
+				video(path.split('/')[2].split('?')[0], query["t"], query["list"])
+			} else if (path.startsWith("/embed/") || path.startsWith("/shorts/") || path.startsWith(
+					"/live/"
+				)
+			) {
+				video(path.split('/')[2].split('?')[0], query["t"] ?: query["start"], query["list"])
+			} else if (path.startsWith("/channel/") || path.startsWith("/user/") || path.startsWith(
+					"/c/"
+				)
+			) {
+				val parts = path.split('/')
+				channel(
+					parts[2].split('?')[0],
+					if (parts.size > 3) parts[3].split('?')[0] else null
+				)
+			} else if (path.startsWith("/@")) {
+				val parts = path.split('/')
+				channel(
+					parts[1].split('?')[0],
+					if (parts.size > 2) parts[2].split('?')[0] else null
+				)
+			} else if (path.startsWith("/playlist")) {
+				playlist(query["list"]!!)
+			} else if (data.host == "youtu.be") {
+				video(path.trimStart('/').split('?')[0], query["t"], query["list"])
+			} else {
+				throw IllegalArgumentException()
+			}
+		} catch (e: Exception) {
+			Toast.makeText(this, R.string.error_intent_filter, Toast.LENGTH_LONG).show()
+		}
 	}
 
 	private fun goBack(closeApp: Boolean): Boolean {
@@ -331,7 +397,8 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	fun updateVideoAspectRatio(aspectRatio: Float) {
-		val clampedAspectRatio = if (aspectRatio.isNaN()) 16f / 9f else aspectRatio.coerceIn(1f, 2f)
+		val clampedAspectRatio =
+			if (aspectRatio.isNaN()) 16f / 9f else aspectRatio.coerceIn(1f, 2f)
 		Log.i(
 			"VideoPlayer",
 			"Updating player aspect ratio to $clampedAspectRatio (original: $aspectRatio)"
