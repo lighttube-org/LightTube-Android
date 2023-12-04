@@ -174,8 +174,8 @@ class MainActivity : AppCompatActivity() {
 			handleDeepLinks(intent.action, intent.data)
 	}
 
-	private fun handleDeepLinks(action: String?, data: Uri?) {
-		if (action == null || data == null) return
+	private fun handleDeepLinks(action: String?, data: Uri?): Boolean {
+		if (action == null || data == null) return false
 		val path = if (data.path == "/attribution_link") Utils.unwrapAttributionUrl(
 			data.query ?: ""
 		) else ((data.path ?: "/") + "?" + (data.query ?: "")).trimEnd('?')
@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
 				.navigate(R.id.navigation_playlist, bundleOf(Pair("id", id)))
 		}
 
-		try {
+		return try {
 			if (path.startsWith("/watch")) {
 				video(query["v"]!!, query["t"], query["list"])
 			} else if (path.startsWith("/v/")) {
@@ -229,9 +229,20 @@ class MainActivity : AppCompatActivity() {
 			} else {
 				throw IllegalArgumentException()
 			}
+			true
 		} catch (e: Exception) {
 			Toast.makeText(this, R.string.error_intent_filter, Toast.LENGTH_LONG).show()
+			false
 		}
+	}
+
+	override fun onNewIntent(intent: Intent?) {
+		var success = false
+		if (intent != null)
+			success = handleDeepLinks(intent.action, intent.data)
+
+		if (!success)
+			super.onNewIntent(intent)
 	}
 
 	private fun goBack(closeApp: Boolean): Boolean {
