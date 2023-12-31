@@ -184,6 +184,8 @@ class MainActivity : AppCompatActivity() {
 
 		fun video(id: String, time: String?, playlist: String?) {
 			player.playVideo(id) //todo: time, playlist
+			miniplayerScene.progress = 1f
+			binding.navView.visibility = View.GONE
 		}
 
 		fun channel(id: String, tab: String?) {
