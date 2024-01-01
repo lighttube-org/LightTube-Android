@@ -34,6 +34,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -448,6 +449,9 @@ class MainActivity : AppCompatActivity() {
 		isInPictureInPictureMode: Boolean,
 		newConfig: Configuration
 	) {
+		if (lifecycle.currentState == Lifecycle.State.CREATED) {
+			player.pause()
+		}
 		super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
 		player.toggleControls(!isInPictureInPictureMode)
 	}
