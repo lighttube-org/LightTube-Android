@@ -41,7 +41,7 @@ class VideoCommentsFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		api = (activity as MainActivity).getApi()
-		player = (activity as MainActivity).player
+		player = (activity as MainActivity).getPlayer()
 		binding = FragmentVideoCommentsBinding.inflate(inflater)
 		return binding.root
 	}

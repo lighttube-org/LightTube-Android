@@ -33,7 +33,7 @@ class LibraryFragment : Fragment() {
 		binding = FragmentLibraryBinding.inflate(inflater)
 		(activity as MainActivity).apply {
 			this@LibraryFragment.api = getApi()
-			this@LibraryFragment.player = player
+			this@LibraryFragment.player = getPlayer()
 		}
 		return binding.root
 	}

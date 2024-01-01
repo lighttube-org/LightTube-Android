@@ -54,7 +54,7 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 		binding.root.setOnClickListener {
 			// bad idea? idk
 			if (binding.root.context is MainActivity)
-				(binding.root.context as MainActivity).player.playVideo(item.getAsJsonPrimitive("id").asString)
+				(binding.root.context as MainActivity).getPlayer().playVideo(item.getAsJsonPrimitive("id").asString)
 			else
 				Toast.makeText(binding.root.context, "uhh click :3", Toast.LENGTH_LONG).show()
 		}

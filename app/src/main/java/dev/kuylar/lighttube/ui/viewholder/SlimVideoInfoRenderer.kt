@@ -42,10 +42,10 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			.into(binding.channelAvatar)
 
 		binding.buttonComments.setOnClickListener {
-			activity.player.setSheets(details = false, comments = true)
+			activity.getPlayer().setSheets(details = false, comments = true)
 		}
 		binding.videoDetails.setOnClickListener {
-			activity.player.setSheets(details = true, comments = false)
+			activity.getPlayer().setSheets(details = true, comments = false)
 		}
 
 		binding.channelContainer.setOnClickListener {

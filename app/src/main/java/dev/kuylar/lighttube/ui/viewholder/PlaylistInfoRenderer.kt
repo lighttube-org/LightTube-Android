@@ -36,11 +36,11 @@ class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 			.into(binding.playlistThumbnail)
 
 		binding.buttonPlayAll.setOnClickListener {
-			activity.player.playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
 		}
 
 		binding.buttonShuffle.setOnClickListener {
-			activity.player.playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
 		}
 
 		if (playlist.editable) {

@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var binding: ActivityMainBinding
 	lateinit var miniplayer: BottomSheetBehavior<View>
 	private lateinit var miniplayerScene: MotionLayout
-	lateinit var player: VideoPlayerManager
+	private lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
 	private var loadingSuggestions = false
 	private var fullscreen = false
@@ -97,14 +97,14 @@ class MainActivity : AppCompatActivity() {
 		miniplayer = BottomSheetBehavior.from(miniplayerView)
 		miniplayer.state = BottomSheetBehavior.STATE_HIDDEN
 
-		player = VideoPlayerManager(this)
+		setPlayer()
 
 		miniplayer.addBottomSheetCallback(object :
 			BottomSheetBehavior.BottomSheetCallback() {
 			@SuppressLint("SwitchIntDef")
 			override fun onStateChanged(bottomSheet: View, newState: Int) {
 				when (newState) {
-					BottomSheetBehavior.STATE_HIDDEN -> player.stop()
+					BottomSheetBehavior.STATE_HIDDEN -> getPlayer().stop()
 
 					BottomSheetBehavior.STATE_DRAGGING -> {
 						supportActionBar?.show()
@@ -117,10 +117,11 @@ class MainActivity : AppCompatActivity() {
 			}
 
 			override fun onSlide(bottomSheet: View, slideOffset: Float) {
+				val p = getPlayer()
 				if (slideOffset < 0)
-					player.setVolume(max(0.1f, 1 + slideOffset * 3))
+					p.setVolume(max(0.1f, 1 + slideOffset * 3))
 				else
-					player.setVolume(1f)
+					p.setVolume(1f)
 				miniplayerScene.progress = max(0f, min(1f, slideOffset * 5))
 
 				if (slideOffset > .3)
@@ -128,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 				else
 					binding.navView.visibility = View.VISIBLE
 
-				player.toggleControls(slideOffset * 5 >= 1)
+				p.toggleControls(slideOffset * 5 >= 1)
 			}
 		})
 
@@ -159,7 +160,9 @@ class MainActivity : AppCompatActivity() {
 		var sponsorblockRunnable = Runnable {}
 		sponsorblockRunnable = Runnable {
 			try {
-				player.updateSkipButton(player.getCurrentSegment())
+				with(getPlayer()) {
+					updateSkipButton(getCurrentSegment())
+				}
 			} catch (e: Exception) {
 				Log.e("SponsorBlockLoop", "Failed to update SponsorBlock skip button", e)
 			}
@@ -169,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun goBack(closeApp: Boolean): Boolean {
-		if (!player.closeSheets()) // attempt to close details/comments
+		if (!getPlayer().closeSheets()) // attempt to close details/comments
 			if (!tryExitFullscreen()) // attempt to exit fullscreen
 				if (!minimizePlayer()) // attempt to minimize the player sheet
 					if (!navController.popBackStack()) { // attempt to go back on the fragment history
@@ -192,6 +195,16 @@ class MainActivity : AppCompatActivity() {
 		if (!this::api.isInitialized)
 			setApi()
 		return api
+	}
+
+	private fun setPlayer() {
+		player = VideoPlayerManager(this)
+	}
+
+	fun getPlayer(): VideoPlayerManager {
+		if (!this::player.isInitialized)
+			setPlayer()
+		return player
 	}
 
 	private fun minimizePlayer(): Boolean {
@@ -313,7 +326,7 @@ class MainActivity : AppCompatActivity() {
 		playerView.findViewById<MaterialButton>(R.id.player_fullscreen).apply {
 			icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_fullscreen, theme)
 			setOnClickListener {
-				enterFullscreen(playerView, player.getAspectRatio() < 1)
+				enterFullscreen(playerView, getPlayer().getAspectRatio() < 1)
 			}
 		}
 		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.INVISIBLE
