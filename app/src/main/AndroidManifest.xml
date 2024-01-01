@@ -29,8 +29,9 @@
 			android:exported="false" />
 		<activity
 			android:name=".ui.activity.MainActivity"
-			android:configChanges="orientation|screenSize"
-			android:exported="true">
+			android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+			android:exported="true"
+			android:supportsPictureInPicture="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
@@ -38,5 +39,4 @@
 			</intent-filter>
 		</activity>
 	</application>
-
 </manifest>

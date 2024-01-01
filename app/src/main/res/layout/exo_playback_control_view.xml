@@ -55,6 +55,15 @@
 		</LinearLayout>
 
 		<com.google.android.material.button.MaterialButton
+			android:id="@+id/player_pip"
+			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:backgroundTint="#0000"
+			app:icon="@drawable/ic_pip_enter"
+			app:iconTint="#fff" />
+
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/player_captions"
 			style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
 			android:layout_width="wrap_content"

@@ -1,11 +1,23 @@
 package dev.kuylar.lighttube.ui.activity
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.app.PictureInPictureParams
+import android.app.RemoteAction
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Rect
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.util.Rational
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -166,6 +179,11 @@ class MainActivity : AppCompatActivity() {
 			handler.postDelayed(sponsorblockRunnable, 100)
 		}
 		handler.postDelayed(sponsorblockRunnable, 100)
+		ContextCompat.registerReceiver(this, object : BroadcastReceiver() {
+			override fun onReceive(context: Context?, intent: Intent?) {
+				onBroadcastReceived(context, intent)
+			}
+		}, IntentFilter(ACTION_PLAY_PAUSE), ContextCompat.RECEIVER_EXPORTED)
 	}
 
 	private fun goBack(closeApp: Boolean): Boolean {
@@ -356,6 +374,11 @@ class MainActivity : AppCompatActivity() {
 				// compiler doesnt shut up otherwise
 			}
 		}
+		try {
+			setPictureInPictureParams(getPipParams())
+		} catch (_: IllegalAccessException) {
+			// ignored, the aspect ratio is bad
+		}
 	}
 
 	private fun updateCurrentUser(retryCount: Int = 0) {
@@ -367,5 +390,91 @@ class MainActivity : AppCompatActivity() {
 			if (retryCount < 5)
 				updateCurrentUser(retryCount + 1)
 		}
+	}
+
+	private fun getPipParams(): PictureInPictureParams {
+		val playerContainer =
+			if (fullscreen) findViewById<View>(R.id.player_container) else findViewById(R.id.player_container)
+		val rect = Rect()
+		playerContainer.getGlobalVisibleRect(rect)
+
+		return PictureInPictureParams.Builder().apply {
+			this.setAspectRatio(Rational(rect.width(), rect.height()))
+			this.setSourceRectHint(rect)
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+				this.setAutoEnterEnabled(player.isPlaying())
+			}
+			this.setActions(
+				if (player.isPlaying()) {
+					listOf(
+						RemoteAction(
+							Icon.createWithResource(this@MainActivity, R.drawable.ic_pause),
+							getString(R.string.pause),
+							getString(R.string.pause),
+							PendingIntent.getBroadcast(
+								this@MainActivity,
+								REQUEST_CODE_PAUSE,
+								Intent(ACTION_PLAY_PAUSE).putExtra(
+									"requestCode",
+									REQUEST_CODE_PAUSE
+								),
+								PendingIntent.FLAG_IMMUTABLE
+							)
+						)
+					)
+				} else {
+					listOf(
+						RemoteAction(
+							Icon.createWithResource(applicationContext, R.drawable.ic_play),
+							getString(R.string.play),
+							getString(R.string.play),
+							PendingIntent.getBroadcast(
+								this@MainActivity,
+								REQUEST_CODE_PLAY,
+								Intent(ACTION_PLAY_PAUSE).putExtra(
+									"requestCode",
+									REQUEST_CODE_PLAY
+								),
+								PendingIntent.FLAG_IMMUTABLE
+							)
+						)
+					)
+				}
+			)
+		}.build()
+	}
+
+	override fun onPictureInPictureModeChanged(
+		isInPictureInPictureMode: Boolean,
+		newConfig: Configuration
+	) {
+		super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+		player.toggleControls(!isInPictureInPictureMode)
+	}
+
+	fun enterPip() {
+		enterPictureInPictureMode(getPipParams())
+	}
+
+	fun updatePlaying() {
+		setPictureInPictureParams(getPipParams())
+	}
+
+	fun canPip() = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+
+	private fun onBroadcastReceived(context: Context?, intent: Intent?) {
+		if (intent == null) return
+		if (intent.action == ACTION_PLAY_PAUSE) {
+			if (intent.getIntExtra("requestCode", REQUEST_CODE_PLAY) == REQUEST_CODE_PAUSE)
+				player.pause()
+			else
+				player.play()
+		}
+	}
+
+	companion object {
+		const val ACTION_PLAY_PAUSE = "MainActivity.Pip.PlayPauseAction"
+		const val REQUEST_CODE_PLAY = 0
+		const val REQUEST_CODE_PAUSE = 1
 	}
 }
