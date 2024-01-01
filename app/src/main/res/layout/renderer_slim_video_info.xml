@@ -268,7 +268,7 @@
 					android:layout_marginHorizontal="8dp"
 					android:layout_weight="1"
 					android:ellipsize="end"
-					android:maxLines="1"
+					android:maxLines="2"
 					tools:text="this is definitely one of the videos of all time" />
 
 			</LinearLayout>
