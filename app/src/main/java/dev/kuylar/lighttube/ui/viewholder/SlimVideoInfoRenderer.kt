@@ -1,6 +1,7 @@
 package dev.kuylar.lighttube.ui.viewholder
 
 import android.content.Intent
+import android.text.Html
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -42,7 +43,8 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 				Glide.with(binding.root)
 					.load(video.firstComment!!.first)
 					.into(binding.commentAvatar)
-				binding.commentText.text = video.firstComment!!.second
+				binding.commentText.text =
+					Html.fromHtml(video.firstComment!!.second, Html.FROM_HTML_MODE_LEGACY)
 				binding.commentsCountBullet.visibility = View.VISIBLE
 				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
 					?: "${video.firstComment!!.third}+"
