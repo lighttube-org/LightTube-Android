@@ -77,7 +77,8 @@ class VideoCommentsFragment : Fragment() {
 				if (initial) with(comments.data!!.contents[0].asJsonObject) {
 					player.showCommentsButton(
 						this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
-						this.getAsJsonPrimitive("content").asString
+						this.getAsJsonPrimitive("content").asString,
+						comments.data.contents.size
 					)
 				}
 				val start = items.size

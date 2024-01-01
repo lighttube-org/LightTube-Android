@@ -380,9 +380,9 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		} catch (_: Exception) { }
 	}
 
-	fun showCommentsButton(firstCommentAvatar: String, firstCommentText: String) {
+	fun showCommentsButton(firstCommentAvatar: String, firstCommentText: String, commentCount: Int) {
 		try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton(Pair(firstCommentAvatar, firstCommentText))
+			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
 		} catch (_: Exception) { }
 	}
 

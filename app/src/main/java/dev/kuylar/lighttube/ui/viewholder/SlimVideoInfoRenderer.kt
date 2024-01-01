@@ -43,6 +43,9 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 					.load(video.firstComment!!.first)
 					.into(binding.commentAvatar)
 				binding.commentText.text = video.firstComment!!.second
+				binding.commentsCountBullet.visibility = View.VISIBLE
+				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
+					?: "${video.firstComment!!.third}+"
 				binding.cardComments.setOnClickListener {
 					activity.player.setSheets(details = false, comments = true)
 				}

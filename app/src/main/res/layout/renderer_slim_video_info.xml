@@ -186,13 +186,37 @@
 			android:orientation="vertical"
 			android:padding="16dp">
 
-			<TextView
-				android:id="@+id/comments_title"
-				style="?textAppearanceBodyLarge"
+			<LinearLayout
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:maxLines="1"
-				android:text="@string/comments_title" />
+				android:layout_height="wrap_content">
+
+				<TextView
+					android:id="@+id/comments_title"
+					style="?textAppearanceBodyLarge"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					android:text="@string/comments_title" />
+
+				<TextView
+					android:id="@+id/comments_count_bullet"
+					style="?textAppearanceBodyMedium"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="4dp"
+					android:maxLines="1"
+					android:text="@string/bullet"
+					android:visibility="gone"
+					tools:visibility="visible" />
+
+				<TextView
+					android:id="@+id/comments_count"
+					style="?textAppearanceBodyMedium"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					tools:text="123k" />
+			</LinearLayout>
 
 			<LinearLayout
 				android:id="@+id/comments_loading"
@@ -206,8 +230,8 @@
 				<com.google.android.material.progressindicator.CircularProgressIndicator
 					android:id="@+id/spinner_comments"
 					android:layout_width="wrap_content"
-					android:layout_marginEnd="8dp"
 					android:layout_height="wrap_content"
+					android:layout_marginEnd="8dp"
 					android:indeterminate="true"
 					app:indicatorSize="12dp"
 					app:trackThickness="2dp" />
