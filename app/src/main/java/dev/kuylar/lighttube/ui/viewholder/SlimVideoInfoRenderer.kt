@@ -41,7 +41,7 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 
 				Glide.with(binding.root)
 					.load(video.firstComment!!.first)
-					.into(binding.channelAvatar)
+					.into(binding.commentAvatar)
 				binding.commentText.text = video.firstComment!!.second
 				binding.cardComments.setOnClickListener {
 					activity.player.setSheets(details = false, comments = true)
