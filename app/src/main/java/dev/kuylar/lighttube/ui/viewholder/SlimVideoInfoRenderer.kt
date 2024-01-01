@@ -43,6 +43,9 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 					.load(video.firstComment!!.first)
 					.into(binding.channelAvatar)
 				binding.commentText.text = video.firstComment!!.second
+				binding.cardComments.setOnClickListener {
+					activity.player.setSheets(details = false, comments = true)
+				}
 			} else {
 				binding.spinnerComments.visibility = View.GONE
 				binding.textCommentsLoading.setText(R.string.comments_loading_fail)
@@ -54,9 +57,6 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			.load(video.channel.avatar)
 			.into(binding.channelAvatar)
 
-		binding.cardComments.setOnClickListener {
-			activity.player.setSheets(details = false, comments = true)
-		}
 		binding.videoDetails.setOnClickListener {
 			activity.player.setSheets(details = true, comments = false)
 		}
