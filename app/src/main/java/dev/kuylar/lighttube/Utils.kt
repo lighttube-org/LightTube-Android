@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.LightTubeImage
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
+import dev.kuylar.lighttube.databinding.DialogEditPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
@@ -365,7 +366,7 @@ class Utils {
 			}
 		}
 
-		fun parsePlaylistVisibility(text: String, resources: Resources): PlaylistVisibility {
+		private fun parsePlaylistVisibility(text: String, resources: Resources): PlaylistVisibility {
 			val arr = resources.getStringArray(R.array.playlist_visibility)
 			val visibleText = arr[2]
 			val unlistedText = arr[1]
@@ -378,15 +379,12 @@ class Utils {
 			}
 		}
 
-		fun getPlaylistVisibility(visibility: PlaylistVisibility, resources: Resources): String {
+		private fun getPlaylistVisibility(visibility: PlaylistVisibility, resources: Resources): String {
 			val arr = resources.getStringArray(R.array.playlist_visibility)
-			val visibleText = arr[2]
-			val unlistedText = arr[1]
-			val privateText = arr[0]
 			return when (visibility) {
-				PlaylistVisibility.Visible -> visibleText
-				PlaylistVisibility.Unlisted -> unlistedText
-				PlaylistVisibility.Private -> privateText
+				PlaylistVisibility.Visible -> arr[2]
+				PlaylistVisibility.Unlisted ->  arr[1]
+				PlaylistVisibility.Private -> arr[0]
 			}
 		}
 
@@ -401,16 +399,10 @@ class Utils {
 			negativeButtonText: String,
 			positiveAction: (dialog: DialogInterface, title: String, description: String, visibility: PlaylistVisibility) -> Unit
 		) {
-			val v = layoutInflater.inflate(R.layout.dialog_edit_playlist, null)
-			val titleView = v.findViewById<TextInputLayout>(R.id.playlist_title)
-			val descriptionView =
-				v.findViewById<TextInputLayout>(R.id.playlist_description)
-			val visibilityView =
-				v.findViewById<TextInputLayout>(R.id.playlist_visibility)
-
-			titleView.editText!!.setText(title)
-			descriptionView.editText!!.setText(description)
-			(visibilityView.editText!! as MaterialAutoCompleteTextView).setText(
+			val binding = DialogEditPlaylistBinding.inflate(layoutInflater)
+			binding.playlistTitle.editText!!.setText(title)
+			binding.playlistDescription.editText!!.setText(description)
+			(binding.playlistVisibility.editText!! as MaterialAutoCompleteTextView).setText(
 				getPlaylistVisibility(
 					visibility,
 					context.resources
@@ -419,13 +411,13 @@ class Utils {
 
 			MaterialAlertDialogBuilder(context)
 				.setTitle(header)
-				.setView(v)
+				.setView(binding.root)
 				.setPositiveButton(positiveButtonText) { dialog, _ ->
 					positiveAction(
-						dialog, titleView.editText!!.editableText.toString(),
-						descriptionView.editText!!.editableText.toString(),
+						dialog, binding.playlistTitle.editText!!.editableText.toString(),
+						binding.playlistDescription.editText!!.editableText.toString(),
 						parsePlaylistVisibility(
-							visibilityView.editText!!.editableText.toString(),
+							binding.playlistVisibility.editText!!.editableText.toString(),
 							context.resources
 						)
 					)
