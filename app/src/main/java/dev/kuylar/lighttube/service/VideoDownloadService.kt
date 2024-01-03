@@ -30,15 +30,15 @@ class VideoDownloadService : DownloadService(NOTIFICATION_ID, 100L, CHANNEL_ID, 
 			val info = gson.fromJson(dl.request.data.decodeToString(), DownloadInfo::class.java)
 			this.setContentTitle("Downloading " + info.title)
 			this.setProgress(
-				(dl.percentDownloaded * 10).toInt(),
 				1000,
+				(dl.percentDownloaded * 10).toInt(),
 				dl.percentDownloaded == 0f
 			)
 			if (downloads.size > 1)
 				this.setSubText("${downloads.size} videos are in the queue")
 		} else {
 			this.setContentTitle("Downloading videos...")
-			this.setProgress(0, 1, true)
+			this.setProgress(1, 0, true)
 		}
 		this.setSmallIcon(Icon.createWithResource(applicationContext, R.drawable.ic_download))
 	}.build()
