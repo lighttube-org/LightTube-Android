@@ -154,8 +154,24 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="download_itag_18">360p</string>
 	<string name="download_enable_proxy">Download through the instance\'s proxy</string>
 	<string name="library_downloads">Downloads</string>
+	<!-- https://developer.android.com/reference/kotlin/androidx/media3/exoplayer/offline/Download -->
+	<string-array name="download_state">
+		<item>Queued</item>
+		<item>Stopped</item>
+		<item>Downloading…</item>
+		<item>Completed</item>
+		<item>Failed</item>
+		<item>Removing…</item>
+		<item>6</item> <!-- There's no download state at index 6... -->
+		<item>Restarting…</item>
+	</string-array>
+	<string name="download_long_press_to_remove">Long press to delete</string>
+	<string name="download_delete_title">Delete downloaded video</string>
+	<string name="download_delete_body">Do you really want to delete this video?</string>
 
 	<!-- Notification Channels -->
 	<string name="nc_download_name">Ongoing downloads</string>
 	<string name="nc_download_desc">Provides information about all ongoing downloads</string>
+	<string name="download_resume_all">Resume all downloads</string>
+	<string name="download_pause_all">Pause all downloads</string>
 </resources>

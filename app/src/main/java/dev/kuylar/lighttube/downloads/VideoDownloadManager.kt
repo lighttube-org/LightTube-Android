@@ -7,10 +7,10 @@ import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
+import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
-import androidx.media3.exoplayer.scheduler.Requirements
 import com.google.gson.Gson
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.models.Format
@@ -62,8 +62,9 @@ object VideoDownloadManager {
 			downloadExecutor
 		)
 
-		downloadManager.requirements =
-			Requirements(Requirements.NETWORK_UNMETERED or Requirements.DEVICE_STORAGE_NOT_LOW)
+		// FIXME: causes TooManyRequestsException
+		//downloadManager.requirements =
+		//	Requirements(Requirements.NETWORK_UNMETERED or Requirements.DEVICE_STORAGE_NOT_LOW)
 		downloadManager.maxParallelDownloads = 1
 
 		return downloadManager
@@ -119,5 +120,52 @@ object VideoDownloadManager {
 			downloads.add(info)
 		}
 		return downloads
+	}
+
+	fun getDownload(context: Context, id: String): DownloadInfo? {
+		val dm = getDownloadManager(context)
+		val download = dm.downloadIndex.getDownload(id) ?: return null
+		val info = gson.fromJson(
+			download.request.data.decodeToString(),
+			DownloadInfo::class.java
+		)
+		info.progress = download.percentDownloaded
+		info.state = download.state
+		info.downloadTimeMs = download.startTimeMs
+		info.size = download.contentLength
+		return info
+	}
+
+	fun startDownload(context: Context, id: String) {
+		DownloadService.sendSetStopReason(
+			context,
+			VideoDownloadService::class.java,
+			id,
+			Download.STOP_REASON_NONE,
+			true
+		)
+		DownloadService.sendRemoveDownload(context, VideoDownloadService::class.java, id, true)
+	}
+
+	fun stopDownload(context: Context, id: String, stopReason: Int) {
+		DownloadService.sendSetStopReason(
+			context,
+			VideoDownloadService::class.java,
+			id,
+			stopReason,
+			true
+		)
+	}
+
+	fun removeDownload(context: Context, id: String) {
+		DownloadService.sendRemoveDownload(context, VideoDownloadService::class.java, id, true)
+	}
+
+	fun pauseAllDownloads(context: Context) {
+		DownloadService.sendPauseDownloads(context, VideoDownloadService::class.java, true)
+	}
+
+	fun resumeAllDownloads(context: Context) {
+		DownloadService.sendResumeDownloads(context, VideoDownloadService::class.java, true)
 	}
 }

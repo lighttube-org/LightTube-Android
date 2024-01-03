@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -54,6 +53,8 @@ import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
+import java.text.CharacterIterator
+import java.text.StringCharacterIterator
 import kotlin.concurrent.thread
 
 
@@ -426,6 +427,21 @@ class Utils {
 					dialog.dismiss()
 				}
 				.show()
+		}
+
+		// the most copied Java snippet of all time on Stack Overflow
+		// https://stackoverflow.com/a/3758880
+		fun humanReadableByteCount(bytes: Long): String {
+			var result = bytes
+			if (-1000 < result && result < 1000) {
+				return "$result B"
+			}
+			val ci: CharacterIterator = StringCharacterIterator("kMGTPE")
+			while (result <= -999950 || result >= 999950) {
+				result /= 1000
+				ci.next()
+			}
+			return String.format("%.1f %cB", result / 1000.0, ci.current())
 		}
 	}
 }

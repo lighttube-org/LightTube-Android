@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.media3.common.util.UnstableApi
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dev.kuylar.lighttube.downloads.VideoDownloadManager
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.models.Format
 import dev.kuylar.lighttube.api.models.LightTubeVideo
-import dev.kuylar.lighttube.downloads.DownloadInfo
 import dev.kuylar.lighttube.databinding.FragmentDownloadDialogBinding
+import dev.kuylar.lighttube.downloads.DownloadInfo
+import dev.kuylar.lighttube.downloads.VideoDownloadManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import kotlin.concurrent.thread
 

@@ -39,6 +39,7 @@ import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
+import dev.kuylar.lighttube.downloads.VideoDownloadManager
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
@@ -178,6 +179,8 @@ class MainActivity : AppCompatActivity() {
 			handler.postDelayed(sponsorblockRunnable, 100)
 		}
 		handler.postDelayed(sponsorblockRunnable, 100)
+
+		VideoDownloadManager.resumeAllDownloads(this)
 	}
 
 	private fun goBack(closeApp: Boolean): Boolean {

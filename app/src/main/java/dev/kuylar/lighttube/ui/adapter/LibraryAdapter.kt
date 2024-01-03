@@ -78,6 +78,12 @@ class LibraryAdapter(activity: Activity, private val items: List<JsonObject>) :
 						R.string.template_videos,
 						DecimalFormat().format(downloads.size)
 					)
+					binding.root.setOnClickListener {
+						(binding.root.context as Activity).findNavController(R.id.nav_host_fragment_activity_main)
+							.navigate(
+								R.id.navigation_downloads
+							)
+					}
 				}
 			}
 
