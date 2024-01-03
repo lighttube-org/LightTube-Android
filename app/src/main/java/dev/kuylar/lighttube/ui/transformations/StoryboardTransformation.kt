@@ -1,4 +1,4 @@
-package dev.kuylar.lighttube.ui
+package dev.kuylar.lighttube.ui.transformations
 
 import android.graphics.Bitmap
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
@@ -15,7 +15,7 @@ class StoryboardTransformation(
 ) :
 	BitmapTransformation() {
 	private fun getCacheKey(): String =
-		"dev.kuylar.lighttube.ui.StoryboardTransformation($x,$y,$r,$c)"
+		"dev.kuylar.lighttube.ui.transformations.StoryboardTransformation($x,$y,$r,$c)"
 
 	override fun transform(
 		pool: BitmapPool,
