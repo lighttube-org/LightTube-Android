@@ -1,4 +1,4 @@
-package dev.kuylar.lighttube
+package dev.kuylar.lighttube.downloads
 
 import android.content.Context
 import android.net.Uri
@@ -12,9 +12,8 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
 import com.google.gson.Gson
+import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.models.Format
-import dev.kuylar.lighttube.database.DownloadDatabase
-import dev.kuylar.lighttube.database.models.DownloadInfo
 import dev.kuylar.lighttube.service.VideoDownloadService
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import java.io.File
@@ -24,21 +23,19 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
 @UnstableApi
-object DownloadManager {
+object VideoDownloadManager {
 	private val allowedItags = arrayListOf("18", "22")
 	private var exoDatabaseProvider: StandaloneDatabaseProvider? = null
 	private val gson = Gson()
 
-	private fun getDatabase(context: Context) = DownloadDatabase(context)
-
-	fun getExoDatabaseProvider(context: Context): StandaloneDatabaseProvider {
+	private fun getDatabaseProvider(context: Context): StandaloneDatabaseProvider {
 		if (exoDatabaseProvider == null)
 			exoDatabaseProvider = StandaloneDatabaseProvider(context)
 		return exoDatabaseProvider!!
 	}
 
 	fun getDownloadManager(context: Context): DownloadManager {
-		val databaseProvider = getExoDatabaseProvider(context)
+		val databaseProvider = getDatabaseProvider(context)
 		val downloadCache = SimpleCache(
 			File(context.filesDir.absolutePath, "downloads"),
 			NoOpCacheEvictor(),
@@ -89,18 +86,9 @@ object DownloadManager {
 			this.setData(gson.toJson(info).encodeToByteArray())
 		}.build()
 		DownloadService.sendAddDownload(context, VideoDownloadService::class.java, downloadRequest, true)
-
-		getDatabase(context).addDownload(id, format.itag.toInt(), info)
 	}
 
 	fun getDownloads(context: Context): List<DownloadInfo> {
-		val downloads = getDatabase(context).getAllDownloads()
-		val downloadManager = getDownloadManager(context)
-
-		downloads.forEach {
-
-		}
-
-		return downloads
+		return emptyList()
 	}
 }

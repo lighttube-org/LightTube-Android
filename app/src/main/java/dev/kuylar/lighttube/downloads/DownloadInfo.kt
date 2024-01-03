@@ -1,4 +1,4 @@
-package dev.kuylar.lighttube.database.models
+package dev.kuylar.lighttube.downloads
 
 data class DownloadInfo(
 	val id: String,
