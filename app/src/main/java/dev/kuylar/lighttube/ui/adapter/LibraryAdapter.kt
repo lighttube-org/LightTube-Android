@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.setPadding
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,11 +18,13 @@ import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.ItemDividerBinding
 import dev.kuylar.lighttube.databinding.ItemPlaylistBinding
+import dev.kuylar.lighttube.downloads.VideoDownloadManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.transformations.ThumbnailTransformation
 import java.text.DecimalFormat
 import kotlin.concurrent.thread
 
+@UnstableApi
 class LibraryAdapter(activity: Activity, private val items: List<JsonObject>) :
 	RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 	private val layoutInflater = activity.layoutInflater
@@ -37,34 +40,44 @@ class LibraryAdapter(activity: Activity, private val items: List<JsonObject>) :
 		fun bind() {
 			binding.title.setText(actions[action]!!.first)
 
-			if (action == "newPlaylist") {
-				binding.subtitle.visibility = View.GONE
-				binding.root.setOnClickListener {
-					Utils.showPlaylistDialog(
-						binding.root.context,
-						layoutInflater,
-						binding.root.resources.getString(R.string.create_playlist),
-						binding.root.resources.getString(R.string.create_playlist_default_title),
-						"",
-						PlaylistVisibility.Private,
-						binding.root.resources.getString(R.string.action_playlist_create),
-						binding.root.resources.getString(R.string.action_cancel)
-					) { _, title, description, visibility ->
-						thread {
-							with(binding.root.context as MainActivity) {
-								val createPlaylist =
-									getApi().createPlaylist(title, description, visibility)
-								runOnUiThread {
-									findNavController(R.id.nav_host_fragment_activity_main)
-										.navigate(
-											R.id.navigation_playlist, bundleOf(
-												Pair("id", createPlaylist.data!!.id)
+			when (action) {
+				"newPlaylist" -> {
+					binding.subtitle.visibility = View.GONE
+					binding.root.setOnClickListener {
+						Utils.showPlaylistDialog(
+							binding.root.context,
+							layoutInflater,
+							binding.root.resources.getString(R.string.create_playlist),
+							binding.root.resources.getString(R.string.create_playlist_default_title),
+							"",
+							PlaylistVisibility.Private,
+							binding.root.resources.getString(R.string.action_playlist_create),
+							binding.root.resources.getString(R.string.action_cancel)
+						) { _, title, description, visibility ->
+							thread {
+								with(binding.root.context as MainActivity) {
+									val createPlaylist =
+										getApi().createPlaylist(title, description, visibility)
+									runOnUiThread {
+										findNavController(R.id.nav_host_fragment_activity_main)
+											.navigate(
+												R.id.navigation_playlist, bundleOf(
+													Pair("id", createPlaylist.data!!.id)
+												)
 											)
-										)
+									}
 								}
 							}
 						}
 					}
+				}
+
+				"downloads" -> {
+					val downloads = VideoDownloadManager.getDownloads(binding.root.context)
+					binding.subtitle.text = binding.root.context.getString(
+						R.string.template_videos,
+						DecimalFormat().format(downloads.size)
+					)
 				}
 			}
 

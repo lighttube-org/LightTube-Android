@@ -26,6 +26,7 @@ import kotlin.io.path.exists
 object VideoDownloadManager {
 	private val allowedItags = arrayListOf("18", "22")
 	private var exoDatabaseProvider: StandaloneDatabaseProvider? = null
+	private var exoCache: SimpleCache? = null
 	private val gson = Gson()
 
 	private fun getDatabaseProvider(context: Context): StandaloneDatabaseProvider {
@@ -34,23 +35,32 @@ object VideoDownloadManager {
 		return exoDatabaseProvider!!
 	}
 
+	private fun getCache(
+		context: Context,
+		databaseProvider: StandaloneDatabaseProvider
+	): SimpleCache {
+		if (exoCache == null)
+			exoCache = SimpleCache(
+				File(context.filesDir.absolutePath, "downloads"),
+				NoOpCacheEvictor(),
+				databaseProvider
+			)
+		return exoCache!!
+	}
+
 	fun getDownloadManager(context: Context): DownloadManager {
 		val databaseProvider = getDatabaseProvider(context)
-		val downloadCache = SimpleCache(
-			File(context.filesDir.absolutePath, "downloads"),
-			NoOpCacheEvictor(),
-			databaseProvider
-		)
+		val downloadCache = getCache(context, databaseProvider)
 		val dataSourceFactory = DefaultHttpDataSource.Factory()
 		val downloadExecutor = Executor(Runnable::run)
 
 		val downloadManager = DownloadManager(
-				context,
-				databaseProvider,
-				downloadCache,
-				dataSourceFactory,
-				downloadExecutor
-			)
+			context,
+			databaseProvider,
+			downloadCache,
+			dataSourceFactory,
+			downloadExecutor
+		)
 
 		downloadManager.requirements =
 			Requirements(Requirements.NETWORK_UNMETERED or Requirements.DEVICE_STORAGE_NOT_LOW)
@@ -85,10 +95,29 @@ object VideoDownloadManager {
 		val downloadRequest = DownloadRequest.Builder(id, Uri.parse(url)).apply {
 			this.setData(gson.toJson(info).encodeToByteArray())
 		}.build()
-		DownloadService.sendAddDownload(context, VideoDownloadService::class.java, downloadRequest, true)
+		DownloadService.sendAddDownload(
+			context,
+			VideoDownloadService::class.java,
+			downloadRequest,
+			true
+		)
 	}
 
 	fun getDownloads(context: Context): List<DownloadInfo> {
-		return emptyList()
+		val dm = getDownloadManager(context)
+		val cursor = dm.downloadIndex.getDownloads()
+		val downloads = ArrayList<DownloadInfo>()
+		while (cursor.moveToNext()) {
+			val info = gson.fromJson(
+				cursor.download.request.data.decodeToString(),
+				DownloadInfo::class.java
+			)
+			info.progress = cursor.download.percentDownloaded
+			info.state = cursor.download.state
+			info.downloadTimeMs = cursor.download.startTimeMs
+			info.size = cursor.download.contentLength
+			downloads.add(info)
+		}
+		return downloads
 	}
 }

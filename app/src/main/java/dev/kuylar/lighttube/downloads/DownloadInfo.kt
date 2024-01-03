@@ -12,10 +12,8 @@ data class DownloadInfo(
 	val channelSubscribers: String,
 	val likes: String
 ) {
-	lateinit var path: String
-	lateinit var downloadDate: String
+	var downloadTimeMs: Long = 0
 	var size: Long = -1
-	var complete: Boolean = false
-	var progress: Long = 0
-	var downloadId: Long = 0
+	var state: Int = -1
+	var progress: Float = 0f
 }
