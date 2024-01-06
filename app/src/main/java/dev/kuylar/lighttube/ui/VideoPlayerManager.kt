@@ -70,7 +70,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		playerBox.findViewById(R.id.player_storyboard)
 	private val playPauseButton: MaterialButton = exoplayerView.findViewById(R.id.player_play_pause)
 	private val sponsorblockSkipButton: MaterialButton = playerBox.findViewById(R.id.player_skip)
-	private val sponsorblockSkipButtonGhost: MaterialButton = playerBox.findViewById(R.id.player_skip_ghost)
+	private val sponsorblockSkipButtonGhost: MaterialButton =
+		playerBox.findViewById(R.id.player_skip_ghost)
 	private val bufferingIndicator: CircularProgressIndicator =
 		playerBox.findViewById(R.id.player_buffering_progress)
 
@@ -125,6 +126,14 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		exoplayerView.findViewById<MaterialButton>(R.id.player_minimize).setOnClickListener {
 			activity.exitFullscreen(exoplayerView)
 			miniplayer.state = BottomSheetBehavior.STATE_COLLAPSED
+		}
+
+		if (activity.canPip()) {
+			exoplayerView.findViewById<MaterialButton>(R.id.player_pip).setOnClickListener {
+				activity.enterPip()
+			}
+		} else {
+			exoplayerView.findViewById<MaterialButton>(R.id.player_pip).visibility = View.GONE
 		}
 
 		timeBar.addSegmentListener(this)
@@ -284,9 +293,14 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			activity.updateVideoAspectRatio(getAspectRatio())
 		}
 
+		if (events.contains(Player.EVENT_IS_PLAYING_CHANGED)) {
+			activity.updatePlaying()
+		}
+
 		if (player.currentTracks.groups.none { it.type == C.TRACK_TYPE_TEXT }) {
 			setCaptionsButtonState(0)
-		} else if (player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }.any { it.isSelected }) {
+		} else if (player.currentTracks.groups.filter { it.type == C.TRACK_TYPE_TEXT }
+				.any { it.isSelected }) {
 			setCaptionsButtonState(2)
 		} else {
 			setCaptionsButtonState(1)
@@ -459,4 +473,10 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			Log.e("Storyboard", "Failed to update storyboard", e)
 		}
 	}
+
+	fun isPlaying() = player.isPlaying
+
+	fun pause() = player.pause()
+
+	fun play() = player.play()
 }
