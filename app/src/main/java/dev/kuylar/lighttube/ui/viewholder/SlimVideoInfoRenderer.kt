@@ -49,7 +49,7 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
 					?: "${video.firstComment!!.third}+"
 				binding.cardComments.setOnClickListener {
-					activity.player.setSheets(details = false, comments = true)
+					activity.getPlayer().setSheets(details = false, comments = true)
 				}
 			} else {
 				binding.spinnerComments.visibility = View.GONE
