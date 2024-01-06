@@ -38,6 +38,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="action_playlist_play">Play all</string>
 	<string name="action_playlist_shuffle">Shuffle</string>
 	<string name="action_playlist_create">Create</string>
+	<string name="action_delete">Delete</string>
 
 	<!-- Templates -->
 	<string name="template_instance_info">API: %s | Accounts: %s</string>
@@ -139,10 +140,14 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="playlist_video_add_failed">Failed to add video (%s)</string>
 	<string name="playlist_delete_video_title">Delete video from playlist?</string>
 	<string name="playlist_delete_video_body">This action is irreversible.</string>
-	<string name="action_delete">Delete</string>
 	<string-array name="playlist_visibility">
 		<item>Private</item>
 		<item>Unlisted</item>
 		<item>Public</item>
 	</string-array>
+
+	<!-- Comments -->
+	<string name="comments_loading">Loading comments…</string>
+	<string name="comments_loading_fail">Failed to load comments.</string>
+	<string name="comments_title">Comments</string>
 </resources>

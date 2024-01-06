@@ -71,21 +71,36 @@
 				app:shapeAppearanceOverlay="@style/avatarImageView"
 				tools:src="@tools:sample/avatars" />
 
-			<TextView
-				android:id="@+id/channel_title"
-				style="@style/TextAppearance.AppCompat.Body1"
+			<LinearLayout
 				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginStart="12dp"
+				android:layout_height="match_parent"
+				android:layout_marginHorizontal="12dp"
 				android:layout_weight="1"
-				android:maxLines="1"
-				tools:text="Channel Title" />
+				android:gravity="center_vertical"
+				android:orientation="vertical">
+
+				<TextView
+					android:id="@+id/channel_title"
+					style="?textAppearanceBodyLarge"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					tools:text="Channel Title" />
+
+				<TextView
+					android:id="@+id/channel_subscribers"
+					style="?textAppearanceLabelSmall"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					tools:text="Channel Title" />
+			</LinearLayout>
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/button_subscribe"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/subscribe"/>
+				android:text="@string/subscribe" />
 		</LinearLayout>
 	</LinearLayout>
 
@@ -126,16 +141,6 @@
 			</com.google.android.material.button.MaterialButtonToggleGroup>
 
 			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_comments"
-				style="@style/Widget.Material3.Button.TonalButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginHorizontal="4dp"
-				android:text="@string/action_comments"
-				android:visibility="gone"
-				app:icon="@drawable/ic_comments" />
-
-			<com.google.android.material.button.MaterialButton
 				android:id="@+id/button_share"
 				style="@style/Widget.Material3.Button.TonalButton"
 				android:layout_width="wrap_content"
@@ -163,4 +168,109 @@
 				app:icon="@drawable/ic_save" />
 		</LinearLayout>
 	</HorizontalScrollView>
+
+	<com.google.android.material.card.MaterialCardView
+		android:id="@+id/card_comments"
+		style="@style/Widget.Material3.CardView.Filled"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:clickable="true"
+		android:focusable="true">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:animateLayoutChanges="true"
+			android:orientation="vertical"
+			android:padding="16dp">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<TextView
+					android:id="@+id/comments_title"
+					style="?textAppearanceBodyLarge"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					android:text="@string/comments_title" />
+
+				<TextView
+					android:id="@+id/comments_count_bullet"
+					style="?textAppearanceBodyMedium"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="4dp"
+					android:maxLines="1"
+					android:text="@string/bullet"
+					android:visibility="gone"
+					tools:visibility="visible" />
+
+				<TextView
+					android:id="@+id/comments_count"
+					style="?textAppearanceBodyMedium"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:maxLines="1"
+					tools:text="123k" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/comments_loading"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:animateLayoutChanges="true"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<com.google.android.material.progressindicator.CircularProgressIndicator
+					android:id="@+id/spinner_comments"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="8dp"
+					android:indeterminate="true"
+					app:indicatorSize="12dp"
+					app:trackThickness="2dp" />
+
+				<TextView
+					android:id="@+id/text_comments_loading"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/comments_loading"
+					android:textStyle="italic" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/comments_first"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:visibility="gone">
+
+				<com.google.android.material.imageview.ShapeableImageView
+					android:id="@+id/comment_avatar"
+					android:layout_width="32dp"
+					android:layout_height="32dp"
+					android:background="?colorControlHighlight"
+					app:shapeAppearanceOverlay="@style/avatarImageView"
+					tools:src="@tools:sample/avatars" />
+
+				<TextView
+					android:id="@+id/comment_text"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="8dp"
+					android:layout_weight="1"
+					android:ellipsize="end"
+					android:maxLines="2"
+					tools:text="this is definitely one of the videos of all time" />
+
+			</LinearLayout>
+		</LinearLayout>
+	</com.google.android.material.card.MaterialCardView>
 </LinearLayout>
