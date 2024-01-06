@@ -39,7 +39,7 @@ class RecyclerViewFragment : Fragment() {
 		binding = FragmentRecyclerviewBinding.inflate(inflater)
 		(activity as MainActivity).apply {
 			this@RecyclerViewFragment.api = getApi()
-			this@RecyclerViewFragment.player = player
+			this@RecyclerViewFragment.player = getPlayer()
 		}
 		type = arguments?.getString("type")!!
 		args = arguments?.getString("args")!!

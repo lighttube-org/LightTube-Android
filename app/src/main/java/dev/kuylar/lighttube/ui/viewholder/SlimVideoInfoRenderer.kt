@@ -63,7 +63,7 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			.into(binding.channelAvatar)
 
 		binding.videoDetails.setOnClickListener {
-			activity.player.setSheets(details = true, comments = false)
+			activity.getPlayer().setSheets(details = true, comments = false)
 		}
 
 		binding.channelContainer.setOnClickListener {
