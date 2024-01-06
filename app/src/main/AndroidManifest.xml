@@ -31,11 +31,60 @@
 			android:name=".ui.activity.MainActivity"
 			android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
 			android:exported="true"
-			android:supportsPictureInPicture="true">
+			android:supportsPictureInPicture="true"
+			android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="http" />
+				<data android:scheme="https" />
+				<data android:host="youtube.com" />
+				<data android:host="m.youtube.com" />
+				<data android:host="www.youtube.com" />
+				<!-- Videos -->
+				<data android:pathPrefix="/v/" />
+				<data android:pathPrefix="/embed/" />
+				<data android:pathPrefix="/watch" />
+				<data android:pathPrefix="/attribution_link" />
+				<data android:pathPrefix="/shorts/" />
+				<data android:pathPrefix="/live/" />
+				<!-- Channels -->
+				<data android:pathPrefix="/channel/" />
+				<data android:pathPrefix="/user/" />
+				<data android:pathPrefix="/c/" />
+				<data android:pathPrefix="/@" />
+				<!-- Playlists -->
+				<data android:pathPrefix="/playlist" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="http" />
+				<data android:scheme="https" />
+				<data android:host="youtu.be" />
+				<data android:pathPrefix="/" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:scheme="http" />
+				<data android:scheme="https" />
+				<data android:host="www.youtube-nocookie.com" />
+				<data android:pathPrefix="/embed/" />
 			</intent-filter>
 		</activity>
 	</application>

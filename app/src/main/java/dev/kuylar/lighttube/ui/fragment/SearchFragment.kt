@@ -36,7 +36,7 @@ class SearchFragment : Fragment() {
 		binding = FragmentSearchBinding.inflate(inflater)
 		(activity as MainActivity).apply {
 			this@SearchFragment.api = getApi()
-			this@SearchFragment.player = player
+			this@SearchFragment.player = getPlayer()
 		}
 		query = arguments?.getString("query") ?: "asdf"
 		return binding.root

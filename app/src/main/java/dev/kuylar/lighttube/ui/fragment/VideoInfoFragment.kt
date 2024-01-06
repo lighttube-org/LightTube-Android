@@ -38,7 +38,7 @@ class VideoInfoFragment : Fragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		api = (requireActivity() as MainActivity).getApi()
-		player = (requireActivity() as MainActivity).player
+		player = (requireActivity() as MainActivity).getPlayer()
 		arguments?.let {
 			id = it.getString("id")!!
 			playlistId = it.getString("playlistId")
@@ -130,9 +130,10 @@ class VideoInfoFragment : Fragment() {
 		commentsSheet.state = if (comments) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
 	}
 
-	fun showCommentsButton() {
+	fun showCommentsButton(firstComment: Triple<String, String, Int>?) {
 		val video = Gson().fromJson(items[0], LightTubeVideo::class.java)
 		video.showCommentsButton = true
+		video.firstComment = firstComment
 		items[0] = video.getAsRenderer()
 		adapter.notifyItemChanged(0)
 	}
