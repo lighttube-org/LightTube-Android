@@ -1,6 +1,7 @@
 package dev.kuylar.lighttube.ui.viewholder
 
 import android.content.Intent
+import android.text.Html
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -31,22 +32,39 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			)
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
+		binding.channelSubscribers.text = video.channel.subscribers
 		binding.videoViews.text = video.viewCount
 		binding.videoUploaded.text = video.dateText
 		binding.buttonLike.text = video.likeCount
-		if (video.showCommentsButton)
-			binding.buttonComments.visibility = View.VISIBLE
+		if (video.showCommentsButton) {
+			if (video.firstComment != null) {
+				binding.commentsLoading.visibility = View.GONE
+				binding.commentsFirst.visibility = View.VISIBLE
+
+				Glide.with(binding.root)
+					.load(video.firstComment!!.first)
+					.into(binding.commentAvatar)
+				binding.commentText.text =
+					Html.fromHtml(video.firstComment!!.second, Html.FROM_HTML_MODE_LEGACY)
+				binding.commentsCountBullet.visibility = View.VISIBLE
+				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
+					?: "${video.firstComment!!.third}+"
+				binding.cardComments.setOnClickListener {
+					activity.getPlayer().setSheets(details = false, comments = true)
+				}
+			} else {
+				binding.spinnerComments.visibility = View.GONE
+				binding.textCommentsLoading.setText(R.string.comments_loading_fail)
+			}
+		}
 
 		Glide
 			.with(activity)
 			.load(video.channel.avatar)
 			.into(binding.channelAvatar)
 
-		binding.buttonComments.setOnClickListener {
-			activity.player.setSheets(details = false, comments = true)
-		}
 		binding.videoDetails.setOnClickListener {
-			activity.player.setSheets(details = true, comments = false)
+			activity.getPlayer().setSheets(details = true, comments = false)
 		}
 
 		binding.channelContainer.setOnClickListener {

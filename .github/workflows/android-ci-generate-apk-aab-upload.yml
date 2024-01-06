@@ -34,7 +34,7 @@ jobs:
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: 'android_keystore.jks'
-          fileDir: '/home/runner/work/lighttube-android/lighttube-android/app/keystore/'
+          fileDir: '/home/runner/work/LightTube-Android/LightTube-Android/app/keystore/'
           encodedString: ${{ secrets.KEYSTORE }}
 
       # Build and sign APK ("-x test" argument is used to skip tests)

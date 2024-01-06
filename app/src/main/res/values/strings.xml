@@ -38,6 +38,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="action_playlist_play">Play all</string>
 	<string name="action_playlist_shuffle">Shuffle</string>
 	<string name="action_playlist_create">Create</string>
+	<string name="action_delete">Delete</string>
 
 	<!-- Templates -->
 	<string name="template_instance_info">API: %s | Accounts: %s</string>
@@ -61,6 +62,8 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="unsubscribe">Unsubscribe</string>
 	<string name="subscribe">Subscribe</string>
 	<string name="subscribed">Subscribed</string>
+	<string name="pause">Pause</string>
+	<string name="play">Play</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>
@@ -78,6 +81,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="error_lighttube">An error has occurred: %s</string>
 	<string name="error_playback">Failed to play video.</string>
 	<string name="error_playback_falling_back">Failed to play video. Switching to fallback player.\n(some features will be unavailable)</string>
+	<string name="error_intent_filter">Failed to parse URL</string>
 	<string name="error_download_itag_not_supported">Unsupported format ID: %s</string>
 	<string name="error_download_proxy_disabled_by_instance">Instance does not allow proxied downloads through third party apps</string>
 	<string name="error_download_already_exists">Already downloading this video</string>
@@ -142,12 +146,16 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="playlist_video_add_failed">Failed to add video (%s)</string>
 	<string name="playlist_delete_video_title">Delete video from playlist?</string>
 	<string name="playlist_delete_video_body">This action is irreversible.</string>
-	<string name="action_delete">Delete</string>
 	<string-array name="playlist_visibility">
 		<item>Private</item>
 		<item>Unlisted</item>
 		<item>Public</item>
 	</string-array>
+
+	<!-- Comments -->
+	<string name="comments_loading">Loading comments…</string>
+	<string name="comments_loading_fail">Failed to load comments.</string>
+	<string name="comments_title">Comments</string>
 
 	<!-- Download -->
 	<string name="download_itag_22">720p</string>
