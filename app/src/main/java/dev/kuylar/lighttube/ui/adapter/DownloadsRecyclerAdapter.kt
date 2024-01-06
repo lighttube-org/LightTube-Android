@@ -24,9 +24,7 @@ import kotlin.math.roundToInt
 class DownloadsRecyclerAdapter(private val activity: MainActivity) :
 	RecyclerView.Adapter<DownloadsRecyclerAdapter.ViewHolder>() {
 	private val layoutInflater = activity.layoutInflater
-
-	// todo: https://github.com/lighttube-org/LightTube-Android/pull/24
-	private val videoPlayerManager = activity.player
+	private val videoPlayerManager = activity.getPlayer()
 
 	private var downloads = emptyList<DownloadInfo>()
 
