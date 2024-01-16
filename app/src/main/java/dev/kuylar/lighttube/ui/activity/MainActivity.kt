@@ -13,8 +13,8 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.Icon
-import android.os.Build
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -39,7 +39,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -54,6 +53,7 @@ import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
 import dev.kuylar.lighttube.ui.AdaptiveUtils
 import dev.kuylar.lighttube.ui.VideoPlayerManager
+import dev.kuylar.lighttube.ui.fragment.AdaptiveFragment
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
 import kotlin.concurrent.thread
@@ -98,7 +98,8 @@ class MainActivity : AppCompatActivity() {
 			binding.navigationRail
 		)
 
-		val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+		val navHostFragment =
+			supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
 		navController = navHostFragment.navController
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
@@ -156,7 +157,8 @@ class MainActivity : AppCompatActivity() {
 					binding.navigationRail
 				)
 
-				binding.appBarLayout.visibility = if (slideOffset > .95) View.GONE else if (slideOffset < .8) View.VISIBLE else View.GONE
+				binding.appBarLayout.visibility =
+					if (slideOffset > .95) View.GONE else if (slideOffset < .8) View.VISIBLE else View.GONE
 
 				p.toggleControls(slideOffset * 5 >= 1)
 			}
@@ -216,6 +218,11 @@ class MainActivity : AppCompatActivity() {
 			binding.navView,
 			binding.navigationRail
 		)
+
+		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
+			if (it is AdaptiveFragment)
+				it.onScreenSizeChanged(newConfig.screenWidthDp)
+		}
 	}
 
 	private fun handleDeepLinks(action: String?, data: Uri?): Boolean {
@@ -234,7 +241,10 @@ class MainActivity : AppCompatActivity() {
 
 		fun channel(id: String, tab: String?) {
 			val realTab = if (tab == "featured" || tab == null) "home" else tab
-			navController.navigate(R.id.navigation_channel, bundleOf(Pair("id", id), Pair("tab", realTab)))
+			navController.navigate(
+				R.id.navigation_channel,
+				bundleOf(Pair("id", id), Pair("tab", realTab))
+			)
 		}
 
 		fun playlist(id: String) {

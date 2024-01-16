@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -54,18 +54,7 @@ class SubscriptionsFragment : Fragment(), AdaptiveFragment {
 				}
 			}
 		})
-		view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-			override fun onGlobalLayout() {
-				view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-				binding.recyclerFeed.layoutManager = GridLayoutManager(
-					context,
-					AdaptiveUtils.getColumnCount(
-						binding.recyclerFeed.width / requireContext().resources.displayMetrics.density,
-						AdaptiveUtils.ITEM_TYPE_VIDEO
-					)
-				)
-			}
-		})
+		updateGridColumns(view)
 		loadMore()
 	}
 
@@ -129,12 +118,22 @@ class SubscriptionsFragment : Fragment(), AdaptiveFragment {
 	}
 
 	override fun onScreenSizeChanged(newSize: Int) {
-		binding.recyclerFeed.layoutManager = GridLayoutManager(
-			context,
-			AdaptiveUtils.getColumnCount(
-				binding.recyclerFeed.width / requireContext().resources.displayMetrics.density,
-				AdaptiveUtils.ITEM_TYPE_VIDEO
-			)
-		)
+		updateGridColumns(binding.root)
+	}
+
+	private fun updateGridColumns(view: View) {
+		view.viewTreeObserver.addOnGlobalLayoutListener(object :
+			ViewTreeObserver.OnGlobalLayoutListener {
+			override fun onGlobalLayout() {
+				view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+				binding.recyclerFeed.layoutManager = GridLayoutManager(
+					context,
+					AdaptiveUtils.getColumnCount(
+						binding.recyclerFeed.width / requireContext().resources.displayMetrics.density,
+						AdaptiveUtils.ITEM_TYPE_VIDEO
+					)
+				)
+			}
+		})
 	}
 }
