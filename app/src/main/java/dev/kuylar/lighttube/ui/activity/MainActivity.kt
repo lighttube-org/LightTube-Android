@@ -40,6 +40,7 @@ import androidx.core.view.get
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -97,7 +98,8 @@ class MainActivity : AppCompatActivity() {
 			binding.navigationRail
 		)
 
-		navController = findNavController(R.id.nav_host_fragment_activity_main)
+		val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+		navController = navHostFragment.navController
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		val appBarConfiguration = AppBarConfiguration(
@@ -232,13 +234,11 @@ class MainActivity : AppCompatActivity() {
 
 		fun channel(id: String, tab: String?) {
 			val realTab = if (tab == "featured" || tab == null) "home" else tab
-			findNavController(R.id.nav_host_fragment_activity_main)
-				.navigate(R.id.navigation_channel, bundleOf(Pair("id", id), Pair("tab", realTab)))
+			navController.navigate(R.id.navigation_channel, bundleOf(Pair("id", id), Pair("tab", realTab)))
 		}
 
 		fun playlist(id: String) {
-			findNavController(R.id.nav_host_fragment_activity_main)
-				.navigate(R.id.navigation_playlist, bundleOf(Pair("id", id)))
+			navController.navigate(R.id.navigation_playlist, bundleOf(Pair("id", id)))
 		}
 
 		return try {
