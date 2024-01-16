@@ -43,7 +43,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
@@ -52,6 +51,7 @@ import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
+import dev.kuylar.lighttube.ui.AdaptiveUtils
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
@@ -91,7 +91,12 @@ class MainActivity : AppCompatActivity() {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		val navView: BottomNavigationView = binding.navView
+		AdaptiveUtils.updateNavLayout(
+			resources.configuration.screenWidthDp,
+			binding.navView,
+			binding.navigationRail
+		)
+
 		navController = findNavController(R.id.nav_host_fragment_activity_main)
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
@@ -103,7 +108,8 @@ class MainActivity : AppCompatActivity() {
 
 		setSupportActionBar(binding.toolbar)
 		setupActionBarWithNavController(navController, appBarConfiguration)
-		navView.setupWithNavController(navController)
+		binding.navView.setupWithNavController(navController)
+		binding.navigationRail.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
 			goBack(true)
@@ -141,10 +147,14 @@ class MainActivity : AppCompatActivity() {
 					p.setVolume(1f)
 				miniplayerScene.progress = max(0f, min(1f, slideOffset * 5))
 
-				if (slideOffset > .3)
-					binding.navView.visibility = View.GONE
-				else
-					binding.navView.visibility = View.VISIBLE
+				AdaptiveUtils.toggleNavBars(
+					slideOffset > .3,
+					resources.configuration.screenWidthDp,
+					binding.navView,
+					binding.navigationRail
+				)
+
+				binding.appBarLayout.visibility = if (slideOffset > .95) View.GONE else if (slideOffset < .8) View.VISIBLE else View.GONE
 
 				p.toggleControls(slideOffset * 5 >= 1)
 			}
@@ -194,6 +204,16 @@ class MainActivity : AppCompatActivity() {
 
 		if (intent != null)
 			handleDeepLinks(intent.action, intent.data)
+	}
+
+	override fun onConfigurationChanged(newConfig: Configuration) {
+		super.onConfigurationChanged(newConfig)
+
+		AdaptiveUtils.updateNavLayout(
+			newConfig.screenWidthDp,
+			binding.navView,
+			binding.navigationRail
+		)
 	}
 
 	private fun handleDeepLinks(action: String?, data: Uri?): Boolean {
