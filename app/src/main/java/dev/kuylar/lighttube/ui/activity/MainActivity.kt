@@ -92,12 +92,6 @@ class MainActivity : AppCompatActivity() {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		AdaptiveUtils.updateNavLayout(
-			resources.configuration.screenWidthDp,
-			binding.navView,
-			binding.navigationRail
-		)
-
 		val navHostFragment =
 			supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
 		navController = navHostFragment.navController
@@ -125,20 +119,20 @@ class MainActivity : AppCompatActivity() {
 
 		setPlayer()
 
+		AdaptiveUtils.updateNavLayout(
+			this,
+			resources.configuration.screenWidthDp,
+			binding.navView,
+			binding.navigationRail,
+			miniplayer
+		)
+
 		miniplayer.addBottomSheetCallback(object :
 			BottomSheetBehavior.BottomSheetCallback() {
 			@SuppressLint("SwitchIntDef")
 			override fun onStateChanged(bottomSheet: View, newState: Int) {
 				when (newState) {
 					BottomSheetBehavior.STATE_HIDDEN -> getPlayer().stop()
-
-					BottomSheetBehavior.STATE_DRAGGING -> {
-						supportActionBar?.show()
-					}
-
-					BottomSheetBehavior.STATE_EXPANDED -> {
-						supportActionBar?.hide()
-					}
 				}
 			}
 
@@ -151,12 +145,13 @@ class MainActivity : AppCompatActivity() {
 				miniplayerScene.progress = max(0f, min(1f, slideOffset * 5))
 
 				AdaptiveUtils.toggleNavBars(
+					this@MainActivity,
 					slideOffset > .3,
 					resources.configuration.screenWidthDp,
 					binding.navView,
-					binding.navigationRail
+					binding.navigationRail,
+					miniplayer
 				)
-
 				binding.appBarLayout.visibility =
 					if (slideOffset > .95) View.GONE else if (slideOffset < .8) View.VISIBLE else View.GONE
 
@@ -214,9 +209,11 @@ class MainActivity : AppCompatActivity() {
 		super.onConfigurationChanged(newConfig)
 
 		AdaptiveUtils.updateNavLayout(
+			this,
 			newConfig.screenWidthDp,
 			binding.navView,
-			binding.navigationRail
+			binding.navigationRail,
+			miniplayer
 		)
 
 		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
@@ -517,6 +514,10 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun getPipParams(): PictureInPictureParams {
+		return PictureInPictureParams.Builder().apply {
+			this.setAspectRatio(Rational(16, 9))
+
+		}.build()
 		val playerContainer =
 			if (fullscreen) findViewById<View>(R.id.player_container) else findViewById(R.id.player_container)
 		val rect = Rect()

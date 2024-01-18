@@ -1,8 +1,11 @@
 package dev.kuylar.lighttube.ui
 
+import android.content.Context
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigationrail.NavigationRailView
+import dev.kuylar.lighttube.R
 import kotlin.math.ceil
 import kotlin.math.round
 
@@ -16,33 +19,39 @@ object AdaptiveUtils {
 	const val ITEM_TYPE_SEARCH = 2
 
 	fun updateNavLayout(
+		context: Context,
 		screenWidth: Int,
 		bottomNav: BottomNavigationView,
-		navRail: NavigationRailView
+		navRail: NavigationRailView,
+		miniplayer: BottomSheetBehavior<View>? = null
 	) {
 		if (screenWidth < MEDIUM_SCREEN_WIDTH_SIZE) {
 			// Small screen
 			bottomNav.visibility = if (areNavsEnabled) View.VISIBLE else View.GONE
 			navRail.visibility = View.GONE
+			miniplayer?.setPeekHeight(context.resources.getDimensionPixelOffset(R.dimen.miniplayer_peek_with_navbar), false)
 		} else {
 			// Medium screen
 			bottomNav.visibility = View.GONE
 			navRail.visibility = if (areNavsEnabled) View.VISIBLE else View.GONE
+			miniplayer?.setPeekHeight(context.resources.getDimensionPixelOffset(R.dimen.miniplayer_peek_without_navbar), false)
 		}
 	}
 
 	fun toggleNavBars(
+		context: Context,
 		hide: Boolean,
 		screenWidth: Int,
 		bottomNav: BottomNavigationView,
-		navRail: NavigationRailView
+		navRail: NavigationRailView,
+		miniplayer: BottomSheetBehavior<View>
 	) {
-		areNavsEnabled = hide
+		areNavsEnabled = !hide
 		if (hide) {
 			bottomNav.visibility = View.GONE
 			navRail.visibility = View.GONE
 		} else {
-			updateNavLayout(screenWidth, bottomNav, navRail)
+			updateNavLayout(context, screenWidth, bottomNav, navRail)
 		}
 	}
 
