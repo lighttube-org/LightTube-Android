@@ -1,6 +1,7 @@
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:motion="http://schemas.android.com/apk/res-auto">
 	<Transition
+		android:id="@+id/miniplayer_transition_portrait"
 		motion:constraintSetEnd="@+id/end"
 		motion:constraintSetStart="@id/start"
 		motion:duration="1000">
@@ -21,7 +22,7 @@
 			android:id="@+id/miniplayer_progress_bar"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
-			android:visibility="gone"
+			android:layout_marginTop="-4dp"
 			motion:layout_constraintEnd_toEndOf="parent"
 			motion:layout_constraintStart_toStartOf="parent"
 			motion:layout_constraintTop_toTopOf="parent" />
@@ -33,4 +34,35 @@
 			motion:layout_constraintStart_toStartOf="parent"
 			motion:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar" />
 	</ConstraintSet>
+	<ConstraintSet android:id="@+id/end_landscape">
+		<Constraint
+			android:id="@+id/miniplayer_progress_bar"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_marginTop="-4dp"
+			motion:layout_constraintEnd_toEndOf="parent"
+			motion:layout_constraintStart_toStartOf="parent"
+			motion:layout_constraintTop_toTopOf="parent" />
+		<Constraint
+			android:id="@+id/player_video_info"
+			android:layout_width="300dp"
+			android:layout_height="0dp"
+			motion:layout_constraintBottom_toBottomOf="parent"
+			motion:layout_constraintRight_toRightOf="parent"
+			motion:layout_constraintTop_toTopOf="parent" />
+		<Constraint
+			android:id="@+id/player_container"
+			android:layout_height="0dp"
+			motion:layout_constraintDimensionRatio="V,16:9"
+			motion:layout_constraintEnd_toStartOf="@id/player_video_info"
+			motion:layout_constraintStart_toStartOf="parent"
+			motion:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar" />
+		<Constraint
+			android:id="@+id/linearLayout"
+			android:alpha="0" />
+	</ConstraintSet>
+	<Transition
+		android:id="@+id/miniplayer_transition_landscape"
+		motion:constraintSetEnd="@+id/end_landscape"
+		motion:constraintSetStart="@+id/start" />
 </MotionScene>

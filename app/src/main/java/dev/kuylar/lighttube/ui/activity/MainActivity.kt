@@ -125,6 +125,7 @@ class MainActivity : AppCompatActivity() {
 			binding.navView,
 			binding.navigationRail
 		)
+		miniplayerScene.setTransition(if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
 
 		miniplayer.addBottomSheetCallback(object :
 			BottomSheetBehavior.BottomSheetCallback() {
@@ -211,6 +212,8 @@ class MainActivity : AppCompatActivity() {
 			binding.navView,
 			binding.navigationRail
 		)
+		miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
+		miniplayerScene.progress = miniplayerScene.progress
 
 		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
 			if (it is AdaptiveFragment)
@@ -510,10 +513,6 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun getPipParams(): PictureInPictureParams {
-		return PictureInPictureParams.Builder().apply {
-			this.setAspectRatio(Rational(16, 9))
-
-		}.build()
 		val playerContainer =
 			if (fullscreen) findViewById<View>(R.id.player_container) else findViewById(R.id.player_container)
 		val rect = Rect()
