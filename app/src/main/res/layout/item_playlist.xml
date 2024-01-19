@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?selectableItemBackground"
+	android:clickable="true"
+	android:focusable="true"
+	android:orientation="horizontal"
+	android:paddingHorizontal="16dp"
+	android:paddingVertical="8dp">
+
+	<ImageView
+		android:id="@+id/icon"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:layout_marginEnd="16dp"
+		android:importantForAccessibility="no"
+		android:scaleType="centerCrop"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:layout_weight="1"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/title"
+			style="?textAppearanceTitleMedium"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:maxLines="1"
+			tools:text="Playlist Title" />
+
+		<TextView
+			android:id="@+id/subtitle"
+			style="?textAppearanceBodyMedium"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:maxLines="1"
+			tools:text="0 videos" />
+	</LinearLayout>
+</LinearLayout>

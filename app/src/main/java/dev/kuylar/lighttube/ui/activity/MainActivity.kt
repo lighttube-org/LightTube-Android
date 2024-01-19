@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.ui.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
@@ -13,8 +14,8 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.Icon
-import android.os.Build
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -52,6 +53,7 @@ import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
+import dev.kuylar.lighttube.downloads.VideoDownloadManager
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
@@ -107,6 +109,13 @@ class MainActivity : AppCompatActivity() {
 
 		onBackPressedDispatcher.addCallback(this) {
 			goBack(true)
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			val permissionState =
+				ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+			if (permissionState != PackageManager.PERMISSION_GRANTED)
+				requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
 		}
 
 		val miniplayerView: View = findViewById(R.id.miniplayer)
@@ -186,6 +195,9 @@ class MainActivity : AppCompatActivity() {
 			handler.postDelayed(sponsorblockRunnable, 100)
 		}
 		handler.postDelayed(sponsorblockRunnable, 100)
+
+		VideoDownloadManager.resumeAllDownloads(this)
+
 		ContextCompat.registerReceiver(this, object : BroadcastReceiver() {
 			override fun onReceive(context: Context?, intent: Intent?) {
 				onBroadcastReceived(context, intent)

@@ -34,4 +34,9 @@
 		android:id="@+id/navigation_channel"
 		android:name="dev.kuylar.lighttube.ui.fragment.ChannelFragment"
 		tools:layout="@layout/fragment_channel" />
+	<fragment
+		android:id="@+id/navigation_downloads"
+		android:name="dev.kuylar.lighttube.ui.fragment.DownloadsFragment"
+		android:label="@string/library_downloads"
+		tools:layout="@layout/fragment_downloads" />
 </navigation>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	style="?attr/materialCardViewElevatedStyle"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginHorizontal="8dp"
+	android:layout_marginBottom="8dp"
+	android:checkable="true"
+	android:clickable="true"
+	android:focusable="true">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/video_thumbnail"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:adjustViewBounds="false"
+			android:background="?colorControlHighlight"
+			android:scaleType="centerCrop"
+			app:layout_constraintDimensionRatio="V,16:9"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:shapeAppearanceOverlay="@style/cardThumbnailView"
+			tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/channel_avatar"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_marginStart="8dp"
+			android:adjustViewBounds="false"
+			android:scaleType="centerCrop"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/video_thumbnail"
+			app:shapeAppearanceOverlay="@style/avatarImageView"
+			tools:srcCompat="@tools:sample/avatars" />
+
+		<TextView
+			android:id="@+id/video_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginTop="10dp"
+			android:layout_marginEnd="8dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+			android:textColor="@color/material_on_background_emphasis_high_type"
+			android:textStyle="bold"
+			app:layout_constraintEnd_toStartOf="@+id/settingsButton"
+			app:layout_constraintStart_toEndOf="@id/channel_avatar"
+			app:layout_constraintTop_toBottomOf="@+id/video_thumbnail"
+			tools:text="Video Title" />
+
+		<TextView
+			android:id="@+id/video_subtitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="10dp"
+			android:ellipsize="end"
+			android:maxLines="2"
+			android:text="@string/template_feed_video_subtitle"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@+id/settingsButton"
+			app:layout_constraintStart_toEndOf="@id/channel_avatar"
+			app:layout_constraintTop_toBottomOf="@+id/video_title"
+			tools:text="Channel Title • 12K views • 2 days ago" />
+
+		<TextView
+			android:id="@+id/video_duration"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="8dp"
+			android:layout_marginBottom="8dp"
+			android:background="@drawable/video_duration_background"
+			android:paddingHorizontal="8dp"
+			android:paddingVertical="2dp"
+			android:textColor="#fff"
+			app:layout_constraintBottom_toBottomOf="@+id/video_thumbnail"
+			app:layout_constraintEnd_toEndOf="parent"
+			tools:text="12:34" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/settingsButton"
+			style="?materialIconButtonFilledStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="8dp"
+			app:icon="@drawable/ic_pause"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/video_thumbnail" />
+
+		<com.google.android.material.progressindicator.CircularProgressIndicator
+			android:id="@+id/download_progress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:max="100"
+			app:indicatorColor="?colorOnPrimaryContainer"
+			app:indicatorSize="48dp"
+			app:layout_constraintBottom_toBottomOf="@+id/settingsButton"
+			app:layout_constraintEnd_toEndOf="@+id/settingsButton"
+			app:layout_constraintStart_toStartOf="@+id/settingsButton"
+			app:layout_constraintTop_toTopOf="@+id/settingsButton"
+			tools:progress="33" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

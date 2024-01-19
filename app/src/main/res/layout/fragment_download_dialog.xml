@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	tools:context=".ui.fragment.DownloadDialogFragment">
+
+	<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<TextView
+			style="?textAppearanceTitleLarge"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:text="@string/action_download" />
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="?android:attr/listDivider" />
+
+		<com.google.android.material.progressindicator.LinearProgressIndicator
+			android:id="@+id/loading_bar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:indeterminate="true" />
+
+		<RadioGroup
+			android:id="@+id/download_itag"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:checkedButton="@id/itag_18"
+			android:paddingHorizontal="16dp">
+
+			<RadioButton
+				android:id="@+id/itag_18"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:enabled="false"
+				android:text="@string/download_itag_18" />
+
+			<RadioButton
+				android:id="@+id/itag_22"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:enabled="false"
+				android:text="@string/download_itag_22" />
+		</RadioGroup>
+
+		<com.google.android.material.materialswitch.MaterialSwitch
+			android:id="@+id/switch_proxy"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginHorizontal="16dp"
+			android:text="@string/download_enable_proxy" />
+
+		<Button
+			android:id="@+id/button_download"
+			android:enabled="false"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="16dp"
+			android:text="@string/action_download" />
+	</LinearLayout>
+</FrameLayout>

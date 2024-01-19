@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonArray
-import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
@@ -16,7 +14,7 @@ import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.FragmentLibraryBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
-import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
+import dev.kuylar.lighttube.ui.adapter.LibraryAdapter
 import java.io.IOException
 import kotlin.concurrent.thread
 
@@ -40,7 +38,7 @@ class LibraryFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		val adapter = RendererRecyclerAdapter(items)
+		val adapter = LibraryAdapter(requireActivity(), items)
 		binding.recyclerLibrary.layoutManager = LinearLayoutManager(context)
 		binding.recyclerLibrary.adapter = adapter
 		binding.recyclerLibrary.itemAnimator = null
@@ -54,28 +52,8 @@ class LibraryFragment : Fragment() {
 			thread {
 				try {
 					val playlists = api.getLibraryPlaylists()
-					items.add(0, JsonObject().apply {
-						addProperty("type", "gridPlaylistRenderer")
-						addProperty("id", "!ACTION_NewPlaylist")
-						addProperty("title", getString(R.string.create_playlist))
-						addProperty("videoCount", 0)
-						add("thumbnails", JsonArray().apply {
-							add(JsonObject().apply {
-								addProperty("width", 0)
-								addProperty("height", 0)
-								addProperty("url", "")
-							})
-						})
-						add("channel", JsonObject().apply {
-							add("id", JsonNull.INSTANCE)
-							add("title", JsonNull.INSTANCE)
-							add("avatar", JsonNull.INSTANCE)
-							add("subscribers", JsonNull.INSTANCE)
-							add("badges", JsonArray(0))
-						})
-					})
 					items.addAll(playlists.data ?: emptyList())
-					(binding.recyclerLibrary.adapter as RendererRecyclerAdapter).updateUserData(
+					(binding.recyclerLibrary.adapter as LibraryAdapter).updateUserData(
 						playlists.userData
 					)
 					runOnUiThread {

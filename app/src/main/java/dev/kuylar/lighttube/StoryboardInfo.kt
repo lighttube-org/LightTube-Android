@@ -1,6 +1,6 @@
 package dev.kuylar.lighttube
 
-import dev.kuylar.lighttube.ui.StoryboardTransformation
+import dev.kuylar.lighttube.ui.transformations.StoryboardTransformation
 import java.net.URLDecoder
 import kotlin.math.ceil
 import kotlin.math.floor
