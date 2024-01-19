@@ -9,7 +9,7 @@
 		android:id="@+id/coordinatorLayout"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		app:layout_constraintBottom_toTopOf="@+id/nav_view"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@+id/navigation_rail"
 		app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +60,7 @@
 			android:focusable="true"
 			android:orientation="vertical"
 			app:behavior_hideable="true"
-			app:behavior_peekHeight="64dp"
+			app:behavior_peekHeight="@dimen/miniplayer_peek_with_navbar"
 			app:enableEdgeToEdge="true"
 			app:gestureInsetBottomIgnored="true"
 			app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">

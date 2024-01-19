@@ -43,8 +43,7 @@ object AdaptiveUtils {
 		hide: Boolean,
 		screenWidth: Int,
 		bottomNav: BottomNavigationView,
-		navRail: NavigationRailView,
-		miniplayer: BottomSheetBehavior<View>
+		navRail: NavigationRailView
 	) {
 		areNavsEnabled = !hide
 		if (hide) {

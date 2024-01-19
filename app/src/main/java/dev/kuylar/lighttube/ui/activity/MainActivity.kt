@@ -123,8 +123,7 @@ class MainActivity : AppCompatActivity() {
 			this,
 			resources.configuration.screenWidthDp,
 			binding.navView,
-			binding.navigationRail,
-			miniplayer
+			binding.navigationRail
 		)
 
 		miniplayer.addBottomSheetCallback(object :
@@ -149,12 +148,10 @@ class MainActivity : AppCompatActivity() {
 					slideOffset > .3,
 					resources.configuration.screenWidthDp,
 					binding.navView,
-					binding.navigationRail,
-					miniplayer
+					binding.navigationRail
 				)
 				binding.appBarLayout.visibility =
 					if (slideOffset > .95) View.GONE else if (slideOffset < .8) View.VISIBLE else View.GONE
-
 				p.toggleControls(slideOffset * 5 >= 1)
 			}
 		})
@@ -212,8 +209,7 @@ class MainActivity : AppCompatActivity() {
 			this,
 			newConfig.screenWidthDp,
 			binding.navView,
-			binding.navigationRail,
-			miniplayer
+			binding.navigationRail
 		)
 
 		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
