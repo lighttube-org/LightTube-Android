@@ -2,6 +2,7 @@ package dev.kuylar.lighttube.ui
 
 import android.content.Context
 import android.view.View
+import androidx.fragment.app.FragmentContainerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigationrail.NavigationRailView
@@ -23,6 +24,7 @@ object AdaptiveUtils {
 		screenWidth: Int,
 		bottomNav: BottomNavigationView,
 		navRail: NavigationRailView,
+		fragmentView: FragmentContainerView? = null,
 		miniplayer: BottomSheetBehavior<View>? = null
 	) {
 		if (screenWidth < MEDIUM_SCREEN_WIDTH_SIZE) {
@@ -30,11 +32,13 @@ object AdaptiveUtils {
 			bottomNav.visibility = if (areNavsEnabled) View.VISIBLE else View.GONE
 			navRail.visibility = View.GONE
 			miniplayer?.setPeekHeight(context.resources.getDimensionPixelOffset(R.dimen.miniplayer_peek_with_navbar), false)
+			fragmentView?.setPadding(fragmentView.paddingLeft, fragmentView.paddingTop, fragmentView.paddingRight, context.resources.getDimensionPixelOffset(R.dimen.bottom_bar_height))
 		} else {
 			// Medium screen
 			bottomNav.visibility = View.GONE
 			navRail.visibility = if (areNavsEnabled) View.VISIBLE else View.GONE
 			miniplayer?.setPeekHeight(context.resources.getDimensionPixelOffset(R.dimen.miniplayer_peek_without_navbar), false)
+			fragmentView?.setPadding(fragmentView.paddingLeft, fragmentView.paddingTop, fragmentView.paddingRight, 0)
 		}
 	}
 

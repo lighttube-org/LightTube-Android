@@ -5,4 +5,5 @@
 
 	<dimen name="miniplayer_peek_with_navbar">144dp</dimen>
 	<dimen name="miniplayer_peek_without_navbar">64dp</dimen>
+	<dimen name="bottom_bar_height">80dp</dimen>
 </resources>

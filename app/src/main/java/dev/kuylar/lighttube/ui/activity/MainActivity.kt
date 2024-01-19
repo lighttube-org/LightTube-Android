@@ -124,6 +124,7 @@ class MainActivity : AppCompatActivity() {
 			resources.configuration.screenWidthDp,
 			binding.navView,
 			binding.navigationRail,
+			binding.navHostFragmentActivityMain,
 			miniplayer
 		)
 		miniplayerScene.setTransition(if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
@@ -212,6 +213,7 @@ class MainActivity : AppCompatActivity() {
 			newConfig.screenWidthDp,
 			binding.navView,
 			binding.navigationRail,
+			binding.navHostFragmentActivityMain,
 			miniplayer
 		)
 		miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
