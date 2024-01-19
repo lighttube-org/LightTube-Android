@@ -123,7 +123,8 @@ class MainActivity : AppCompatActivity() {
 			this,
 			resources.configuration.screenWidthDp,
 			binding.navView,
-			binding.navigationRail
+			binding.navigationRail,
+			miniplayer
 		)
 		miniplayerScene.setTransition(if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
 
@@ -210,7 +211,8 @@ class MainActivity : AppCompatActivity() {
 			this,
 			newConfig.screenWidthDp,
 			binding.navView,
-			binding.navigationRail
+			binding.navigationRail,
+			miniplayer
 		)
 		miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
 		miniplayerScene.progress = miniplayerScene.progress
