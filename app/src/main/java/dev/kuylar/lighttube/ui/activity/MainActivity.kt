@@ -208,6 +208,8 @@ class MainActivity : AppCompatActivity() {
 	override fun onConfigurationChanged(newConfig: Configuration) {
 		super.onConfigurationChanged(newConfig)
 
+		if (isInPictureInPictureMode) return
+
 		AdaptiveUtils.updateNavLayout(
 			this,
 			newConfig.screenWidthDp,
@@ -526,7 +528,7 @@ class MainActivity : AppCompatActivity() {
 			this.setAspectRatio(Rational(rect.width(), rect.height()))
 			this.setSourceRectHint(rect)
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-				this.setAutoEnterEnabled(player.isPlaying())
+				this.setAutoEnterEnabled(player.isPlaying() && miniplayer.state == BottomSheetBehavior.STATE_EXPANDED)
 			}
 			this.setActions(
 				if (player.isPlaying()) {
