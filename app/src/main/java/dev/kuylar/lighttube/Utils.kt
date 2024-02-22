@@ -31,6 +31,7 @@ import dev.kuylar.lighttube.databinding.RendererMessageBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistLandscapeBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
@@ -257,11 +258,18 @@ class Utils {
 				)
 
 				"playlistRenderer" -> PlaylistRenderer(
-					RendererPlaylistBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
+					if (landscape) RendererPlaylistBinding.bind(
+						RendererPlaylistLandscapeBinding.inflate(
+							inflater,
+							parent,
+							false
+						).root
+					) else
+						RendererPlaylistBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
 				)
 
 				"playlistInfoRenderer" -> PlaylistInfoRenderer(
