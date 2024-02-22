@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.ui.adapter
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,10 @@ class RendererRecyclerAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, position: Int): RendererViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
-		return Utils.getViewHolder(rendererList[position], inflater!!, parent)
+		return Utils.getViewHolder(
+			rendererList[position], inflater!!, parent,
+			parent.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+		)
 	}
 
 	override fun getItemCount(): Int = rendererList.size

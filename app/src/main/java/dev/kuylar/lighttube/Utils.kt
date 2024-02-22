@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Resources
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -33,6 +35,7 @@ import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.databinding.RendererVideoLandscapeBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
@@ -178,15 +181,23 @@ class Utils {
 		fun getViewHolder(
 			renderer: JsonObject,
 			inflater: LayoutInflater,
-			parent: ViewGroup
+			parent: ViewGroup,
+			landscape: Boolean
 		): RendererViewHolder {
 			return when (renderer.getAsJsonPrimitive("type").asString) {
 				"videoRenderer" -> VideoRenderer(
-					RendererVideoBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
+					if (landscape) RendererVideoBinding.bind(
+						RendererVideoLandscapeBinding.inflate(
+							inflater,
+							parent,
+							false
+						).root
+					) else
+						RendererVideoBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
 				)
 
 				"compactVideoRenderer" -> VideoRenderer(
@@ -278,11 +289,18 @@ class Utils {
 				)
 
 				"channelVideoPlayerRenderer" -> ChannelVideoPlayerRenderer(
-					RendererVideoBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
+					if (landscape) RendererVideoBinding.bind(
+						RendererVideoLandscapeBinding.inflate(
+							inflater,
+							parent,
+							false
+						).root
+					) else
+						RendererVideoBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
 				)
 
 				"messageRenderer" -> MessageRenderer(
@@ -297,7 +315,8 @@ class Utils {
 				"richItemRenderer" -> getViewHolder(
 					renderer.getAsJsonObject("content"),
 					inflater,
-					parent
+					parent,
+					landscape
 				)
 
 				"itemSectionRenderer" -> ItemSectionRenderer(
@@ -450,6 +469,17 @@ class Utils {
 
 		fun unwrapAttributionUrl(query: String): String {
 			return parseQueryString(query)["u"] ?: ""
+		}
+
+		@SuppressLint("NotifyDataSetChanged")
+		fun rebindAllRecyclerViews(recycler: RecyclerView) {
+			val adapter = recycler.adapter
+			val layoutManager = recycler.layoutManager
+			val state = layoutManager?.onSaveInstanceState()
+			recycler.adapter = adapter
+			recycler.layoutManager = layoutManager
+			recycler.adapter?.notifyDataSetChanged()
+			layoutManager?.onRestoreInstanceState(state)
 		}
 	}
 }

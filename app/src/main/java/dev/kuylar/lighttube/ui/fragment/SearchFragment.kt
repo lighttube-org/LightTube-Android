@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.FragmentSearchBinding
@@ -20,7 +21,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), AdaptiveFragment {
 	private val items: MutableList<JsonObject> = mutableListOf()
 	private lateinit var binding: FragmentSearchBinding
 	private lateinit var player: VideoPlayerManager
@@ -117,5 +118,9 @@ class SearchFragment : Fragment() {
 				}
 			}
 		}
+	}
+
+	override fun onScreenSizeChanged(newSize: Int) {
+		Utils.rebindAllRecyclerViews(binding.recyclerSearch)
 	}
 }
