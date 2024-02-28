@@ -23,8 +23,12 @@ class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(
 			)
 		}
 
-		binding.commentAuthor.text =
-			item.getAsJsonObject("owner").getAsJsonPrimitive("title").asString
+		if (item.has("owner") &&
+			item.getAsJsonObject("owner").has("title") &&
+			!item.getAsJsonObject("owner").get("title").isJsonNull
+		)
+			binding.commentAuthor.text =
+				item.getAsJsonObject("owner").getAsJsonPrimitive("title").asString
 		binding.commentDate.text =
 			item.getAsJsonPrimitive("publishedTimeText").asString
 		binding.commentBody.text =
