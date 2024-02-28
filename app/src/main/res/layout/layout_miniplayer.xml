@@ -29,11 +29,12 @@
 	</FrameLayout>
 
 	<LinearLayout
-		android:id="@+id/linearLayout"
+		android:id="@+id/miniplayerContainer"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:gravity="center_vertical"
 		android:orientation="horizontal"
+		android:visibility="visible"
 		app:layout_constraintBottom_toBottomOf="@id/player_container"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/player_container"
