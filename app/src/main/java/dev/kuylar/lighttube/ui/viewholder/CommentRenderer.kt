@@ -38,9 +38,12 @@ class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(
 			binding.commentLikeCount.text =
 				lc.asString
 
-		Glide
-			.with(binding.root)
-			.load(item.getAsJsonObject("owner").asJsonObject.getAsJsonPrimitive("avatar").asString)
-			.into(binding.commentAvatar)
+		if (item.has("owner") && item.getAsJsonObject("owner")
+				.has("avatar") && !item.getAsJsonObject("owner").get("avatar").isJsonNull
+		)
+			Glide
+				.with(binding.root)
+				.load(item.getAsJsonObject("owner").asJsonObject.getAsJsonPrimitive("avatar").asString)
+				.into(binding.commentAvatar)
 	}
 }
