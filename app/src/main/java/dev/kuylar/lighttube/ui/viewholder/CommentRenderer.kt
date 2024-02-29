@@ -14,21 +14,24 @@ class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(
 		if (item.getAsJsonPrimitive("pinned").asBoolean) {
 			binding.commentPinned.visibility = View.VISIBLE
 		}
-		if (item.getAsJsonObject("owner").getAsJsonArray("badges").size() > 0) {
-			binding.commentAuthor.setCompoundDrawables(
-				null,
-				null,
-				ContextCompat.getDrawable(binding.root.context, R.drawable.ic_verified),
-				null
-			)
+
+		if (item.has("owner")) item.get("owner").takeIf { !it.isJsonNull }?.asJsonObject?.apply {
+			if (has("title") && !get("title").isJsonNull)
+				binding.commentAuthor.text = getAsJsonPrimitive("title").asString
+			if (!get("badges").isJsonNull && getAsJsonArray("badges").size() > 0)
+				binding.commentAuthor.setCompoundDrawables(
+					null,
+					null,
+					ContextCompat.getDrawable(binding.root.context, R.drawable.ic_verified),
+					null
+				)
+
+			if (has("avatar") && !get("avatar").isJsonNull)
+				Glide.with(binding.root)
+					.load(getAsJsonPrimitive("avatar").asString)
+					.into(binding.commentAvatar)
 		}
 
-		if (item.has("owner") &&
-			item.getAsJsonObject("owner").has("title") &&
-			!item.getAsJsonObject("owner").get("title").isJsonNull
-		)
-			binding.commentAuthor.text =
-				item.getAsJsonObject("owner").getAsJsonPrimitive("title").asString
 		binding.commentDate.text =
 			item.getAsJsonPrimitive("publishedTimeText").asString
 		binding.commentBody.text =
@@ -39,15 +42,6 @@ class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(
 
 		val lc = item.get("likeCount")
 		if (!lc.isJsonNull)
-			binding.commentLikeCount.text =
-				lc.asString
-
-		if (item.has("owner") && item.getAsJsonObject("owner")
-				.has("avatar") && !item.getAsJsonObject("owner").get("avatar").isJsonNull
-		)
-			Glide
-				.with(binding.root)
-				.load(item.getAsJsonObject("owner").asJsonObject.getAsJsonPrimitive("avatar").asString)
-				.into(binding.commentAvatar)
+			binding.commentLikeCount.text = lc.asString
 	}
 }

@@ -76,9 +76,10 @@ class VideoCommentsFragment : Fragment() {
 				) else api.continueComments(commentsContinuation!!)
 				if (initial) with(comments.data!!.contents[0].asJsonObject) {
 					player.showCommentsButton(
-						if (this.has("owner") && this.getAsJsonObject("owner")
-								.has("avatar") && !this.getAsJsonObject("owner")
-								.get("avatar").isJsonNull
+						if (this.has("owner") &&
+							!this.get("owner").isJsonNull &&
+							this.getAsJsonObject("owner").has("avatar") &&
+							!this.getAsJsonObject("owner").get("avatar").isJsonNull
 						)
 							this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString
 						else "",
