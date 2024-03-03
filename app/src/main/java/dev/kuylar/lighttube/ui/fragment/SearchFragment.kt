@@ -34,16 +34,16 @@ class SearchFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		binding = FragmentSearchBinding.inflate(inflater)
-		(activity as MainActivity).apply {
-			this@SearchFragment.api = getApi()
-			this@SearchFragment.player = getPlayer()
-		}
 		query = arguments?.getString("query") ?: "asdf"
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		(activity as MainActivity).apply {
+			this@SearchFragment.api = getApi()
+			this@SearchFragment.player = getPlayer()
+		}
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerSearch.layoutManager = LinearLayoutManager(context)
 		binding.recyclerSearch.adapter = adapter

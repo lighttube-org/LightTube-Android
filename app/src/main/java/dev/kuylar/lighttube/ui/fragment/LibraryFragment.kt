@@ -31,15 +31,15 @@ class LibraryFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		binding = FragmentLibraryBinding.inflate(inflater)
-		(activity as MainActivity).apply {
-			this@LibraryFragment.api = getApi()
-			this@LibraryFragment.player = getPlayer()
-		}
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		(activity as MainActivity).apply {
+			this@LibraryFragment.api = getApi()
+			this@LibraryFragment.player = getPlayer()
+		}
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerLibrary.layoutManager = LinearLayoutManager(context)
 		binding.recyclerLibrary.adapter = adapter
