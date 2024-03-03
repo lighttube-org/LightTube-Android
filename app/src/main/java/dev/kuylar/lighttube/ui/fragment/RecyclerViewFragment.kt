@@ -37,10 +37,6 @@ class RecyclerViewFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		binding = FragmentRecyclerviewBinding.inflate(inflater)
-		(activity as MainActivity).apply {
-			this@RecyclerViewFragment.api = getApi()
-			this@RecyclerViewFragment.player = getPlayer()
-		}
 		type = arguments?.getString("type")!!
 		args = arguments?.getString("args")!!
 		params = arguments?.getString("params")
@@ -49,6 +45,10 @@ class RecyclerViewFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		(activity as MainActivity).apply {
+			this@RecyclerViewFragment.api = getApi()
+			this@RecyclerViewFragment.player = getPlayer()
+		}
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recycler.layoutManager = LinearLayoutManager(context)
 		binding.recycler.adapter = adapter

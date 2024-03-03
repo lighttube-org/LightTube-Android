@@ -1,10 +1,10 @@
 package dev.kuylar.lighttube.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -34,15 +34,15 @@ class PlaylistFragment : Fragment() {
 		arguments?.let {
 			id = it.getString("id")!!
 		}
-		(activity as MainActivity).apply {
-			this@PlaylistFragment.api = getApi()
-			supportActionBar?.title = ""
-		}
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		(activity as MainActivity).apply {
+			this@PlaylistFragment.api = getApi()
+			supportActionBar?.title = ""
+		}
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerPlaylist.layoutManager = LinearLayoutManager(context)
 		binding.recyclerPlaylist.adapter = adapter
