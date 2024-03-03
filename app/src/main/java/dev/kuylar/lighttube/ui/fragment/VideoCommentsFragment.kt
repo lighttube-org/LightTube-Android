@@ -1,10 +1,10 @@
 package dev.kuylar.lighttube.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -76,7 +76,13 @@ class VideoCommentsFragment : Fragment() {
 				) else api.continueComments(commentsContinuation!!)
 				if (initial) with(comments.data!!.contents[0].asJsonObject) {
 					player.showCommentsButton(
-						this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
+						if (this.has("owner") &&
+							!this.get("owner").isJsonNull &&
+							this.getAsJsonObject("owner").has("avatar") &&
+							!this.getAsJsonObject("owner").get("avatar").isJsonNull
+						)
+							this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString
+						else "",
 						this.getAsJsonPrimitive("content").asString,
 						comments.data.contents.size
 					)
