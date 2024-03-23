@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.UserData
@@ -20,7 +21,7 @@ import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class RecyclerViewFragment : Fragment() {
+class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 	private val items: MutableList<JsonObject> = mutableListOf()
 	private var userData: UserData? = null
 	private lateinit var binding: FragmentRecyclerviewBinding
@@ -142,5 +143,9 @@ class RecyclerViewFragment : Fragment() {
 				return Pair(Pair(emptyList(), null), null)
 			}
 		}
+	}
+
+	override fun onScreenSizeChanged(newSize: Int) {
+		Utils.rebindAllRecyclerViews(binding.recycler)
 	}
 }
