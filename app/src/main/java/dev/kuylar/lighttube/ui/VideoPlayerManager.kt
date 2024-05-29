@@ -37,6 +37,7 @@ import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.VideoChapter
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.fragment.LandscapeVideoInfoFragment
 import dev.kuylar.lighttube.ui.fragment.PlayerSettingsFragment
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import java.io.IOException
@@ -74,6 +75,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		playerBox.findViewById(R.id.player_skip_ghost)
 	private val bufferingIndicator: CircularProgressIndicator =
 		playerBox.findViewById(R.id.player_buffering_progress)
+
+	private var uiIsLandscape = false
 
 	init {
 		exoplayerView.player = player
@@ -189,8 +192,15 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		else {
 			fragmentManager.beginTransaction().apply {
 				replace(
-					R.id.player_video_info,
+					R.id.player_recommendations,
 					VideoInfoFragment::class.java,
+					bundleOf(Pair("id", id), Pair("playlistId", null), Pair("uiIsLandscape", uiIsLandscape))
+				)
+			}.commit()
+			fragmentManager.beginTransaction().apply {
+				replace(
+					R.id.player_video_info,
+					LandscapeVideoInfoFragment::class.java,
 					bundleOf(Pair("id", id), Pair("playlistId", null))
 				)
 			}.commit()
@@ -382,7 +392,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	fun closeSheets(): Boolean {
 		return try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).closeSheets()
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).closeSheets()
 		} catch (e: Exception) {
 			false
 		}
@@ -390,18 +400,18 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	fun showCommentsButton() {
 		try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton(null)
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).showCommentsButton(null)
 		} catch (_: Exception) { }
 	}
 
 	fun showCommentsButton(firstCommentAvatar: String, firstCommentText: String, commentCount: Int) {
 		try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
 		} catch (_: Exception) { }
 	}
 
 	fun setSheets(details: Boolean, comments: Boolean) {
-		(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).setSheets(
+		(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).setSheets(
 			details,
 			comments
 		)
@@ -409,7 +419,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	fun notifyScreenRotated(isLandscape: Boolean) {
 		try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment)
+			uiIsLandscape = isLandscape
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment)
 				.notifyScreenRotated(isLandscape)
 		} catch (e: Exception) {
 			Log.w("VideoPlayerManager", "failed to update screen rotation in VideoInfoFragment", e)

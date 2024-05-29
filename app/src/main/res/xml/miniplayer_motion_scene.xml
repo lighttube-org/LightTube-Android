@@ -18,6 +18,9 @@
 			motion:layout_constraintDimensionRatio="V,16:9"
 			motion:layout_constraintStart_toStartOf="parent"
 			motion:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar" />
+		<Constraint
+			android:id="@+id/player_video_info"
+			android:visibility="gone" />
 	</ConstraintSet>
 	<ConstraintSet android:id="@+id/end">
 		<Constraint
@@ -38,6 +41,9 @@
 		<Constraint
 			android:id="@+id/miniplayerContainer"
 			android:visibility="gone" />
+		<Constraint
+			android:id="@+id/player_video_info"
+			android:visibility="gone" />
 	</ConstraintSet>
 	<ConstraintSet android:id="@+id/end_landscape">
 		<Constraint
@@ -49,8 +55,8 @@
 			motion:layout_constraintStart_toStartOf="parent"
 			motion:layout_constraintTop_toTopOf="parent" />
 		<Constraint
-			android:id="@+id/player_video_info"
-			android:layout_width="300dp"
+			android:id="@+id/player_recommendations"
+			android:layout_width="450dp"
 			android:layout_height="0dp"
 			motion:layout_constraintBottom_toBottomOf="parent"
 			motion:layout_constraintRight_toRightOf="parent"
@@ -59,11 +65,18 @@
 			android:id="@+id/player_container"
 			android:layout_height="0dp"
 			motion:layout_constraintDimensionRatio="V,16:9"
-			motion:layout_constraintEnd_toStartOf="@id/player_video_info"
+			motion:layout_constraintEnd_toStartOf="@id/player_recommendations"
 			motion:layout_constraintStart_toStartOf="parent"
 			motion:layout_constraintTop_toBottomOf="@+id/miniplayer_progress_bar" />
 		<Constraint
 			android:id="@+id/miniplayerContainer"
 			android:visibility="gone" />
+		<Constraint
+			android:id="@+id/player_video_info"
+			android:visibility="visible"
+			motion:layout_constraintBottom_toBottomOf="parent"
+			motion:layout_constraintLeft_toLeftOf="parent"
+			motion:layout_constraintRight_toLeftOf="@id/player_recommendations"
+			motion:layout_constraintTop_toBottomOf="@id/player_container" />
 	</ConstraintSet>
 </MotionScene>
