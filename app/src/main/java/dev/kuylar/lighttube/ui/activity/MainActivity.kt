@@ -226,7 +226,8 @@ class MainActivity : AppCompatActivity() {
 			binding.navHostFragmentActivityMain,
 			miniplayer
 		)
-		miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
+		if (Utils.checkIsTablet(this@MainActivity))
+			miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
 		miniplayerScene.progress = miniplayerScene.progress
 		if (this::player.isInitialized) {
 			player.notifyScreenRotated(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
