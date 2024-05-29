@@ -48,7 +48,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val playerBox: View = activity.findViewById(R.id.player_box)
-	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
+	val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
 	private val doubleTapView: YouTubeOverlay = activity.findViewById(R.id.player_overlay)
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
 		setHandleAudioBecomingNoisy(true)
@@ -187,6 +187,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	fun playVideo(id: String) {
+		if (uiIsLandscape && !Utils.checkIsTablet(activity))
+			activity.enterFullscreen(exoplayerView, false)
 		if (player.currentMediaItem?.mediaId == id)
 			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 		else {

@@ -1,9 +1,11 @@
 package dev.kuylar.lighttube
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -58,6 +60,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
 import kotlin.concurrent.thread
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 class Utils {
@@ -488,6 +492,17 @@ class Utils {
 			recycler.layoutManager = layoutManager
 			recycler.adapter?.notifyDataSetChanged()
 			layoutManager?.onRestoreInstanceState(state)
+		}
+
+		fun checkIsTablet(activity: Activity): Boolean {
+			val display = activity.windowManager.defaultDisplay
+			val metrics = DisplayMetrics()
+			display.getMetrics(metrics)
+
+			val widthInches = metrics.widthPixels / metrics.xdpi
+			val heightInches = metrics.heightPixels / metrics.ydpi
+			val diagonalInches = sqrt(widthInches.pow(2f) + heightInches.pow(2f))
+			return diagonalInches >= 7.0
 		}
 	}
 }

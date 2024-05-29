@@ -135,6 +135,14 @@ class MainActivity : AppCompatActivity() {
 			override fun onStateChanged(bottomSheet: View, newState: Int) {
 				when (newState) {
 					BottomSheetBehavior.STATE_HIDDEN -> getPlayer().stop()
+
+					BottomSheetBehavior.STATE_COLLAPSED ->
+						if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT)
+							requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+
+					BottomSheetBehavior.STATE_EXPANDED ->
+						if (!Utils.checkIsTablet(this@MainActivity) && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+							enterFullscreen(player.exoplayerView, false)
 				}
 			}
 
@@ -220,8 +228,19 @@ class MainActivity : AppCompatActivity() {
 		)
 		miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
 		miniplayerScene.progress = miniplayerScene.progress
-		if (this::player.isInitialized)
+		if (this::player.isInitialized) {
 			player.notifyScreenRotated(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+			if (!Utils.checkIsTablet(this) && arrayOf(
+					BottomSheetBehavior.STATE_EXPANDED,
+					BottomSheetBehavior.STATE_SETTLING,
+					BottomSheetBehavior.STATE_DRAGGING,
+					BottomSheetBehavior.STATE_HALF_EXPANDED
+				).contains(miniplayer.state) && requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+			) {
+				Log.i("MainActivity", "Device is not a tablet, the player view is up, and fullscreen is ${fullscreen}. Entering fullscreen")
+				enterFullscreen(player.exoplayerView, false)
+			}
+		}
 
 		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
 			if (it is AdaptiveFragment)
@@ -467,7 +486,10 @@ class MainActivity : AppCompatActivity() {
 		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.INVISIBLE
 		binding.fullscreenPlayerContainer.visibility = View.GONE
 		miniplayer.isDraggable = true
-		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+		requestedOrientation = if (Utils.checkIsTablet(this))
+			ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+		else
+			ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 	}
 
 	private fun tryExitFullscreen(): Boolean {
