@@ -346,12 +346,13 @@ class MainActivity : AppCompatActivity() {
 		} else false
 	}
 
+	@SuppressLint("RestrictedApi")
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.top_app_bar, menu)
 
 		val searchView = menu[0].actionView as SearchView
 		val searchAutoComplete: SearchAutoComplete =
-			searchView.findViewById(androidx.appcompat.R.id.search_src_text) as SearchAutoComplete
+			searchView.findViewById(androidx.appcompat.R.id.search_src_text)
 
 		searchAutoComplete.onItemClickListener =
 			OnItemClickListener { adapterView, _, itemIndex, _ ->
@@ -379,6 +380,7 @@ class MainActivity : AppCompatActivity() {
 		return true
 	}
 
+	@SuppressLint("RestrictedApi")
 	private fun updateSuggestions(
 		newText: String,
 		searchAutoComplete: SearchAutoComplete
