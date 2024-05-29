@@ -30,6 +30,7 @@ class LandscapeVideoInfoFragment : Fragment() {
 	private lateinit var api: LightTubeApi
 	private lateinit var player: VideoPlayerManager
 	private lateinit var id: String
+	private lateinit var video: LightTubeVideo
 	private var playlistId: String? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +55,10 @@ class LandscapeVideoInfoFragment : Fragment() {
 		if (id.isNotBlank())
 			thread {
 				try {
-					val video = api.getVideo(id, playlistId)
+					val res = api.getVideo(id, playlistId)
+					video = res.data!!
 					activity?.runOnUiThread {
-						fillData(video.data!!, video.userData)
+						fillData(res.data, res.userData)
 					}
 				} catch (e: IOException) {
 					activity?.runOnUiThread {
@@ -80,7 +82,7 @@ class LandscapeVideoInfoFragment : Fragment() {
 
 	}
 
-	fun fillData(video: LightTubeVideo, userData: UserData?) {
+	private fun fillData(video: LightTubeVideo, userData: UserData?) {
 		var subscriptionInfo =
 			userData?.channels?.get(video.channel.id) ?: SubscriptionInfo(
 				subscribed = false,
@@ -169,6 +171,28 @@ class LandscapeVideoInfoFragment : Fragment() {
 				activity.runOnUiThread {
 					binding.buttonDislike.text = dislikes.toString()
 				}
+		}
+	}
+
+	fun showCommentsButton(firstComment: Triple<String, String, Int>?) {
+		if (firstComment != null) {
+			binding.commentsLoading.visibility = View.GONE
+			binding.commentsFirst.visibility = View.VISIBLE
+
+			Glide.with(binding.root)
+				.load(firstComment.first)
+				.into(binding.commentAvatar)
+			binding.commentText.text =
+				Html.fromHtml(firstComment.second, Html.FROM_HTML_MODE_LEGACY)
+			binding.commentsCountBullet.visibility = View.VISIBLE
+			binding.commentsCount.text =
+				video.commentCount?.takeIf { it.isNotEmpty() } ?: "${firstComment.third}+"
+			binding.cardComments.setOnClickListener {
+				(activity as MainActivity).getPlayer().setSheets(details = false, comments = true)
+			}
+		} else {
+			binding.spinnerComments.visibility = View.GONE
+			binding.textCommentsLoading.setText(R.string.comments_loading_fail)
 		}
 	}
 }
