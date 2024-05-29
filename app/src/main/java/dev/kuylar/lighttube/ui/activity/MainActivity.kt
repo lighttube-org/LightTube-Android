@@ -220,6 +220,8 @@ class MainActivity : AppCompatActivity() {
 		)
 		miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
 		miniplayerScene.progress = miniplayerScene.progress
+		if (this::player.isInitialized)
+			player.notifyScreenRotated(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
 
 		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
 			if (it is AdaptiveFragment)

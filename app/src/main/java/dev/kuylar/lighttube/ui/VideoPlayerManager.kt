@@ -10,21 +10,21 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.vkay94.dtpv.DoubleTapPlayerView
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.github.vkay94.timebar.LibTimeBar
 import com.github.vkay94.timebar.YouTubeChapter
 import com.github.vkay94.timebar.YouTubeSegment
 import com.github.vkay94.timebar.YouTubeTimeBar
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.Tracks
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
@@ -405,6 +405,15 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			details,
 			comments
 		)
+	}
+
+	fun notifyScreenRotated(isLandscape: Boolean) {
+		try {
+			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment)
+				.notifyScreenRotated(isLandscape)
+		} catch (e: Exception) {
+			Log.w("VideoPlayerManager", "failed to update screen rotation in VideoInfoFragment", e)
+		}
 	}
 
 	fun setChapters(videoId: String, chapters: ArrayList<VideoChapter>?) {

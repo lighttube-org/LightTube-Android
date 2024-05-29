@@ -137,4 +137,8 @@ class VideoInfoFragment : Fragment() {
 		items[0] = video.getAsRenderer()
 		adapter.notifyItemChanged(0)
 	}
+
+	fun notifyScreenRotated(isLandscape: Boolean) {
+		adapter.notifyScreenRotated(isLandscape)
+	}
 }

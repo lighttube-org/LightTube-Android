@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.ui.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -147,5 +148,12 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 
 	override fun onScreenSizeChanged(newSize: Int) {
 		Utils.rebindAllRecyclerViews(binding.recycler)
+	}
+
+	override fun onConfigurationChanged(newConfig: Configuration) {
+		super.onConfigurationChanged(newConfig)
+
+		(binding.recycler.adapter as RendererRecyclerAdapter)
+			.notifyScreenRotated(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
 	}
 }

@@ -12,10 +12,11 @@ import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
 class RendererRecyclerAdapter(
 	private val rendererList: MutableList<JsonObject>,
 	private val requestMore: ((String) -> Unit)? = null
-) :
-	RecyclerView.Adapter<RendererViewHolder>() {
+) : RecyclerView.Adapter<RendererViewHolder>() {
 
 	private var userData = UserData(null, hashMapOf(), false, null)
+	private var uiIsLandscape = false
+	private val portraitOnlyRenderers = arrayOf("slimVideoInfoRenderer", "playlistInfoRenderer")
 
 	// forgive me other android devs that obviously
 	// know better than me, but i had to do this :(
@@ -46,6 +47,13 @@ class RendererRecyclerAdapter(
 			"richItemRenderer" -> holder.bind(renderer.getAsJsonObject("content"), userData)
 			else -> holder.bind(renderer, userData)
 		}
+
+		if (portraitOnlyRenderers.contains(type)) {
+			holder.itemView.layoutParams = RecyclerView.LayoutParams(
+				RecyclerView.LayoutParams.MATCH_PARENT,
+				if (uiIsLandscape) 0 else RecyclerView.LayoutParams.WRAP_CONTENT
+			)
+		}
 	}
 
 	fun updateUserData(newUserData: UserData?) {
@@ -54,5 +62,14 @@ class RendererRecyclerAdapter(
 		userData.channels.putAll(newUserData.channels)
 		userData.editable = newUserData.editable
 		userData.playlistId = newUserData.playlistId
+	}
+
+	fun notifyScreenRotated(isLandscape: Boolean) {
+		if (rendererList.size == 0) return
+		uiIsLandscape = isLandscape
+		val firstElType = rendererList[0].get("type")
+			.takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }?.asString
+		if (portraitOnlyRenderers.contains(firstElType))
+			notifyItemChanged(0)
 	}
 }
