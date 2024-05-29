@@ -331,6 +331,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun setPlayer() {
 		player = VideoPlayerManager(this)
+		player.notifyScreenRotated(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
 	}
 
 	fun getPlayer(): VideoPlayerManager {
