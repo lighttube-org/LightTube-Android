@@ -52,6 +52,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val adapter = RendererRecyclerAdapter(items)
+		adapter.notifyScreenRotated(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
 		binding.recycler.layoutManager = LinearLayoutManager(context)
 		binding.recycler.adapter = adapter
 		binding.recycler.itemAnimator = null

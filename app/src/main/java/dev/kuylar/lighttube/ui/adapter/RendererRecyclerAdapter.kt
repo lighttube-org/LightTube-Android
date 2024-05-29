@@ -65,8 +65,8 @@ class RendererRecyclerAdapter(
 	}
 
 	fun notifyScreenRotated(isLandscape: Boolean) {
-		if (rendererList.size == 0) return
 		uiIsLandscape = isLandscape
+		if (rendererList.size == 0) return
 		val firstElType = rendererList[0].get("type")
 			.takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }?.asString
 		if (portraitOnlyRenderers.contains(firstElType))

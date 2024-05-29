@@ -61,6 +61,7 @@ import okhttp3.Request
 import java.security.MessageDigest
 import kotlin.concurrent.thread
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 
@@ -503,6 +504,23 @@ class Utils {
 			val heightInches = metrics.heightPixels / metrics.ydpi
 			val diagonalInches = sqrt(widthInches.pow(2f) + heightInches.pow(2f))
 			return diagonalInches >= 7.0
+		}
+
+		fun dpToPx(dp: Float, context: Context): Float {
+			return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+		}
+
+		fun pxToDp(px: Float, context: Context): Float {
+			return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+		}
+
+		//TODO: add support for foldable devices
+		fun getSidebarWidth(activity: Activity, fragmentWidth: Int): Int {
+			val fragmentDp = pxToDp(fragmentWidth.toFloat(), activity)
+			var width = fragmentDp / 3
+			if (width < 300)
+				width = 300f
+			return dpToPx(width, activity).roundToInt()
 		}
 	}
 }
