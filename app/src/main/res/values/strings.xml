@@ -10,9 +10,28 @@
 	<string name="setup_welcome_body">Let\'s get you started</string>
 	<string name="setup_instance_title">Select an instance.</string>
 	<string name="setup_instance_body">Your subscriptions &amp; playlists will be saved in the instance you choose</string>
+	<string name="setup_instance_or">or</string>
+	<string name="setup_instance_custom">Enter an instance URL</string>
+	<string name="setup_instance_public">Use a public instance</string>
+	<string name="setup_instance_invalid">Unknown instance type: %s</string>
+	<string name="setup_instance_api_disabled">⛔ This instance has API access disabled</string>
+	<string name="setup_instance_loading">⌛ Loading…</string>
+	<string name="setup_instance_load_fail">Failed to get information about %s</string>
+	<string name="setup_instance_load_fail_this">this instance</string>
+	<string name="setup_custom_instance_title">Use a custom instance</string>
+	<string name="setup_custom_instance_body">Manually enter an instance URL below</string>
+	<string name="setup_custom_instance_hint">https://…</string>
+	<string name="setup_instance_cloudflare">⚠️ Uses Cloudflare</string>
+	<string name="setup_instance_custom_select">Click here to use this instance</string>
+	<string name="setup_complete_title">All done!</string>
+	<string name="setup_complete_body">Everything seems ready! Make sure the following settings are correct before clicking Finish</string>
+	<string name="setup_complete_host">Instance Host</string>
+	<string name="setup_complete_account">Account</string>
+	<string name="setup_complete_account_loggedin"><![CDATA[Logged in as <b>%s</b>]]></string>
+	<string name="setup_complete_account_not_loggedin">Not logged in</string>
 	<string name="setup_login_title">Log in</string>
 	<string name="setup_login_body">Log into an account to sync your subscriptions &amp; playlists between devices.
-Your data is stored in the instance you chose (%s).</string>
+Your data will be stored in the instance you chose (%s).</string>
 
 	<!-- Login -->
 	<string name="login_hint">Log into your LightTube account to continue</string>
@@ -24,6 +43,7 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="action_next">Next</string>
 	<string name="action_select">Select</string>
 	<string name="action_login">Login</string>
+	<string name="action_register">Register</string>
 	<string name="action_skip">Skip</string>
 	<string name="action_later">Maybe later</string>
 	<string name="action_like">Like</string>
@@ -39,9 +59,11 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="action_playlist_shuffle">Shuffle</string>
 	<string name="action_playlist_create">Create</string>
 	<string name="action_delete">Delete</string>
+	<string name="action_back">Back</string>
+	<string name="action_finish">Finish</string>
 
 	<!-- Templates -->
-	<string name="template_instance_info">API: %s | Accounts: %s</string>
+	<string name="template_instance_info">v%s | Accounts: %s | Proxy: %s</string>
 	<string name="template_feed_video_subtitle">%s • %s views • %s</string>
 	<string name="template_channel_subtitle">%s • %s</string>
 	<string name="template_videos">%s videos</string>
@@ -152,4 +174,6 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="comments_loading">Loading comments…</string>
 	<string name="comments_loading_fail">Failed to load comments.</string>
 	<string name="comments_title">Comments</string>
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

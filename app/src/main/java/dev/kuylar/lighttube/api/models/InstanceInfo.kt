@@ -4,8 +4,8 @@ class InstanceInfo (
 	val type: String,
 	val version: String,
 	val motd: String,
-	val allowsAPI: Boolean,
+	val allowsApi: Boolean,
 	val allowsNewUsers: Boolean,
-	val allowsOauthAPI: Boolean,
+	val allowsOauthApi: Boolean,
 	val allowsThirdPartyProxyUsage: Boolean
 )

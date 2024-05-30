@@ -2,20 +2,26 @@ package dev.kuylar.lighttube.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.elevation.SurfaceColors
-import dev.kuylar.lighttube.R
-import dev.kuylar.lighttube.api.UtilityApi
 import dev.kuylar.lighttube.databinding.ActivitySetupBinding
-import kotlin.concurrent.thread
+import dev.kuylar.lighttube.ui.fragment.setup.SetupCustomInstanceFragment
+import dev.kuylar.lighttube.ui.fragment.setup.SetupFinishFragment
+import dev.kuylar.lighttube.ui.fragment.setup.SetupInstanceSelectFragment
+import dev.kuylar.lighttube.ui.fragment.setup.SetupLoginFragment
+import dev.kuylar.lighttube.ui.fragment.setup.SetupWelcomeFragment
 
 class SetupActivity : AppCompatActivity() {
 	private lateinit var binding: ActivitySetupBinding
+	private var publicInstancesFragment: Fragment? = null
+	private var customInstanceFragment: Fragment? = null
+
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		val sp = getSharedPreferences("main", MODE_PRIVATE)
+		getSharedPreferences("main", MODE_PRIVATE)
 
 		// set status bar & bottom nav bar colors
 		val color = SurfaceColors.SURFACE_2.getColor(this)
@@ -24,57 +30,57 @@ class SetupActivity : AppCompatActivity() {
 
 		binding = ActivitySetupBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-
-		thread {
-			val instances = UtilityApi.getInstances()
-			runOnUiThread {
-				while (binding.instanceList.childCount > 0) {
-					binding.instanceList.removeViewAt(0)
-				}
-
-				for (instance in instances) {
-					if (!instance.apiEnabled) continue
-
-					val v = layoutInflater.inflate(R.layout.item_instance, null)
-					v.findViewById<TextView>(R.id.instanceTitle).text = instance.host
-					v.findViewById<TextView>(R.id.instanceDescription).text = getString(
-						R.string.template_instance_info,
-						if (instance.apiEnabled) getString(R.string.enabled) else getString(R.string.disabled),
-						if (instance.accountsEnabled) getString(R.string.enabled) else getString(R.string.disabled)
-					)
-					v.setOnClickListener {
-						sp.edit().apply {
-							putString("instanceHost", instance.scheme + "://" + instance.host)
-							apply()
-						}
-						if (!instance.accountsEnabled) finishSetup()
-						else {
-							binding.setupScreenInstance.visibility = View.GONE
-							binding.setupScreenLogin.visibility = View.VISIBLE
-						}
-					}
-					binding.instanceList.addView(v)
-				}
-			}
-		}
-
-		binding.setupButtonWelcomeNext.setOnClickListener {
-			binding.setupScreenWelcome.visibility = View.GONE
-			binding.setupScreenInstance.visibility = View.VISIBLE
-		}
-
-		binding.setupButtonLoginSkip.setOnClickListener {
-			finishSetup()
-		}
-
-		binding.setupButtonLoginLogin.setOnClickListener {
-			startActivity(Intent(this, LoginActivity::class.java))
-			finish()
-		}
 	}
 
-	private fun finishSetup() {
+	fun finishSetup() {
 		startActivity(Intent(this, MainActivity::class.java))
 		finish()
+	}
+
+	fun goToStage(stage: Int) {
+		if (!validStages.contains(stage)) {
+			Toast.makeText(this, "invalid setup stage: $stage", Toast.LENGTH_LONG).show()
+			return
+		}
+		val fragment = when (stage) {
+			STAGE_WELCOME -> SetupWelcomeFragment()
+			STAGE_INSTANCES_PUBLIC -> {
+				if (publicInstancesFragment == null)
+					publicInstancesFragment = SetupInstanceSelectFragment()
+				publicInstancesFragment!!
+			}
+
+			STAGE_INSTANCES_CUSTOM -> {
+				if (customInstanceFragment == null)
+					customInstanceFragment = SetupCustomInstanceFragment()
+				customInstanceFragment!!
+			}
+
+			STAGE_LOGIN -> SetupLoginFragment()
+			STAGE_FINISH -> SetupFinishFragment()
+			else -> SetupWelcomeFragment()
+		}
+		supportFragmentManager.beginTransaction().apply {
+			replace(binding.setupFragmentContainer.id, fragment)
+		}.commit()
+	}
+
+	companion object {
+		const val STAGE_WELCOME = 0
+		const val STAGE_INSTANCES_PUBLIC = 1
+		const val STAGE_INSTANCES_CUSTOM = 2
+		const val STAGE_LOGIN = 3
+		const val STAGE_FINISH = 4
+		const val REQUEST_CODE_LOGIN = 0
+		const val RESULT_CODE_LOGIN_SUCCESS = 0
+		const val RESULT_CODE_LOGIN_FAIL = 1
+
+		val validStages = arrayOf(
+			STAGE_WELCOME,
+			STAGE_INSTANCES_PUBLIC,
+			STAGE_INSTANCES_CUSTOM,
+			STAGE_LOGIN,
+			STAGE_FINISH,
+		)
 	}
 }

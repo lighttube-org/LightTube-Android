@@ -33,7 +33,7 @@ import java.io.IOException
 import java.net.URLEncoder
 
 
-class LightTubeApi(context: Context) {
+class LightTubeApi {
 	private val tag = "LightTubeApi"
 	private val client = OkHttpClient()
 	private val gson = GsonBuilder().apply {
@@ -44,14 +44,19 @@ class LightTubeApi(context: Context) {
 	val host: String
 	private val refreshToken: String?
 
-	init {
+	constructor(context: Context, refreshToken: String? = null) {
 		val sp = context.getSharedPreferences("main", Context.MODE_PRIVATE)
 		host = sp.getString("instanceHost", "")!!
-		refreshToken = sp.getString("refreshToken", null)
+		this.refreshToken = refreshToken ?: sp.getString("refreshToken", null)
 		Log.i(
 			tag,
 			"Initialized the API for $host ${if (refreshToken != null) "with" else "without"} a refresh token"
 		)
+	}
+
+	constructor(instance: String) {
+		host = instance
+		refreshToken = null
 	}
 
 	@Throws(LightTubeException::class, IOException::class)
