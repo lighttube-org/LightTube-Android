@@ -1,10 +1,10 @@
 package dev.kuylar.lighttube.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -75,11 +75,16 @@ class VideoCommentsFragment : Fragment() {
 					SortOrder.TopComments
 				) else api.continueComments(commentsContinuation!!)
 				if (initial) with(comments.data!!.contents[0].asJsonObject) {
-					player.showCommentsButton(
-						this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
-						this.getAsJsonPrimitive("content").asString,
-						comments.data.contents.size
-					)
+					if (this.getAsJsonObject("owner") != null)
+						player.showCommentsButton(
+							this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
+							this.getAsJsonPrimitive("content").asString,
+							comments.data.contents.size
+						)
+					else {
+						player.showCommentsButton()
+						loading = false
+					}
 				}
 				val start = items.size
 				items.addAll(comments.data!!.contents)
