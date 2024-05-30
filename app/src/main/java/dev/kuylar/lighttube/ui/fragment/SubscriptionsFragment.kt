@@ -35,15 +35,15 @@ class SubscriptionsFragment : Fragment(), AdaptiveFragment {
 		savedInstanceState: Bundle?
 	): View {
 		binding = FragmentSubscriptionsBinding.inflate(inflater)
-		(activity as MainActivity).apply {
-			this@SubscriptionsFragment.api = getApi()
-			this@SubscriptionsFragment.player = getPlayer()
-		}
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		(activity as MainActivity).apply {
+			this@SubscriptionsFragment.api = getApi()
+			this@SubscriptionsFragment.player = getPlayer()
+		}
 		val adapter = SubscriptionFeedRecyclerAdapter(items, this::playVideo)
 		binding.recyclerFeed.adapter = adapter
 		binding.recyclerFeed.addOnScrollListener(object : RecyclerView.OnScrollListener() {

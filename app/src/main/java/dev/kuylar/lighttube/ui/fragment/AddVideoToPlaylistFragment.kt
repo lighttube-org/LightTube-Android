@@ -28,12 +28,12 @@ class AddVideoToPlaylistFragment(private val videoId: String) : BottomSheetDialo
 		savedInstanceState: Bundle?
 	): View {
 		binding = FragmentAddVideoToPlaylistBinding.inflate(inflater, container, false)
-		api = (activity as MainActivity).getApi()
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		api = (activity as MainActivity).getApi()
 
 		binding.buttonNewPlaylist.setOnClickListener {
 			Utils.showPlaylistDialog(

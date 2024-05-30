@@ -40,14 +40,14 @@ class VideoCommentsFragment : Fragment() {
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		api = (activity as MainActivity).getApi()
-		player = (activity as MainActivity).getPlayer()
 		binding = FragmentVideoCommentsBinding.inflate(inflater)
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		api = (activity as MainActivity).getApi()
+		player = (activity as MainActivity).getPlayer()
 		val adapter = RendererRecyclerAdapter(items)
 		binding.recyclerComments.layoutManager = LinearLayoutManager(context)
 		binding.recyclerComments.adapter = adapter

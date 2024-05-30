@@ -44,15 +44,15 @@ class PlaylistFragment : Fragment() {
 		arguments?.let {
 			id = it.getString("id")!!
 		}
-		(activity as MainActivity).apply {
-			this@PlaylistFragment.api = getApi()
-			supportActionBar?.title = ""
-		}
 		return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		(activity as MainActivity).apply {
+			this@PlaylistFragment.api = getApi()
+			supportActionBar?.title = ""
+		}
 		val adapter = RendererRecyclerAdapter(items)
 		view.viewTreeObserver.addOnGlobalLayoutListener(object :
 			ViewTreeObserver.OnGlobalLayoutListener {
