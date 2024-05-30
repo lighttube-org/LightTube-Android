@@ -25,6 +25,7 @@ import dev.kuylar.lighttube.api.models.LightTubeImage
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
+import dev.kuylar.lighttube.databinding.RendererChannelInfoBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
 import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
@@ -41,6 +42,7 @@ import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.databinding.RendererVideoLandscapeBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
+import dev.kuylar.lighttube.ui.viewholder.ChannelInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelVideoPlayerRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
@@ -279,6 +281,14 @@ class Utils {
 
 				"playlistInfoRenderer" -> PlaylistInfoRenderer(
 					RendererPlaylistInfoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"channelInfoRenderer" -> ChannelInfoRenderer(
+					RendererChannelInfoBinding.inflate(
 						inflater,
 						parent,
 						false

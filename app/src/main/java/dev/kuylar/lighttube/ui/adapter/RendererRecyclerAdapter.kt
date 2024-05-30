@@ -16,7 +16,8 @@ class RendererRecyclerAdapter(
 
 	private var userData = UserData(null, hashMapOf(), false, null)
 	private var uiIsLandscape = false
-	private val portraitOnlyRenderers = arrayOf("slimVideoInfoRenderer", "playlistInfoRenderer")
+	private val portraitOnlyRenderers =
+		arrayOf("slimVideoInfoRenderer", "playlistInfoRenderer", "channelInfoRenderer")
 
 	// forgive me other android devs that obviously
 	// know better than me, but i had to do this :(

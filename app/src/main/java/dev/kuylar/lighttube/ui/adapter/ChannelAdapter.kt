@@ -4,9 +4,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.google.gson.Gson
+import dev.kuylar.lighttube.api.models.ApiResponse
+import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.ui.fragment.RecyclerViewFragment
 
-class ChannelAdapter(fm: FragmentManager, private val channelId: String, private val enabledTabs: ArrayList<String>) :
+class ChannelAdapter(
+	fm: FragmentManager,
+	private val channelId: String,
+	private val enabledTabs: ArrayList<String>,
+	private val home: ApiResponse<LightTubeChannel>
+) :
 	FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
 	override fun getCount(): Int = enabledTabs.size
@@ -17,6 +25,8 @@ class ChannelAdapter(fm: FragmentManager, private val channelId: String, private
 			putString("type", "channel")
 			putString("args", channelId)
 			putString("params", enabledTabs[i])
+			if (enabledTabs[i] == "home")
+				putString("initialData", Gson().toJson(home))
 		}
 		return fragment
 	}
