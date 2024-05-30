@@ -75,7 +75,7 @@ class Utils {
 		}
 
 		private fun getUserAgent(): String =
-			"LightTube-Android/${BuildConfig.VERSION_NAME} (https://github.com/kuylar/lighttube-android)"
+			"LightTube-Android/${BuildConfig.VERSION_NAME} (https://github.com/lighttube-org/lighttube-android)"
 
 		fun getDislikeCount(videoId: String): Long {
 			try {
@@ -125,7 +125,7 @@ class Utils {
 			var updateInfo: UpdateInfo? = null
 			try {
 				val req = Request.Builder().apply {
-					url("https://api.github.com/repos/kuylar/lighttube-android/releases/latest")
+					url("https://api.github.com/repos/lighttube-org/lighttube-android/releases/latest")
 					header("User-Agent", getUserAgent())
 				}.build()
 
