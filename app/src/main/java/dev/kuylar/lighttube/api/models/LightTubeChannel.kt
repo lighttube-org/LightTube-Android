@@ -32,8 +32,9 @@ class LightTubeChannel(
 		binding.handle.visibility = View.GONE // todo: LTv3 (APIv2)
 		binding.stats.text = arrayOf(subscriberCountText).joinToString(" • ") // todo: LTv3 (APIv2)
 		//todo: onclick
-		binding.tagline.visibility = View.GONE //todo: LTv3 (APIv2)
-		binding.links.text = arrayOf(primaryLinks, secondaryLinks).flatMap { it }.joinToString(" ")
+		//todo: LTv3 (APIv2)
+		binding.tagline.visibility = View.GONE
+		binding.links.visibility = View.GONE
 		if (userData != null && userData.channels.containsKey(id))
 			Utils.updateSubscriptionButton(
 				binding.root.context,
