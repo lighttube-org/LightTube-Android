@@ -11,16 +11,17 @@ import java.util.Date
 
 class UtilityApi {
 	companion object {
+		private val http = OkHttpClient()
 		private var refreshToken: String = ""
 		private var accessToken: String = ""
 		private var tokenExpiryTimestamp: Long = 0
 
 		fun getInstances(): ArrayList<LightTubeInstance> {
 			val request: Request = Request.Builder()
-				.url("https://raw.githubusercontent.com/kuylar/lighttube/master/public_instances.json")
+				.url("https://lighttube.kuylar.dev/instances")
 				.build()
 
-			OkHttpClient().newCall(request).execute().use { response ->
+			http.newCall(request).execute().use { response ->
 				return Gson().fromJson(
 					response.body!!.string(),
 					object : TypeToken<ArrayList<LightTubeInstance>>() {}.type
@@ -58,7 +59,7 @@ class UtilityApi {
 				.build()
 
 
-			OkHttpClient().newCall(request).execute().use { response ->
+			http.newCall(request).execute().use { response ->
 				val res = Gson().fromJson(
 					response.body!!.string(),
 					JsonObject::class.java
@@ -91,7 +92,7 @@ class UtilityApi {
 				.post(body)
 				.build()
 
-			OkHttpClient().newCall(request).execute().use { response ->
+			http.newCall(request).execute().use { response ->
 				val res = Gson().fromJson(
 					response.body!!.string(),
 					JsonObject::class.java
@@ -114,6 +115,10 @@ class UtilityApi {
 
 class LightTubeInstance(
 	val host: String,
-	val api: Boolean,
-	val accounts: Boolean
+	val country: String,
+	val scheme: String,
+	val isCloudflare: Boolean,
+	val apiEnabled: Boolean,
+	val proxyEnabled: String,
+	val accountsEnabled: Boolean,
 )

@@ -33,21 +33,21 @@ class SetupActivity : AppCompatActivity() {
 				}
 
 				for (instance in instances) {
-					if (!instance.api) continue
+					if (!instance.apiEnabled) continue
 
 					val v = layoutInflater.inflate(R.layout.item_instance, null)
 					v.findViewById<TextView>(R.id.instanceTitle).text = instance.host
 					v.findViewById<TextView>(R.id.instanceDescription).text = getString(
 						R.string.template_instance_info,
-						if (instance.api) getString(R.string.enabled) else getString(R.string.disabled),
-						if (instance.accounts) getString(R.string.enabled) else getString(R.string.disabled)
+						if (instance.apiEnabled) getString(R.string.enabled) else getString(R.string.disabled),
+						if (instance.accountsEnabled) getString(R.string.enabled) else getString(R.string.disabled)
 					)
 					v.setOnClickListener {
 						sp.edit().apply {
-							putString("instanceHost", instance.host)
+							putString("instanceHost", instance.scheme + "://" + instance.host)
 							apply()
 						}
-						if (!instance.accounts) finishSetup()
+						if (!instance.accountsEnabled) finishSetup()
 						else {
 							binding.setupScreenInstance.visibility = View.GONE
 							binding.setupScreenLogin.visibility = View.VISIBLE
