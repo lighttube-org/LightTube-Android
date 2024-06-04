@@ -7,7 +7,7 @@ class InstanceInfo (
 	val type: String,
 	val version: String,
 	@JsonAdapter(MotdDeserializer::class) val motd: List<String>,
-	val allowsAPI: Boolean,
+	val allowsApi: Boolean,
 	val allowsNewUsers: Boolean,
 	val allowsOauthApi: Boolean,
 	val allowsThirdPartyProxyUsage: Boolean
