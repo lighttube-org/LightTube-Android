@@ -10,21 +10,21 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.vkay94.dtpv.DoubleTapPlayerView
 import com.github.vkay94.dtpv.youtube.YouTubeOverlay
 import com.github.vkay94.timebar.LibTimeBar
 import com.github.vkay94.timebar.YouTubeChapter
 import com.github.vkay94.timebar.YouTubeSegment
 import com.github.vkay94.timebar.YouTubeTimeBar
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.Tracks
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.vkay94.timebar.YouTubeTimeBarPreview
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
@@ -37,6 +37,7 @@ import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.VideoChapter
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.fragment.LandscapeVideoInfoFragment
 import dev.kuylar.lighttube.ui.fragment.PlayerSettingsFragment
 import dev.kuylar.lighttube.ui.fragment.VideoInfoFragment
 import java.io.IOException
@@ -47,7 +48,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	private var videoTracks: Tracks? = null
 	private val playerHandler: Handler
 	private val playerBox: View = activity.findViewById(R.id.player_box)
-	private val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
+	val exoplayerView: DoubleTapPlayerView = activity.findViewById(R.id.player)
 	private val doubleTapView: YouTubeOverlay = activity.findViewById(R.id.player_overlay)
 	private val player: ExoPlayer = ExoPlayer.Builder(activity).apply {
 		setHandleAudioBecomingNoisy(true)
@@ -74,6 +75,8 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 		playerBox.findViewById(R.id.player_skip_ghost)
 	private val bufferingIndicator: CircularProgressIndicator =
 		playerBox.findViewById(R.id.player_buffering_progress)
+
+	private var uiIsLandscape = false
 
 	init {
 		exoplayerView.player = player
@@ -184,13 +187,22 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	fun playVideo(id: String) {
+		if (uiIsLandscape && !Utils.checkIsTablet(activity))
+			activity.enterFullscreen(exoplayerView, false)
 		if (player.currentMediaItem?.mediaId == id)
 			miniplayer.state = BottomSheetBehavior.STATE_EXPANDED
 		else {
 			fragmentManager.beginTransaction().apply {
 				replace(
-					R.id.player_video_info,
+					R.id.player_recommendations,
 					VideoInfoFragment::class.java,
+					bundleOf(Pair("id", id), Pair("playlistId", null), Pair("uiIsLandscape", uiIsLandscape))
+				)
+			}.commit()
+			fragmentManager.beginTransaction().apply {
+				replace(
+					R.id.player_video_info,
+					LandscapeVideoInfoFragment::class.java,
 					bundleOf(Pair("id", id), Pair("playlistId", null))
 				)
 			}.commit()
@@ -382,7 +394,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	fun closeSheets(): Boolean {
 		return try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).closeSheets()
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).closeSheets()
 		} catch (e: Exception) {
 			false
 		}
@@ -390,21 +402,33 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 
 	fun showCommentsButton() {
 		try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton(null)
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).showCommentsButton(null)
+			(fragmentManager.findFragmentById(R.id.player_video_info) as LandscapeVideoInfoFragment).showCommentsButton(null)
 		} catch (_: Exception) { }
 	}
 
 	fun showCommentsButton(firstCommentAvatar: String, firstCommentText: String, commentCount: Int) {
 		try {
-			(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
+			(fragmentManager.findFragmentById(R.id.player_video_info) as LandscapeVideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
 		} catch (_: Exception) { }
 	}
 
 	fun setSheets(details: Boolean, comments: Boolean) {
-		(fragmentManager.findFragmentById(R.id.player_video_info) as VideoInfoFragment).setSheets(
+		(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).setSheets(
 			details,
 			comments
 		)
+	}
+
+	fun notifyScreenRotated(isLandscape: Boolean) {
+		try {
+			uiIsLandscape = isLandscape
+			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment)
+				.notifyScreenRotated(isLandscape)
+		} catch (e: Exception) {
+			Log.w("VideoPlayerManager", "failed to update screen rotation in VideoInfoFragment", e)
+		}
 	}
 
 	fun setChapters(videoId: String, chapters: ArrayList<VideoChapter>?) {

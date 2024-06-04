@@ -152,4 +152,6 @@ Your data is stored in the instance you chose (%s).</string>
 	<string name="comments_loading">Loading comments…</string>
 	<string name="comments_loading_fail">Failed to load comments.</string>
 	<string name="comments_title">Comments</string>
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

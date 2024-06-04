@@ -1,12 +1,16 @@
 package dev.kuylar.lighttube
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -21,6 +25,7 @@ import dev.kuylar.lighttube.api.models.LightTubeImage
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
+import dev.kuylar.lighttube.databinding.RendererChannelInfoBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererContinuationBinding
 import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
@@ -29,12 +34,15 @@ import dev.kuylar.lighttube.databinding.RendererMessageBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
+import dev.kuylar.lighttube.databinding.RendererPlaylistLandscapeBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
+import dev.kuylar.lighttube.databinding.RendererVideoLandscapeBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
+import dev.kuylar.lighttube.ui.viewholder.ChannelInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelVideoPlayerRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
@@ -54,6 +62,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
 import kotlin.concurrent.thread
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 
 class Utils {
@@ -178,15 +189,23 @@ class Utils {
 		fun getViewHolder(
 			renderer: JsonObject,
 			inflater: LayoutInflater,
-			parent: ViewGroup
+			parent: ViewGroup,
+			landscape: Boolean
 		): RendererViewHolder {
 			return when (renderer.getAsJsonPrimitive("type").asString) {
 				"videoRenderer" -> VideoRenderer(
-					RendererVideoBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
+					if (landscape) RendererVideoBinding.bind(
+						RendererVideoLandscapeBinding.inflate(
+							inflater,
+							parent,
+							false
+						).root
+					) else
+						RendererVideoBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
 				)
 
 				"compactVideoRenderer" -> VideoRenderer(
@@ -246,15 +265,30 @@ class Utils {
 				)
 
 				"playlistRenderer" -> PlaylistRenderer(
-					RendererPlaylistBinding.inflate(
+					if (landscape) RendererPlaylistBinding.bind(
+						RendererPlaylistLandscapeBinding.inflate(
+							inflater,
+							parent,
+							false
+						).root
+					) else
+						RendererPlaylistBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
+				)
+
+				"playlistInfoRenderer" -> PlaylistInfoRenderer(
+					RendererPlaylistInfoBinding.inflate(
 						inflater,
 						parent,
 						false
 					)
 				)
 
-				"playlistInfoRenderer" -> PlaylistInfoRenderer(
-					RendererPlaylistInfoBinding.inflate(
+				"channelInfoRenderer" -> ChannelInfoRenderer(
+					RendererChannelInfoBinding.inflate(
 						inflater,
 						parent,
 						false
@@ -278,11 +312,18 @@ class Utils {
 				)
 
 				"channelVideoPlayerRenderer" -> ChannelVideoPlayerRenderer(
-					RendererVideoBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
+					if (landscape) RendererVideoBinding.bind(
+						RendererVideoLandscapeBinding.inflate(
+							inflater,
+							parent,
+							false
+						).root
+					) else
+						RendererVideoBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
 				)
 
 				"messageRenderer" -> MessageRenderer(
@@ -297,7 +338,8 @@ class Utils {
 				"richItemRenderer" -> getViewHolder(
 					renderer.getAsJsonObject("content"),
 					inflater,
-					parent
+					parent,
+					landscape
 				)
 
 				"itemSectionRenderer" -> ItemSectionRenderer(
@@ -450,6 +492,45 @@ class Utils {
 
 		fun unwrapAttributionUrl(query: String): String {
 			return parseQueryString(query)["u"] ?: ""
+		}
+
+		@SuppressLint("NotifyDataSetChanged")
+		fun rebindAllRecyclerViews(recycler: RecyclerView) {
+			val adapter = recycler.adapter
+			val layoutManager = recycler.layoutManager
+			val state = layoutManager?.onSaveInstanceState()
+			recycler.adapter = adapter
+			recycler.layoutManager = layoutManager
+			recycler.adapter?.notifyDataSetChanged()
+			layoutManager?.onRestoreInstanceState(state)
+		}
+
+		fun checkIsTablet(activity: Activity): Boolean {
+			val display = activity.windowManager.defaultDisplay
+			val metrics = DisplayMetrics()
+			display.getMetrics(metrics)
+
+			val widthInches = metrics.widthPixels / metrics.xdpi
+			val heightInches = metrics.heightPixels / metrics.ydpi
+			val diagonalInches = sqrt(widthInches.pow(2f) + heightInches.pow(2f))
+			return diagonalInches >= 7.0
+		}
+
+		fun dpToPx(dp: Float, context: Context): Float {
+			return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+		}
+
+		fun pxToDp(px: Float, context: Context): Float {
+			return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+		}
+
+		//TODO: add support for foldable devices
+		fun getSidebarWidth(activity: Activity, fragmentWidth: Int): Int {
+			val fragmentDp = pxToDp(fragmentWidth.toFloat(), activity)
+			var width = fragmentDp / 3
+			if (width < 300)
+				width = 300f
+			return dpToPx(width, activity).roundToInt()
 		}
 	}
 }

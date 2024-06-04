@@ -13,8 +13,8 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.Icon
-import android.os.Build
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -39,11 +39,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
@@ -52,7 +51,9 @@ import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.databinding.ActivityMainBinding
+import dev.kuylar.lighttube.ui.AdaptiveUtils
 import dev.kuylar.lighttube.ui.VideoPlayerManager
+import dev.kuylar.lighttube.ui.fragment.AdaptiveFragment
 import dev.kuylar.lighttube.ui.fragment.UpdateFragment
 import java.io.IOException
 import kotlin.concurrent.thread
@@ -91,8 +92,9 @@ class MainActivity : AppCompatActivity() {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		val navView: BottomNavigationView = binding.navView
-		navController = findNavController(R.id.nav_host_fragment_activity_main)
+		val navHostFragment =
+			supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+		navController = navHostFragment.navController
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		val appBarConfiguration = AppBarConfiguration(
@@ -103,7 +105,8 @@ class MainActivity : AppCompatActivity() {
 
 		setSupportActionBar(binding.toolbar)
 		setupActionBarWithNavController(navController, appBarConfiguration)
-		navView.setupWithNavController(navController)
+		binding.navView.setupWithNavController(navController)
+		binding.navigationRail.setupWithNavController(navController)
 
 		onBackPressedDispatcher.addCallback(this) {
 			goBack(true)
@@ -116,6 +119,16 @@ class MainActivity : AppCompatActivity() {
 
 		setPlayer()
 
+		AdaptiveUtils.updateNavLayout(
+			this,
+			resources.configuration.screenWidthDp,
+			binding.navView,
+			binding.navigationRail,
+			binding.navHostFragmentActivityMain,
+			miniplayer
+		)
+		miniplayerScene.setTransition(if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
+
 		miniplayer.addBottomSheetCallback(object :
 			BottomSheetBehavior.BottomSheetCallback() {
 			@SuppressLint("SwitchIntDef")
@@ -123,13 +136,13 @@ class MainActivity : AppCompatActivity() {
 				when (newState) {
 					BottomSheetBehavior.STATE_HIDDEN -> getPlayer().stop()
 
-					BottomSheetBehavior.STATE_DRAGGING -> {
-						supportActionBar?.show()
-					}
+					BottomSheetBehavior.STATE_COLLAPSED ->
+						if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT)
+							requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
 
-					BottomSheetBehavior.STATE_EXPANDED -> {
-						supportActionBar?.hide()
-					}
+					BottomSheetBehavior.STATE_EXPANDED ->
+						if (!Utils.checkIsTablet(this@MainActivity) && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+							enterFullscreen(player.exoplayerView, false)
 				}
 			}
 
@@ -141,11 +154,15 @@ class MainActivity : AppCompatActivity() {
 					p.setVolume(1f)
 				miniplayerScene.progress = max(0f, min(1f, slideOffset * 5))
 
-				if (slideOffset > .3)
-					binding.navView.visibility = View.GONE
-				else
-					binding.navView.visibility = View.VISIBLE
-
+				AdaptiveUtils.toggleNavBars(
+					this@MainActivity,
+					slideOffset > .3,
+					resources.configuration.screenWidthDp,
+					binding.navView,
+					binding.navigationRail
+				)
+				binding.appBarLayout.visibility =
+					if (slideOffset > .95) View.GONE else if (slideOffset < .8) View.VISIBLE else View.GONE
 				p.toggleControls(slideOffset * 5 >= 1)
 			}
 		})
@@ -196,6 +213,42 @@ class MainActivity : AppCompatActivity() {
 			handleDeepLinks(intent.action, intent.data)
 	}
 
+	override fun onConfigurationChanged(newConfig: Configuration) {
+		super.onConfigurationChanged(newConfig)
+
+		if (isInPictureInPictureMode) return
+
+		AdaptiveUtils.updateNavLayout(
+			this,
+			newConfig.screenWidthDp,
+			binding.navView,
+			binding.navigationRail,
+			binding.navHostFragmentActivityMain,
+			miniplayer
+		)
+		if (Utils.checkIsTablet(this@MainActivity))
+			miniplayerScene.setTransition(if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) R.id.miniplayer_transition_landscape else R.id.miniplayer_transition_portrait)
+		miniplayerScene.progress = miniplayerScene.progress
+		if (this::player.isInitialized) {
+			player.notifyScreenRotated(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+			if (!Utils.checkIsTablet(this) && arrayOf(
+					BottomSheetBehavior.STATE_EXPANDED,
+					BottomSheetBehavior.STATE_SETTLING,
+					BottomSheetBehavior.STATE_DRAGGING,
+					BottomSheetBehavior.STATE_HALF_EXPANDED
+				).contains(miniplayer.state) && requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+			) {
+				Log.i("MainActivity", "Device is not a tablet, the player view is up, and fullscreen is ${fullscreen}. Entering fullscreen")
+				enterFullscreen(player.exoplayerView, false)
+			}
+		}
+
+		binding.navHostFragmentActivityMain.getFragment<NavHostFragment>().childFragmentManager.fragments.forEach {
+			if (it is AdaptiveFragment)
+				it.onScreenSizeChanged(newConfig.screenWidthDp)
+		}
+	}
+
 	private fun handleDeepLinks(action: String?, data: Uri?): Boolean {
 		if (action == null || data == null) return false
 		val path = if (data.path == "/attribution_link") Utils.unwrapAttributionUrl(
@@ -212,13 +265,14 @@ class MainActivity : AppCompatActivity() {
 
 		fun channel(id: String, tab: String?) {
 			val realTab = if (tab == "featured" || tab == null) "home" else tab
-			findNavController(R.id.nav_host_fragment_activity_main)
-				.navigate(R.id.navigation_channel, bundleOf(Pair("id", id), Pair("tab", realTab)))
+			navController.navigate(
+				R.id.navigation_channel,
+				bundleOf(Pair("id", id), Pair("tab", realTab))
+			)
 		}
 
 		fun playlist(id: String) {
-			findNavController(R.id.nav_host_fragment_activity_main)
-				.navigate(R.id.navigation_playlist, bundleOf(Pair("id", id)))
+			navController.navigate(R.id.navigation_playlist, bundleOf(Pair("id", id)))
 		}
 
 		return try {
@@ -297,6 +351,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun setPlayer() {
 		player = VideoPlayerManager(this)
+		player.notifyScreenRotated(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
 	}
 
 	fun getPlayer(): VideoPlayerManager {
@@ -312,12 +367,13 @@ class MainActivity : AppCompatActivity() {
 		} else false
 	}
 
+	@SuppressLint("RestrictedApi")
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.top_app_bar, menu)
 
 		val searchView = menu[0].actionView as SearchView
 		val searchAutoComplete: SearchAutoComplete =
-			searchView.findViewById(androidx.appcompat.R.id.search_src_text) as SearchAutoComplete
+			searchView.findViewById(androidx.appcompat.R.id.search_src_text)
 
 		searchAutoComplete.onItemClickListener =
 			OnItemClickListener { adapterView, _, itemIndex, _ ->
@@ -345,6 +401,7 @@ class MainActivity : AppCompatActivity() {
 		return true
 	}
 
+	@SuppressLint("RestrictedApi")
 	private fun updateSuggestions(
 		newText: String,
 		searchAutoComplete: SearchAutoComplete
@@ -430,7 +487,10 @@ class MainActivity : AppCompatActivity() {
 		playerView.findViewById<ViewGroup>(R.id.player_metadata).visibility = View.INVISIBLE
 		binding.fullscreenPlayerContainer.visibility = View.GONE
 		miniplayer.isDraggable = true
-		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+		requestedOrientation = if (Utils.checkIsTablet(this))
+			ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+		else
+			ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 	}
 
 	private fun tryExitFullscreen(): Boolean {
@@ -496,7 +556,7 @@ class MainActivity : AppCompatActivity() {
 			this.setAspectRatio(Rational(rect.width(), rect.height()))
 			this.setSourceRectHint(rect)
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-				this.setAutoEnterEnabled(player.isPlaying())
+				this.setAutoEnterEnabled(player.isPlaying() && miniplayer.state == BottomSheetBehavior.STATE_EXPANDED)
 			}
 			this.setActions(
 				if (player.isPlaying()) {
