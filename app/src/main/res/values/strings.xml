@@ -177,7 +177,6 @@ Your data will be stored in the instance you chose (%s).</string>
 	<!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>
 	<string name="lighttube_3_title">Unsupported instance</string>
-	<string name="lighttube_3_body">LightTube v3 is not supported in this version of the Android app. Check for updates in https://github.com/lighttube-org/LightTube-Android</string>
-	<string name="lighttube_3_github">Open GitHub</string>
+	<string name="lighttube_3_body">LightTube v2 is not supported in this version of the Android app. Either downgrade to an older version or switch to a different instance</string>
 	<string name="lighttube_3_instance">Change instance</string>
 </resources>

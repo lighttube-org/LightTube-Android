@@ -2,7 +2,6 @@ package dev.kuylar.lighttube.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,14 +42,11 @@ class HomeFragment : Fragment() {
 				val info = a.getApi().getInstanceInfo()
 				a.runOnUiThread {
 					a.setLoading(false)
-					if (info.type == "lighttube/2.0") {
+					if (info.type != "lighttube/2.0") {
 						MaterialAlertDialogBuilder(requireContext()).apply {
 							setTitle(R.string.lighttube_3_title)
 							setMessage(R.string.lighttube_3_body)
 							setCancelable(false)
-							setPositiveButton(R.string.lighttube_3_github) { dialog, _ ->
-								startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lighttube-org/LightTube-Android")))
-							}
 							setNegativeButton(R.string.lighttube_3_instance) { dialog, _ ->
 								startActivity(Intent(requireContext(), SetupActivity::class.java))
 							}
