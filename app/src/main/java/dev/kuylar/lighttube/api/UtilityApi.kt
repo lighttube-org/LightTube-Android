@@ -133,8 +133,8 @@ data class LightTubeInstance(
 		try {
 			instanceInfo = LightTubeApi("$scheme://$host").getInstanceInfo()
 		} catch (e: Exception) {
-			binding.loading.visibility = View.GONE
 			activity.runOnUiThread {
+				binding.loading.visibility = View.GONE
 				Log.e("UtilityApi.fillBinding", "Failed to get information about instance $host")
 				binding.instanceTitle.text = arrayOf(getFlag(), host).joinToString(" ")
 				binding.instanceDescription.text = context.getString(
