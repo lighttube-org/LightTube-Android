@@ -1,18 +1,24 @@
 package dev.kuylar.lighttube.ui.fragment
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.databinding.FragmentHomeBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
+import dev.kuylar.lighttube.ui.activity.SetupActivity
 import java.io.IOException
 import kotlin.concurrent.thread
+
 
 class HomeFragment : Fragment() {
 	private lateinit var binding: FragmentHomeBinding
@@ -29,7 +35,7 @@ class HomeFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 		val a = (activity as MainActivity)
 		val sp = a.getSharedPreferences("main", Activity.MODE_PRIVATE)
-		binding.homeMotd.text = sp.getString("cachedMotd", "Search something to get started!")
+		binding.homeMotd.text = Utils.randomMotd(sp.getStringSet("cachedMotds", mutableSetOf("Search something to get started!"))!!.toList())
 
 		a.setLoading(true)
 		thread {
@@ -37,9 +43,22 @@ class HomeFragment : Fragment() {
 				val info = a.getApi().getInstanceInfo()
 				a.runOnUiThread {
 					a.setLoading(false)
-					binding.homeMotd.text = info.motd
+					if (info.type == "lighttube/2.0") {
+						MaterialAlertDialogBuilder(requireContext()).apply {
+							setTitle(R.string.lighttube_3_title)
+							setMessage(R.string.lighttube_3_body)
+							setCancelable(false)
+							setPositiveButton(R.string.lighttube_3_github) { dialog, _ ->
+								startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lighttube-org/LightTube-Android")))
+							}
+							setNegativeButton(R.string.lighttube_3_instance) { dialog, _ ->
+								startActivity(Intent(requireContext(), SetupActivity::class.java))
+							}
+						}.show()
+					}
+					binding.homeMotd.text = Utils.randomMotd(info.motd)
 					sp.edit {
-						putString("cachedMotd", info.motd)
+						putStringSet("cachedMotds", info.motd.toMutableSet())
 					}
 				}
 			} catch (e: IOException) {

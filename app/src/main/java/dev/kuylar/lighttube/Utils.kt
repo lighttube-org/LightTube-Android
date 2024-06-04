@@ -62,6 +62,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
 import kotlin.concurrent.thread
+import kotlin.random.Random
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -494,7 +495,14 @@ class Utils {
 			return parseQueryString(query)["u"] ?: ""
 		}
 
-		@SuppressLint("NotifyDataSetChanged")
+		fun randomMotd(motd: List<String>): CharSequence {
+			return when (motd.size) {
+				0 -> ""
+				1 -> motd[0]
+				else -> motd[Random.nextInt(0, motd.size)]
+			}
+
+    @SuppressLint("NotifyDataSetChanged")
 		fun rebindAllRecyclerViews(recycler: RecyclerView) {
 			val adapter = recycler.adapter
 			val layoutManager = recycler.layoutManager
