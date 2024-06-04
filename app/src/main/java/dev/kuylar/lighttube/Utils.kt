@@ -501,8 +501,9 @@ class Utils {
 				1 -> motd[0]
 				else -> motd[Random.nextInt(0, motd.size)]
 			}
+		}
 
-    @SuppressLint("NotifyDataSetChanged")
+		@SuppressLint("NotifyDataSetChanged")
 		fun rebindAllRecyclerViews(recycler: RecyclerView) {
 			val adapter = recycler.adapter
 			val layoutManager = recycler.layoutManager
