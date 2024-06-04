@@ -61,7 +61,7 @@ class SetupCustomInstanceFragment : Fragment() {
 	}
 
 	private fun fillData(instanceInfo: InstanceInfo, url: String) {
-		binding.root.setOnClickListener {
+		binding.instanceCard.root.setOnClickListener {
 			next(url, instanceInfo.allowsOauthApi)
 		}
 		binding.instanceCard.loading.visibility = View.GONE
