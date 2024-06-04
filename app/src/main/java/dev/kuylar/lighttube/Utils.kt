@@ -54,6 +54,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
 import kotlin.concurrent.thread
+import kotlin.random.Random
 
 
 class Utils {
@@ -450,6 +451,14 @@ class Utils {
 
 		fun unwrapAttributionUrl(query: String): String {
 			return parseQueryString(query)["u"] ?: ""
+		}
+
+		fun randomMotd(motd: List<String>): CharSequence {
+			return when (motd.size) {
+				0 -> ""
+				1 -> motd[0]
+				else -> motd[Random.nextInt(0, motd.size)]
+			}
 		}
 	}
 }
