@@ -1,16 +1,15 @@
 package dev.kuylar.lighttube.api.models
 
-class EndscreenItem(
+data class EndscreenItem(
 	val type: Long,
-	val target: String,
 	val title: String,
-	val image: ArrayList<LightTubeImage>,
+	//val image: ArrayList<LightTubeImage>, TODO: needs to be simplified
 	val metadata: String,
-	val style: String,
-	val startMS: Long,
-	val endMS: Long,
+	val startMs: Long,
+	val endMs: Long,
 	val aspectRatio: Double,
 	val left: Double,
 	val top: Double,
-	val width: Double
+	val width: Double,
+	val target: String
 )

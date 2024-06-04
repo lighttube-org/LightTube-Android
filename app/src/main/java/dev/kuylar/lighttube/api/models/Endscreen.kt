@@ -1,6 +1,6 @@
 package dev.kuylar.lighttube.api.models
 
-class Endscreen(
+data class Endscreen(
 	val items: ArrayList<EndscreenItem>,
-	val startMS: Long
+	val startMs: Long
 )

@@ -20,9 +20,9 @@ import dev.kuylar.lighttube.api.models.SearchResults
 import dev.kuylar.lighttube.api.models.SearchSuggestions
 import dev.kuylar.lighttube.api.models.SortOrder
 import dev.kuylar.lighttube.api.models.SubscriptionChannel
-import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import dev.kuylar.lighttube.api.models.UpdateSubscriptionsResponse
 import dev.kuylar.lighttube.api.models.UserPlaylist
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -216,7 +216,7 @@ class LightTubeApi {
 			hashMapOf(Pair("id", id))
 		)
 		if (res.userData != null) {
-			res.userData.editable = res.userData.user?.ltChannelID == res.data?.channel?.id
+			res.userData.editable = res.userData.user?.ltChannelID == res.data?.sidebar?.channel?.id
 			res.userData.playlistId = res.data?.id
 		}
 		return res
@@ -288,9 +288,9 @@ class LightTubeApi {
 	fun getSubscriptionFeed(
 		skip: Int = 0,
 		limit: Int = 50
-	): ApiResponse<List<SubscriptionFeedItem>> {
+	): ApiResponse<List<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<List<SubscriptionFeedItem>>>() {},
+			object : TypeToken<ApiResponse<List<RendererContainer>>>() {},
 			"feed",
 			hashMapOf(Pair("skip", skip.toString()), Pair("limit", limit.toString()))
 		)

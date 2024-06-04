@@ -4,25 +4,32 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 
-class LightTubePlaylist(
+data class LightTubePlaylist(
 	val id: String,
 	val alerts: List<String>,
-	val title: String,
-	val description: String? = null,
-	val badges: List<LightTubeBadge>,
-	val channel: Channel,
-	val thumbnails: List<LightTubeImage>,
-	val lastUpdated: String,
-	val videoCountText: String,
-	val viewCountText: String,
+	val contents: List<RendererContainer>,
+	val chips: List<RendererContainer>,
 	val continuation: String? = null,
-	val videos: List<JsonObject>
+	val sidebar: Sidebar
 ) {
+	data class Sidebar(
+		val title: String,
+		val thumbnails: List<LightTubeImage>,
+		val videoCountText: String,
+		val videoCount: Long,
+		val viewCountText: String,
+		val viewCount: Long,
+		val lastUpdated: String,
+		val description: String? = null,
+		val channel: Channel
+	)
+
 	var editable: Boolean = false
 
 	fun getAsRenderer(api: LightTubeApi) : JsonObject {
-		editable = api.currentUser?.ltChannelID == channel.id
+		editable = api.currentUser?.ltChannelID == sidebar.channel.id
 		val gson = Gson()
 		val asJson = gson.fromJson(gson.toJson(this), JsonObject::class.java)
 		asJson.add("type", JsonPrimitive("playlistInfoRenderer"))

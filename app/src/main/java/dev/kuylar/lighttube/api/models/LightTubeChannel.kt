@@ -1,45 +1,74 @@
 package dev.kuylar.lighttube.api.models
 
-import android.view.View
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.LayoutChannelHeaderBinding
 
-class LightTubeChannel(
-	val id: String,
-	val title: String,
-	val avatars: List<LightTubeImage>,
-	val banner: List<LightTubeImage>,
-	val badges: List<LightTubeBadge>,
-	val primaryLinks: List<ChannelLink>,
-	val secondaryLinks: List<ChannelLink>,
-	val subscriberCountText: String,
-	val enabledTabs: List<String>,
-	val contents: List<JsonObject>,
-	val continuation: String? = null
+data class LightTubeChannel(
+	val header: Header? = null,
+	val enabledTabs: List<ChannelTab>,
+	val metadata: ChannelMetadata? = null,
+	val contents: List<RendererContainer>
 ) {
+	data class Header(
+		val id: String,
+		val avatars: List<LightTubeImage>,
+		val banner: List<LightTubeImage>,
+		val tvBanner: List<LightTubeImage>,
+		val mobileBanner: List<LightTubeImage>,
+		val badges: List<LightTubeBadge>,
+		val primaryLink: String? = null,
+		val secondaryLink: String? = null,
+		val subscriberCountText: String,
+		val subscriberCount: Int,
+		val title: String,
+		val handle: String,
+		val videoCountText: String,
+		val videoCount: Int,
+		val tagline: String?
+	)
+
+	data class ChannelTab(
+		val tab: Int,
+		val title: String,
+		val params: String,
+		val selected: Boolean
+	)
+
+	data class ChannelMetadata(
+		val id: String,
+		val title: String,
+		val description: String? = null,
+		val handle: String? = null,
+		val rssUrl: String,
+		val channelUrl: String,
+		val keywords: String,
+		val availableCountryCodes: List<String>,
+		val avatarUrl: String
+	)
+
 	fun fillBinding(binding: LayoutChannelHeaderBinding, userData: UserData?) {
 		Glide.with(binding.root)
-			.load(banner.lastOrNull()?.url)
+			.load((header?.mobileBanner?.lastOrNull() ?: header?.banner?.lastOrNull())?.url)
 			.into(binding.banner)
 		Glide.with(binding.root)
-			.load(avatars.lastOrNull()?.url)
+			.load(header?.avatars?.lastOrNull()?.url)
 			.into(binding.avatar)
-		binding.title.text = title
-		binding.handle.visibility = View.GONE // todo: LTv3 (APIv2)
-		binding.stats.text = arrayOf(subscriberCountText).joinToString(" • ") // todo: LTv3 (APIv2)
+		binding.title.text = header?.title
+		binding.handle.text = header?.handle
+		binding.stats.text = arrayOf(header?.subscriberCountText, header?.videoCountText).joinToString(" • ")
 		//todo: onclick
-		//todo: LTv3 (APIv2)
-		binding.tagline.visibility = View.GONE
-		binding.links.visibility = View.GONE
-		if (userData != null && userData.channels.containsKey(id))
+		binding.tagline.text = header?.tagline
+		binding.links.text = arrayOf(header?.primaryLink, header?.secondaryLink).joinToString(" ")
+		if (userData != null && userData.channels.containsKey(metadata?.id))
 			Utils.updateSubscriptionButton(
 				binding.root.context,
 				binding.buttonSubscribe,
-				userData.channels[id]!!
+				userData.channels[metadata?.id]!!
 			)
 	}
 

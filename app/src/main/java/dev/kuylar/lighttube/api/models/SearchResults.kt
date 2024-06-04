@@ -1,29 +1,47 @@
 package dev.kuylar.lighttube.api.models
 
-import com.google.gson.JsonObject
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 
-class SearchResults(
-	val searchResults: List<JsonObject>,
-	val searchFilters: List<FilterGroup>,
-	val estimatedResultCount: Long,
-	val continuationKey: String?,
-	val typoFixer: TypoFixer?
+data class SearchResults(
+	val searchResults: List<RendererContainer>,
+	val queryCorrector: QueryCorrector? = null,
+	val chips: List<RendererContainer>,
+	val continuation: String?,
+	val refinements: List<String>,
+	val estimatedResults: Long,
+	val searchParams: Params,
 ) {
-	class FilterGroup(
-		val title: String,
-		val filters: List<Filter>
+	data class QueryCorrector(
+		val correctionType: Int,
+		val originalQuery: String? = null,
+		val correctedQuery: String
 	)
 
-	class Filter(
-		val label: String,
-		val params: String,
-		val tooltip: String,
-		val selected: Boolean
+	data class Params(
+		val sortBy: Int,
+		val filters: Filters,
+		val queryFlags: Flags,
+		val index: Int
 	)
 
-	class TypoFixer(
-		val originalQuery: String,
-		val correctedQuery: String,
-		val params: String
+	data class Filters(
+		val uploadedIn: Int,
+		val type: Int,
+		val duration: Int,
+		val hd: Boolean,
+		val subtitles: Boolean,
+		val creativeCommons: Boolean,
+		val resolution3D: Boolean,
+		val live: Boolean,
+		val purchased: Boolean,
+		val resolution4K: Boolean,
+		val vr360: Boolean,
+		val location: Boolean,
+		val hdr: Boolean,
+		val vr180: Boolean
+	)
+
+	data class Flags(
+		val exactSearch: Boolean
 	)
 }

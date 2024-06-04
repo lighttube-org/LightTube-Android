@@ -3,19 +3,26 @@ package dev.kuylar.lighttube.api.models
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import java.util.Date
 
-class LightTubeVideo(
+data class LightTubeVideo(
 	val id: String,
 	val title: String,
 	val description: String,
 	val dateText: String,
-	val viewCount: String,
-	val likeCount: String,
+	val publishDate: Date,
+	val publishType: Int,
+	val viewCountText: String,
+	val viewCount: Long,
+	val likeCountText: String,
+	val likeCount: Long,
 	val channel: Channel,
-	val commentsContinuation: String,
-	val commentCount: String?,
-	val recommended: ArrayList<JsonObject>,
-	val playlist: Any? = null,
+	val commentCountText: String?,
+	val commentCount: Int?,
+	val commentsErrorMessage: String,
+	val recommended: ArrayList<RendererContainer>,
+	val playlist: LightTubeVideoPlaylist? = null,
 	val chapters: ArrayList<VideoChapter>
 ) {
 	var showCommentsButton: Boolean = false
