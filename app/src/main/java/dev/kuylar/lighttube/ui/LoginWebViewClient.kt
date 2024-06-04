@@ -6,7 +6,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 
 
-class LoginWebViewClient(val onTokenReceived: (String) -> Unit, val showLoading: (Boolean) -> Unit) : WebViewClient() {
+class LoginWebViewClient(
+	private val onTokenReceived: (String) -> Unit,
+	private val showLoading: (Boolean) -> Unit
+) : WebViewClient() {
 	override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
 		if (request == null) return false;
 		return if (request.url != null && request.url.scheme == "lighttube") {

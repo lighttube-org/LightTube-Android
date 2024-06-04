@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center"
+	android:orientation="vertical"
+	android:padding="16dp"
+	tools:context=".ui.fragment.setup.SetupWelcomeFragment">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_instance_title"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_instance_body"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="16dp" />
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="300dp"
+		android:layout_gravity="center">
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recycler_instances"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			tools:listitem="@layout/item_instance" />
+
+		<ProgressBar
+			android:id="@+id/loading"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center" />
+	</FrameLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="8dp"
+		android:gravity="center_vertical">
+
+		<View
+			android:layout_width="0dp"
+			android:layout_height="1dp"
+			android:layout_weight="1"
+			android:background="?android:attr/listDivider" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingHorizontal="8dp"
+			android:text="@string/setup_instance_or" />
+
+		<View
+			android:layout_width="0dp"
+			android:layout_height="1dp"
+			android:layout_weight="1"
+			android:background="?android:attr/listDivider" />
+	</LinearLayout>
+
+	<Button
+		android:id="@+id/custom"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_instance_custom" />
+</LinearLayout>

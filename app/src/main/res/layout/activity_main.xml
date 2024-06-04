@@ -1,58 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<com.google.android.material.appbar.AppBarLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:id="@+id/coordinatorLayout"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@+id/navigation_rail"
+		app:layout_constraintTop_toTopOf="parent">
 
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar"
+		<com.google.android.material.appbar.AppBarLayout
+			android:id="@+id/appBarLayout"
 			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			app:menu="@menu/top_app_bar"
-			app:title="@string/app_name" />
-
-		<com.google.android.material.progressindicator.LinearProgressIndicator
-			android:id="@+id/loading_bar"
-			android:layout_width="match_parent"
-			android:layout_height="4dp"
-			android:indeterminate="true"
+			android:layout_height="wrap_content"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintTop_toTopOf="parent">
 
-	</com.google.android.material.appbar.AppBarLayout>
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@+id/toolbar"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				app:menu="@menu/top_app_bar"
+				app:title="@string/app_name" />
 
-	<fragment
-		android:id="@+id/nav_host_fragment_activity_main"
-		android:name="androidx.navigation.fragment.NavHostFragment"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_marginBottom="80dp"
-		app:defaultNavHost="true"
-		app:layout_behavior="@string/appbar_scrolling_view_behavior"
-		app:navGraph="@navigation/mobile_navigation" />
+			<com.google.android.material.progressindicator.LinearProgressIndicator
+				android:id="@+id/loading_bar"
+				android:layout_width="match_parent"
+				android:layout_height="4dp"
+				android:indeterminate="true"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
 
-	<LinearLayout
-		android:id="@+id/miniplayer"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:background="?android:attr/windowBackground"
-		android:clickable="true"
-		android:elevation="3dp"
-		android:focusable="true"
-		android:orientation="vertical"
-		app:behavior_hideable="true"
-		app:behavior_peekHeight="144dp"
-		app:enableEdgeToEdge="true"
-		app:gestureInsetBottomIgnored="true"
-		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+		</com.google.android.material.appbar.AppBarLayout>
 
-		<include layout="@layout/layout_miniplayer" />
-	</LinearLayout>
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/nav_host_fragment_activity_main"
+			android:name="androidx.navigation.fragment.NavHostFragment"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:defaultNavHost="true"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior"
+			app:navGraph="@navigation/mobile_navigation"
+			tools:layout_marginBottom="80dp" />
+
+		<LinearLayout
+			android:id="@+id/miniplayer"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="?android:attr/windowBackground"
+			android:clickable="true"
+			android:elevation="3dp"
+			android:focusable="true"
+			android:orientation="vertical"
+			app:behavior_hideable="true"
+			app:behavior_peekHeight="@dimen/miniplayer_peek_with_navbar"
+			app:enableEdgeToEdge="true"
+			app:gestureInsetBottomIgnored="true"
+			app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+			<include layout="@layout/layout_miniplayer" />
+		</LinearLayout>
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 	<com.google.android.material.bottomnavigation.BottomNavigationView
 		android:id="@+id/nav_view"
@@ -60,6 +75,20 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
 		android:background="?android:attr/windowBackground"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:menu="@menu/bottom_nav_menu" />
+
+	<com.google.android.material.navigationrail.NavigationRailView
+		android:id="@+id/navigation_rail"
+		android:layout_width="wrap_content"
+		android:layout_height="0dp"
+		android:paddingTop="?actionBarSize"
+		android:background="?colorSurfaceContainer"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
 		app:menu="@menu/bottom_nav_menu" />
 
 	<FrameLayout
@@ -67,6 +96,10 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:elevation="10dp"
-		android:visibility="gone" />
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

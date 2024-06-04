@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.ui.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.ApiResponse
+import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.UserData
 import dev.kuylar.lighttube.databinding.FragmentRecyclerviewBinding
@@ -20,7 +26,7 @@ import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
 import java.io.IOException
 import kotlin.concurrent.thread
 
-class RecyclerViewFragment : Fragment() {
+class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 	private val items: MutableList<JsonObject> = mutableListOf()
 	private var userData: UserData? = null
 	private lateinit var binding: FragmentRecyclerviewBinding
@@ -28,6 +34,7 @@ class RecyclerViewFragment : Fragment() {
 	private lateinit var api: LightTubeApi
 	private lateinit var type: String
 	private lateinit var args: String
+	private var initialData: String? = null
 	private var params: String? = null
 	private var contKey: String? = null
 	private var loading = false
@@ -40,6 +47,7 @@ class RecyclerViewFragment : Fragment() {
 		type = arguments?.getString("type")!!
 		args = arguments?.getString("args")!!
 		params = arguments?.getString("params")
+		initialData = arguments?.getString("initialData")
 		return binding.root
 	}
 
@@ -50,6 +58,7 @@ class RecyclerViewFragment : Fragment() {
 			this@RecyclerViewFragment.player = getPlayer()
 		}
 		val adapter = RendererRecyclerAdapter(items)
+		adapter.notifyScreenRotated(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
 		binding.recycler.layoutManager = LinearLayoutManager(context)
 		binding.recycler.adapter = adapter
 		binding.recycler.itemAnimator = null
@@ -131,16 +140,33 @@ class RecyclerViewFragment : Fragment() {
 		when (type) {
 			"channel" -> {
 				val channel =
-					if (initial) api.getChannel(args, params ?: "home")
+					if (initial && initialData != null) Gson().fromJson(
+						initialData,
+						object : TypeToken<ApiResponse<LightTubeChannel>>() {})!!
+					else if (initial) api.getChannel(args, params ?: "home")
 					else api.continueChannel(contKey ?: "")
 				if (initial) userData = channel.userData
 				else userData!!.channels.putAll(channel.userData?.channels ?: emptyMap())
-				return Pair(Pair(channel.data!!.contents, channel.userData), channel.data.continuation)
+				val contents = ArrayList(channel.data!!.contents)
+				if (initial && params?.lowercase() == "home")
+					contents.add(0, channel.data.getAsRenderer()) // todo: add header
+				return Pair(Pair(contents, channel.userData), channel.data.continuation)
 			}
 
 			else -> {
 				return Pair(Pair(emptyList(), null), null)
 			}
 		}
+	}
+
+	override fun onScreenSizeChanged(newSize: Int) {
+		Utils.rebindAllRecyclerViews(binding.recycler)
+	}
+
+	override fun onConfigurationChanged(newConfig: Configuration) {
+		super.onConfigurationChanged(newConfig)
+
+		(binding.recycler.adapter as RendererRecyclerAdapter)
+			.notifyScreenRotated(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
 	}
 }

@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/recycler_playlist"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingVertical="8dp"
-	android:clipToPadding="false"
-	tools:context=".ui.fragment.PlaylistFragment"
-	tools:itemCount="1"
-	tools:listitem="@layout/renderer_playlist_info" />
+	android:orientation="horizontal">
+
+	<ScrollView
+		android:id="@+id/playlist_info_sidebar"
+		android:layout_width="350dp"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.card.MaterialCardView
+			style="@style/Widget.Material3.CardView.Elevated"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="8dp">
+
+			<include
+				android:id="@+id/playlist_info"
+				layout="@layout/renderer_playlist_info" />
+		</com.google.android.material.card.MaterialCardView>
+	</ScrollView>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recycler_playlist"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="1"
+		android:clipToPadding="false"
+		android:paddingVertical="8dp"
+		tools:context=".ui.fragment.PlaylistFragment"
+		tools:itemCount="5"
+		tools:listitem="@layout/renderer_playlist_video" />
+</LinearLayout>

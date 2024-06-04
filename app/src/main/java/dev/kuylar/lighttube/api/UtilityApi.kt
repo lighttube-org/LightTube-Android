@@ -1,9 +1,14 @@
 package dev.kuylar.lighttube.api
 
+import android.app.Activity
 import android.util.Log
+import android.view.View
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.api.models.InstanceInfo
+import dev.kuylar.lighttube.databinding.ItemInstanceBinding
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -11,16 +16,17 @@ import java.util.Date
 
 class UtilityApi {
 	companion object {
+		private val http = OkHttpClient()
 		private var refreshToken: String = ""
 		private var accessToken: String = ""
 		private var tokenExpiryTimestamp: Long = 0
 
 		fun getInstances(): ArrayList<LightTubeInstance> {
 			val request: Request = Request.Builder()
-				.url("https://raw.githubusercontent.com/kuylar/lighttube/master/public_instances.json")
+				.url("https://lighttube.kuylar.dev/instances")
 				.build()
 
-			OkHttpClient().newCall(request).execute().use { response ->
+			http.newCall(request).execute().use { response ->
 				return Gson().fromJson(
 					response.body!!.string(),
 					object : TypeToken<ArrayList<LightTubeInstance>>() {}.type
@@ -58,7 +64,7 @@ class UtilityApi {
 				.build()
 
 
-			OkHttpClient().newCall(request).execute().use { response ->
+			http.newCall(request).execute().use { response ->
 				val res = Gson().fromJson(
 					response.body!!.string(),
 					JsonObject::class.java
@@ -91,7 +97,7 @@ class UtilityApi {
 				.post(body)
 				.build()
 
-			OkHttpClient().newCall(request).execute().use { response ->
+			http.newCall(request).execute().use { response ->
 				val res = Gson().fromJson(
 					response.body!!.string(),
 					JsonObject::class.java
@@ -112,8 +118,57 @@ class UtilityApi {
 	}
 }
 
-class LightTubeInstance(
+data class LightTubeInstance(
 	val host: String,
-	val api: Boolean,
-	val accounts: Boolean
-)
+	val country: String,
+	val scheme: String,
+	val isCloudflare: Boolean,
+	val apiEnabled: Boolean,
+	val proxyEnabled: String,
+	val accountsEnabled: Boolean,
+) {
+	fun fillBinding(binding: ItemInstanceBinding, activity: Activity) {
+		val context = binding.root.context
+		val instanceInfo: InstanceInfo
+		try {
+			instanceInfo = LightTubeApi("$scheme://$host").getInstanceInfo()
+		} catch (e: Exception) {
+			activity.runOnUiThread {
+				binding.loading.visibility = View.GONE
+				Log.e("UtilityApi.fillBinding", "Failed to get information about instance $host")
+				binding.instanceTitle.text = arrayOf(getFlag(), host).joinToString(" ")
+				binding.instanceDescription.text = context.getString(
+					R.string.setup_instance_load_fail,
+					context.getString(R.string.setup_instance_load_fail_this)
+				)
+			}
+			return
+		}
+
+		activity.runOnUiThread {
+			binding.loading.visibility = View.GONE
+			binding.instanceTitle.text = arrayOf(getFlag(), host).joinToString(" ")
+			binding.instanceDescription.text = if (instanceInfo.type != "lighttube")
+				context.getString(R.string.setup_instance_invalid, instanceInfo.type)
+			else if (apiEnabled)
+				context.getString(
+					R.string.template_instance_info,
+					instanceInfo.version,
+					if (accountsEnabled) context.getString(R.string.enabled) else context.getString(
+						R.string.disabled
+					),
+					if (proxyEnabled == "all") context.getString(R.string.enabled) else context.getString(
+						R.string.disabled
+					)
+				)
+			else context.getString(R.string.setup_instance_api_disabled)
+			binding.instanceCloudflare.visibility = if (isCloudflare) View.VISIBLE else View.GONE
+		}
+	}
+
+	private fun getFlag(): String {
+		val firstLetter = Character.codePointAt(country, 0) - 0x41 + 0x1F1E6
+		val secondLetter = Character.codePointAt(country, 1) - 0x41 + 0x1F1E6
+		return String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
+	}
+}

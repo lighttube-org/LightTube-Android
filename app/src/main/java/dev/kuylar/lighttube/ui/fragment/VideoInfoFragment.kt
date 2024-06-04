@@ -34,12 +34,14 @@ class VideoInfoFragment : Fragment() {
 	private lateinit var binding: FragmentVideoInfoBinding
 	private lateinit var api: LightTubeApi
 	private lateinit var player: VideoPlayerManager
+	private var uiIsLandscape: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		arguments?.let {
 			id = it.getString("id")!!
 			playlistId = it.getString("playlistId")
+			uiIsLandscape = it.getBoolean("uiIsLandscape")
 		}
 	}
 
@@ -94,6 +96,7 @@ class VideoInfoFragment : Fragment() {
 		items.addAll(video.recommended)
 		adapter = RendererRecyclerAdapter(items)
 		adapter.updateUserData(userData)
+		adapter.notifyScreenRotated(uiIsLandscape)
 		binding.recyclerRecommended.layoutManager = LinearLayoutManager(context)
 		binding.recyclerRecommended.adapter = adapter
 		binding.recyclerRecommended.itemAnimator = null
@@ -136,5 +139,9 @@ class VideoInfoFragment : Fragment() {
 		video.firstComment = firstComment
 		items[0] = video.getAsRenderer()
 		adapter.notifyItemChanged(0)
+	}
+
+	fun notifyScreenRotated(isLandscape: Boolean) {
+		adapter.notifyScreenRotated(isLandscape)
 	}
 }

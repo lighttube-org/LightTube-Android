@@ -1,16 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.viewpager.widget.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/channel_pager"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.fragment.ChannelFragment">
+	android:orientation="horizontal">
 
-	<com.google.android.material.tabs.TabLayout
-		android:id="@+id/channel_tabs"
+	<ScrollView
+		android:id="@+id/channel_info_sidebar"
+		android:layout_width="350dp"
+		android:layout_height="match_parent">
+
+		<com.google.android.material.card.MaterialCardView
+			style="@style/Widget.Material3.CardView.Elevated"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="8dp">
+
+			<include
+				android:id="@+id/header"
+				layout="@layout/layout_channel_header" />
+		</com.google.android.material.card.MaterialCardView>
+	</ScrollView>
+
+	<androidx.viewpager.widget.ViewPager
+		android:id="@+id/channel_pager"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:tabMode="scrollable" />
+		android:layout_height="match_parent"
+		tools:context=".ui.fragment.ChannelFragment">
 
-</androidx.viewpager.widget.ViewPager>
+		<com.google.android.material.tabs.TabLayout
+			android:id="@+id/channel_tabs"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:tabMode="scrollable" />
+
+	</androidx.viewpager.widget.ViewPager>
+</LinearLayout>

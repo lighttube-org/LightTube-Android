@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:padding="8dp">
+
+	<com.google.android.material.imageview.ShapeableImageView
+		android:id="@+id/banner"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:background="?colorControlHighlight"
+		android:scaleType="centerCrop"
+		app:layout_constraintDimensionRatio="V,6"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:shapeAppearance="@style/cardThumbnailView"
+		tools:src="@tools:sample/backgrounds/scenic" />
+
+	<LinearLayout
+		android:id="@+id/info"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:orientation="horizontal"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/banner">
+
+		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/avatar"
+			android:layout_width="72dp"
+			android:layout_height="72dp"
+			android:background="?colorControlHighlight"
+			android:scaleType="centerCrop"
+			app:shapeAppearance="@style/avatarImageView"
+			tools:src="@tools:sample/avatars" />
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginLeft="8dp"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/title"
+				style="?textAppearanceTitleLarge"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				tools:text="Channel title" />
+
+			<TextView
+				android:id="@+id/handle"
+				style="?textAppearanceLabelMedium"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				tools:text="Channel handle" />
+
+			<TextView
+				android:id="@+id/stats"
+				style="?textAppearanceLabelMedium"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				tools:text="1234 subscribers • 123 videos" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/tagline"
+		style="?textAppearanceBodyMedium"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/info"
+		tools:text="Channel tagline" />
+
+	<TextView
+		android:id="@+id/links"
+		style="?textAppearanceLabelLarge"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/tagline"
+		tools:text="Channel link" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/button_subscribe"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:text="@string/subscribe"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/links" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
