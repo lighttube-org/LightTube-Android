@@ -148,7 +148,7 @@ data class LightTubeInstance(
 		activity.runOnUiThread {
 			binding.loading.visibility = View.GONE
 			binding.instanceTitle.text = arrayOf(getFlag(), host).joinToString(" ")
-			binding.instanceDescription.text = if (instanceInfo.type != "lighttube")
+			binding.instanceDescription.text = if (instanceInfo.type != "lighttube/2.0")
 				context.getString(R.string.setup_instance_invalid, instanceInfo.type)
 			else if (apiEnabled)
 				context.getString(
