@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center"
+	android:orientation="vertical"
+	tools:context=".ui.fragment.setup.SetupWelcomeFragment">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_welcome_title"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_welcome_body"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+	<Space
+		android:layout_width="match_parent"
+		android:layout_height="32dp" />
+
+	<Button
+		android:id="@+id/next_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/action_next" />
+</LinearLayout>

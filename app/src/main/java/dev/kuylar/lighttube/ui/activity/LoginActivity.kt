@@ -1,17 +1,19 @@
 package dev.kuylar.lighttube.ui.activity
 
 import android.app.ProgressDialog
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.google.android.material.snackbar.Snackbar
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.UtilityApi
 import dev.kuylar.lighttube.databinding.ActivityLoginBinding
 import dev.kuylar.lighttube.ui.LoginWebViewClient
+import java.net.URLEncoder
+import java.nio.charset.Charset
 import kotlin.concurrent.thread
 
 
@@ -31,12 +33,14 @@ class LoginActivity : AppCompatActivity() {
 		binding = ActivityLoginBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
+		val isRegister = intent.extras?.getBoolean("register", false) ?: false
+
 		sp = getSharedPreferences("main", MODE_PRIVATE)
 
 		val client = LoginWebViewClient(this::onTokenReceived, this::showProgressBarLoading)
 		binding.loginWebView.webViewClient = client
 		binding.loginWebView.settings.databaseEnabled = true
-		binding.loginWebView.loadUrl(getOauthUrl(scopes))
+		binding.loginWebView.loadUrl(if (isRegister) getRegisterUrl(scopes) else getOauthUrl(scopes))
 		Snackbar.make(binding.root, R.string.login_hint, Snackbar.LENGTH_LONG).show()
 	}
 
@@ -60,6 +64,23 @@ class LoginActivity : AppCompatActivity() {
 		}"
 	}
 
+	private fun getRegisterUrl(scopes: List<String>): String {
+		val sp = getSharedPreferences("main", MODE_PRIVATE)
+		val host = sp.getString("instanceHost", "")
+		val redirectUrl =
+			"/oauth2/authorize?response_type=code&client_id=LightTube Android&redirect_uri=lighttube://login&scope=${
+				scopes.joinToString(
+					" "
+				)
+			}"
+		return "$host/account/register?redirectUrl=${
+			URLEncoder.encode(
+				redirectUrl,
+				Charset.defaultCharset().name()
+			)
+		}"
+	}
+
 	private fun onTokenReceived(token: String) {
 		showProgressBarLoading(true)
 		val dialog = ProgressDialog.show(
@@ -74,13 +95,13 @@ class LoginActivity : AppCompatActivity() {
 				token,
 				"lighttube://login"
 			)
-			sp.edit().apply {
-				putString("refreshToken", token)
-				apply()
-			}
-			val api = LightTubeApi(this)
+			val api = LightTubeApi(this, token)
 			val user = api.getCurrentUser()
 			val username = user.data!!.userID
+			sp.edit {
+				putString("refreshToken", token)
+				putString("username", username)
+			}
 			runOnUiThread {
 				dialog.dismiss()
 				Toast.makeText(
@@ -89,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
 					Toast.LENGTH_LONG
 				).show()
 				showProgressBarLoading(false)
-				startActivity(Intent(this, MainActivity::class.java))
+				setResult(RESULT_OK)
 				finish()
 			}
 		}

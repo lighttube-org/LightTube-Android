@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center"
+	android:orientation="vertical"
+	android:padding="16dp"
+	tools:context=".ui.fragment.setup.SetupWelcomeFragment">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_complete_title"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/setup_complete_body"
+		android:textAlignment="center"
+		android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+	<TableLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginVertical="16dp">
+
+		<TableRow>
+
+			<TextView
+				android:layout_weight="1"
+				android:text="@string/setup_complete_host"
+				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/host"
+				android:layout_weight="1"
+				tools:text="https://tube.kuylar.dev" />
+		</TableRow>
+
+		<TableRow>
+
+			<TextView
+				android:layout_weight="1"
+				android:text="@string/setup_complete_account"
+				android:textStyle="bold" />
+
+			<TextView
+				android:id="@+id/account"
+				android:layout_weight="1"
+				tools:text="Logged in as kuylar" />
+		</TableRow>
+	</TableLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<Button
+			android:id="@+id/back"
+			style="@style/Widget.Material3.Button.TonalButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/action_back" />
+
+		<Space
+			android:layout_width="8dp"
+			android:layout_height="match_parent" />
+
+		<Button
+			android:id="@+id/finish"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/action_finish" />
+	</LinearLayout>
+</LinearLayout>
