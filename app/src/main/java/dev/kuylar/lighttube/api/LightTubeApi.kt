@@ -3,7 +3,6 @@ package dev.kuylar.lighttube.api
 import android.content.Context
 import android.util.Log
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.ContinuationContainer
@@ -160,6 +159,15 @@ class LightTubeApi {
 	}
 
 	@Throws(LightTubeException::class, IOException::class)
+	fun continueRecommendations(continuation: String): ApiResponse<ContinuationContainer<RendererContainer>> {
+		return get(
+			object : TypeToken<ApiResponse<ContinuationContainer<RendererContainer>>>() {},
+			"comments",
+			hashMapOf(Pair("continuation", continuation))
+		)
+	}
+
+	@Throws(LightTubeException::class, IOException::class)
 	fun search(query: String, params: String? = null): ApiResponse<SearchResults> {
 		val data = hashMapOf(Pair("query", query))
 		if (params != null)
@@ -192,17 +200,17 @@ class LightTubeApi {
 	fun getComments(
 		videoId: String,
 		sortBy: SortOrder
-	): ApiResponse<ContinuationContainer<JsonObject>> {
+	): ApiResponse<ContinuationContainer<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
+			object : TypeToken<ApiResponse<ContinuationContainer<RendererContainer>>>() {},
 			"comments",
 			hashMapOf(Pair("id", videoId), Pair("sortBy", sortBy.toString()))
 		)
 	}
 
-	fun continueComments(continuation: String): ApiResponse<ContinuationContainer<JsonObject>> {
+	fun continueComments(continuation: String): ApiResponse<ContinuationContainer<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
+			object : TypeToken<ApiResponse<ContinuationContainer<RendererContainer>>>() {},
 			"comments",
 			hashMapOf(Pair("continuation", continuation))
 		)
@@ -297,9 +305,9 @@ class LightTubeApi {
 	}
 
 	@Throws(LightTubeException::class, IOException::class)
-	fun getLibraryPlaylists(): ApiResponse<List<JsonObject>> {
+	fun getLibraryPlaylists(): ApiResponse<List<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<List<JsonObject>>>() {},
+			object : TypeToken<ApiResponse<List<RendererContainer>>>() {},
 			"playlists"
 		)
 	}
