@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import dev.kuylar.lighttube.api.LightTubeApi
+import dev.kuylar.lighttube.api.models.renderers.IRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 
 data class LightTubePlaylist(
@@ -13,7 +14,7 @@ data class LightTubePlaylist(
 	val chips: List<RendererContainer>,
 	val continuation: String? = null,
 	val sidebar: Sidebar
-) {
+): IRendererData {
 	data class Sidebar(
 		val title: String,
 		val thumbnails: List<LightTubeImage>,

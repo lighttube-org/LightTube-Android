@@ -19,6 +19,7 @@ import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentRecyclerviewBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -27,7 +28,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class RecyclerViewFragment : Fragment(), AdaptiveFragment {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private var userData: UserData? = null
 	private lateinit var binding: FragmentRecyclerviewBinding
 	private lateinit var player: VideoPlayerManager
@@ -85,7 +86,8 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 					contKey = continuation
 					runOnUiThread {
 						setLoading(false)
-						items.removeIf { it.getAsJsonPrimitive("type").asString == "continuationItemRenderer" }
+						// todo: renderercontainer
+						//items.removeIf { it.getAsJsonPrimitive("type").asString == "continuationItemRenderer" }
 						binding.recycler.adapter!!.notifyItemRemoved(items.size)
 
 						val start = items.size
@@ -136,7 +138,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 		}
 	}
 
-	private fun getData(initial: Boolean): Pair<Pair<List<JsonObject>, UserData?>, String?> {
+	private fun getData(initial: Boolean): Pair<Pair<List<RendererContainer>, UserData?>, String?> {
 		when (type) {
 			"channel" -> {
 				val channel =
@@ -148,9 +150,9 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 				if (initial) userData = channel.userData
 				else userData!!.channels.putAll(channel.userData?.channels ?: emptyMap())
 				val contents = ArrayList(channel.data!!.contents)
-				if (initial && params?.lowercase() == "home")
-					contents.add(0, channel.data.getAsRenderer()) // todo: add header
-				return Pair(Pair(contents, channel.userData), channel.data.continuation)
+				//if (initial && params?.lowercase() == "home")
+				//	contents.add(0, channel.data.getAsRenderer()) // todo: return renderercontainer
+				return Pair(Pair(contents, channel.userData), null /* channel.data.continuation */)
 			}
 
 			else -> {

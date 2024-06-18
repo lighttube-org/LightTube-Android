@@ -22,6 +22,7 @@ import dev.kuylar.lighttube.api.models.SubscriptionChannel
 import dev.kuylar.lighttube.api.models.UpdateSubscriptionsResponse
 import dev.kuylar.lighttube.api.models.UserPlaylist
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.RendererSerializer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -37,6 +38,7 @@ class LightTubeApi {
 	private val client = OkHttpClient()
 	private val gson = GsonBuilder().apply {
 		setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+		registerTypeAdapter(RendererContainer::class.java, RendererSerializer())
 	}.create()
 	var currentUser: LightTubeUserInfo? = null
 

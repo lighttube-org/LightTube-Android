@@ -3,6 +3,7 @@ package dev.kuylar.lighttube.api.models
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import dev.kuylar.lighttube.api.models.renderers.IRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import java.util.Date
 
@@ -24,7 +25,7 @@ data class LightTubeVideo(
 	val recommended: ArrayList<RendererContainer>,
 	val playlist: LightTubeVideoPlaylist? = null,
 	val chapters: ArrayList<VideoChapter>
-) {
+): IRendererData {
 	var showCommentsButton: Boolean = false
 	var firstComment: Triple<String, String, Int>? = null
 	fun getAsRenderer() : JsonObject {

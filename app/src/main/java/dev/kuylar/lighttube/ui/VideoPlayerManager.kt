@@ -439,7 +439,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 				chapters
 		} else {
 			timeBar.chapters =
-				listOf(VideoChapter(null, emptyList(), 0))
+				listOf(VideoChapter(0.0, "", emptyList()))
 		}
 	}
 

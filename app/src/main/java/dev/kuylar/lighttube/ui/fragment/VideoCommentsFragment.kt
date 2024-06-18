@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.SortOrder
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentVideoCommentsBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -23,7 +23,7 @@ import kotlin.concurrent.thread
 class VideoCommentsFragment : Fragment() {
 	private var commentsContinuation: String? = null
 	private var loading: Boolean = false
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var api: LightTubeApi
 	private lateinit var player: VideoPlayerManager
 	private lateinit var binding: FragmentVideoCommentsBinding
@@ -74,27 +74,28 @@ class VideoCommentsFragment : Fragment() {
 					id,
 					SortOrder.TopComments
 				) else api.continueComments(commentsContinuation!!)
-				if (initial) with(comments.data!!.contents[0].asJsonObject) {
-					if (this.getAsJsonObject("owner") != null)
-						player.showCommentsButton(
-							this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
-							this.getAsJsonPrimitive("content").asString,
-							comments.data.contents.size
-						)
-					else {
-						player.showCommentsButton()
-						loading = false
-					}
+				if (initial) with(comments.data!!.results[0]) {
+					//todo: renderercontaienr
+//					if (this.getAsJsonObject("owner") != null)
+//						player.showCommentsButton(
+//							this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
+//							this.getAsJsonPrimitive("content").asString,
+//							comments.data.contents.size
+//						)
+//					else {
+//						player.showCommentsButton()
+//						loading = false
+//					}
 				}
 				val start = items.size
-				items.addAll(comments.data!!.contents)
-				commentsContinuation = comments.data.continuation
+				items.addAll(comments.data!!.results)
+				commentsContinuation = comments.data.continuationToken
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
 					(activity as MainActivity).setLoading(false)
 					binding.recyclerComments.adapter!!.notifyItemRangeInserted(
 						start,
-						comments.data.contents.size
+						comments.data.results.size
 					)
 					loading = false
 				}

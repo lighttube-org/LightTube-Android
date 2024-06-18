@@ -74,6 +74,7 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="search">Search</string>
 	<string name="autoplay">Autoplay</string>
 	<string name="unknown_renderer">Unknown Renderer</string>
+	<string name="renderer_exception">Failed to render %s</string>
 	<string name="on">On</string>
 	<string name="off">Off</string>
 	<string name="unavailable">Unavailable</string>

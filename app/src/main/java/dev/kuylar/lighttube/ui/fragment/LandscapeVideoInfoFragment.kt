@@ -1,6 +1,7 @@
 package dev.kuylar.lighttube.ui.fragment
 
 import android.content.Intent
+import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -91,10 +92,10 @@ class LandscapeVideoInfoFragment : Fragment() {
 		val activity = activity as MainActivity
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
-		binding.channelSubscribers.text = video.channel.subscribers
-		binding.videoViews.text = video.viewCount
+		binding.channelSubscribers.text = DecimalFormat.getInstance().format(video.channel.subscribers)
+		binding.videoViews.text = DecimalFormat.getInstance().format(video.viewCount)
 		binding.videoUploaded.text = video.dateText
-		binding.buttonLike.text = video.likeCount
+		binding.buttonLike.text = DecimalFormat.getInstance().format(video.likeCount)
 		if (video.showCommentsButton) {
 			if (video.firstComment != null) {
 				binding.commentsLoading.visibility = View.GONE
@@ -106,7 +107,7 @@ class LandscapeVideoInfoFragment : Fragment() {
 				binding.commentText.text =
 					Html.fromHtml(video.firstComment!!.second, Html.FROM_HTML_MODE_LEGACY)
 				binding.commentsCountBullet.visibility = View.VISIBLE
-				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
+				binding.commentsCount.text = video.commentCount?.toString()?.takeIf { it.isNotEmpty() }
 					?: "${video.firstComment!!.third}+"
 				binding.cardComments.setOnClickListener {
 					activity.getPlayer().setSheets(details = false, comments = true)
@@ -119,7 +120,7 @@ class LandscapeVideoInfoFragment : Fragment() {
 
 		Glide
 			.with(activity)
-			.load(video.channel.avatar)
+			.load(Utils.getBestImageUrl(video.channel.avatar))
 			.into(binding.channelAvatar)
 
 		binding.videoDetails.setOnClickListener {
@@ -185,8 +186,8 @@ class LandscapeVideoInfoFragment : Fragment() {
 			binding.commentText.text =
 				Html.fromHtml(firstComment.second, Html.FROM_HTML_MODE_LEGACY)
 			binding.commentsCountBullet.visibility = View.VISIBLE
-			binding.commentsCount.text =
-				video.commentCount?.takeIf { it.isNotEmpty() } ?: "${firstComment.third}+"
+			binding.commentsCount.text = video.commentCount?.toString()?.takeIf { it.isNotEmpty() }
+				?: "${video.firstComment!!.third}+"
 			binding.cardComments.setOnClickListener {
 				(activity as MainActivity).getPlayer().setSheets(details = false, comments = true)
 			}

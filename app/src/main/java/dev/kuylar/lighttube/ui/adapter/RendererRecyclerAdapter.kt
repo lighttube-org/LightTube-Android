@@ -4,13 +4,14 @@ import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.ContinuationRendererData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
 
 class RendererRecyclerAdapter(
-	private val rendererList: MutableList<JsonObject>,
+	private val rendererList: MutableList<RendererContainer>,
 	private val requestMore: ((String) -> Unit)? = null
 ) : RecyclerView.Adapter<RendererViewHolder>() {
 
@@ -35,17 +36,16 @@ class RendererRecyclerAdapter(
 
 	override fun getItemCount(): Int = rendererList.size
 
+	// todo: try/catch this
 	override fun onBindViewHolder(holder: RendererViewHolder, position: Int) {
 		val renderer = rendererList[position]
-		val type = renderer.getAsJsonPrimitive("type").asString
+		val type = renderer.type
 		when (type) {
-			"continuationItemRenderer" -> {
-				val token = renderer.get("token")
-				if (!token.isJsonNull)
-					requestMore?.invoke(token.asString)
+			"continuation" -> {
+				requestMore?.invoke((renderer.data as ContinuationRendererData).continuationToken)
 			}
 
-			"richItemRenderer" -> holder.bind(renderer.getAsJsonObject("content"), userData)
+//			"richItemRenderer" -> holder.bind(renderer.getAsJsonObject("content"), userData)
 			else -> holder.bind(renderer, userData)
 		}
 
@@ -68,8 +68,7 @@ class RendererRecyclerAdapter(
 	fun notifyScreenRotated(isLandscape: Boolean) {
 		uiIsLandscape = isLandscape
 		if (rendererList.size == 0) return
-		val firstElType = rendererList[0].get("type")
-			.takeIf { it.isJsonPrimitive && it.asJsonPrimitive.isString }?.asString
+		val firstElType = rendererList[0].type
 		if (portraitOnlyRenderers.contains(firstElType))
 			notifyItemChanged(0)
 	}

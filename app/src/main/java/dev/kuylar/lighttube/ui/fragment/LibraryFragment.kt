@@ -13,6 +13,7 @@ import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentLibraryBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -21,7 +22,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class LibraryFragment : Fragment() {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var api: LightTubeApi
 	private lateinit var player: VideoPlayerManager
 	private lateinit var binding: FragmentLibraryBinding
@@ -54,6 +55,8 @@ class LibraryFragment : Fragment() {
 			thread {
 				try {
 					val playlists = api.getLibraryPlaylists()
+					// TODO: add new playlist thing
+					/*
 					items.add(0, JsonObject().apply {
 						addProperty("type", "gridPlaylistRenderer")
 						addProperty("id", "!ACTION_NewPlaylist")
@@ -74,6 +77,7 @@ class LibraryFragment : Fragment() {
 							add("badges", JsonArray(0))
 						})
 					})
+					*/
 					items.addAll(playlists.data ?: emptyList())
 					(binding.recyclerLibrary.adapter as RendererRecyclerAdapter).updateUserData(
 						playlists.userData

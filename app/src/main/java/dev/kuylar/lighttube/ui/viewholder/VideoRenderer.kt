@@ -4,17 +4,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.VideoRendererData
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 
 class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject, userData: UserData?) {
-		binding.videoTitle.text = item.getAsJsonPrimitive("title").asString
-		var durText = item.getAsJsonPrimitive("duration").asString
+	override fun bind(renderer: RendererContainer, userData: UserData?) {
+		val item = renderer.data as VideoRendererData
+		binding.videoTitle.text = item.title
+		var durText = item.duration
 		if (durText.startsWith("00:")) durText = durText.substring(3)
 		if (durText == "00:00") {
 			binding.videoDuration.background = AppCompatResources.getDrawable(
@@ -28,33 +30,33 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 
 		Glide
 			.with(binding.root)
-			.load(Utils.getBestImageUrlJson(item.getAsJsonArray("thumbnails")))
+			.load(Utils.getBestImageUrl(item.thumbnails))
 			.into(binding.videoThumbnail)
 
-		if (item.has("channel"))
-			if (!item.getAsJsonObject("channel").get("avatar").isJsonNull)
-				Glide
-					.with(binding.root)
-					.load(item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("avatar").asString)
-					.into(binding.channelAvatar)
-			else
-				binding.channelAvatar.visibility = View.GONE
+		if (item.author?.avatar != null)
+			Glide
+				.with(binding.root)
+				.load(Utils.getBestImageUrl(item.author.avatar))
+				.into(binding.channelAvatar)
+		else
+			binding.channelAvatar.visibility = View.GONE
 
 		val items = ArrayList<String>()
-		if (item.has("channel") && !item.getAsJsonObject("channel").get("title").isJsonNull)
-			items.add(item.getAsJsonObject("channel").asJsonObject.getAsJsonPrimitive("title").asString)
+		if (item.author?.title != null)
+			items.add(item.author.title)
 
-		items.add(item.getAsJsonPrimitive("viewCount").asString)
+		if (item.viewCountText != null)
+			items.add(item.viewCountText)
 
-		if (!item.get("published").isJsonNull)
-			items.add(item.get("published").asString)
+		if (item.publishedText != null)
+			items.add(item.publishedText)
 
 		binding.videoSubtitle.text = items.joinToString(" • ")
 
 		binding.root.setOnClickListener {
 			// bad idea? idk
 			if (binding.root.context is MainActivity)
-				(binding.root.context as MainActivity).getPlayer().playVideo(item.getAsJsonPrimitive("id").asString)
+				(binding.root.context as MainActivity).getPlayer().playVideo(item.videoId)
 			else
 				Toast.makeText(binding.root.context, "uhh click :3", Toast.LENGTH_LONG).show()
 		}

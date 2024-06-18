@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentAddVideoToPlaylistBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.adapter.PlaylistMenuAdapter
@@ -21,7 +21,7 @@ import kotlin.concurrent.thread
 class AddVideoToPlaylistFragment(private val videoId: String) : BottomSheetDialogFragment() {
 	private lateinit var binding: FragmentAddVideoToPlaylistBinding
 	private lateinit var api: LightTubeApi
-	private val items = ArrayList<JsonObject>()
+	private val items = ArrayList<RendererContainer>()
 
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,

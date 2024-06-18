@@ -58,13 +58,13 @@ class ChannelFragment : Fragment() {
 					ChannelAdapter(
 						childFragmentManager,
 						id,
-						ArrayList(channel.data!!.enabledTabs.filter { it.lowercase() != "search" }),
+						ArrayList(channel.data!!.enabledTabs.filter { it.params != "search" }.map { it.params }),
 						channel
 					)
 				val viewPager = binding.channelPager
 				runOnUiThread {
 					channel.data.fillBinding(binding.header, channel.userData)
-					supportActionBar?.title = channel.data.title
+					supportActionBar?.title = channel.data.header?.title
 					viewPager.adapter = channelAdapter
 					binding.channelTabs.setupWithViewPager(viewPager)
 				}

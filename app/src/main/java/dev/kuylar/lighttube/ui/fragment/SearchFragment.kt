@@ -13,6 +13,7 @@ import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentSearchBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -22,7 +23,7 @@ import kotlin.concurrent.thread
 
 
 class SearchFragment : Fragment(), AdaptiveFragment {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var binding: FragmentSearchBinding
 	private lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
@@ -70,7 +71,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 				val feed = if (initial) api.search(query) else api.continueSearch(contKey!!)
 				val start = items.size
 				items.addAll(feed.data!!.searchResults)
-				contKey = feed.data.continuationKey
+				contKey = feed.data.continuation
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
 					(activity as MainActivity).setLoading(false)
