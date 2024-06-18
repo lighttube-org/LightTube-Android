@@ -3,6 +3,7 @@ package dev.kuylar.lighttube.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import dev.kuylar.lighttube.api.models.renderers.PlaylistRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.ItemMenuPlaylistBinding
 
@@ -13,16 +14,16 @@ class PlaylistMenuAdapter(
 ) : RecyclerView.Adapter<PlaylistMenuAdapter.ViewHolder>() {
 	class ViewHolder(private val binding: ItemMenuPlaylistBinding) :
 		RecyclerView.ViewHolder(binding.root) {
-		fun bind(playlist: RendererContainer, onClick: (id: String, title: String) -> Unit) {
+		fun bind(renderer: RendererContainer, onClick: (id: String, title: String) -> Unit) {
+			val playlist = (renderer.data as PlaylistRendererData)
 			binding.root.setOnClickListener {
-				//onClick(
-				//	playlist.getAsJsonPrimitive("id").asString,
-				//	playlist.getAsJsonPrimitive("title").asString
-				//)
+				onClick(
+					playlist.playlistId,
+					playlist.title
+				)
 			}
 
-			// todo:
-			//binding.playlistTitle.text = playlist.getAsJsonPrimitive("title").asString
+			binding.playlistTitle.text = playlist.title
 		}
 	}
 

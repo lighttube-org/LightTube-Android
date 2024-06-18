@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonArray
-import com.google.gson.JsonNull
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.renderers.PlaylistRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentLibraryBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
@@ -55,29 +53,21 @@ class LibraryFragment : Fragment() {
 			thread {
 				try {
 					val playlists = api.getLibraryPlaylists()
-					// TODO: add new playlist thing
-					/*
-					items.add(0, JsonObject().apply {
-						addProperty("type", "gridPlaylistRenderer")
-						addProperty("id", "!ACTION_NewPlaylist")
-						addProperty("title", getString(R.string.create_playlist))
-						addProperty("videoCount", 0)
-						add("thumbnails", JsonArray().apply {
-							add(JsonObject().apply {
-								addProperty("width", 0)
-								addProperty("height", 0)
-								addProperty("url", "")
-							})
-						})
-						add("channel", JsonObject().apply {
-							add("id", JsonNull.INSTANCE)
-							add("title", JsonNull.INSTANCE)
-							add("avatar", JsonNull.INSTANCE)
-							add("subscribers", JsonNull.INSTANCE)
-							add("badges", JsonArray(0))
-						})
-					})
-					*/
+					items.add(0, RendererContainer(
+						"playlist",
+						"gridPlaylistRenderer",
+						PlaylistRendererData(
+							"!ACTION_NewPlaylist",
+							emptyList(),
+							getString(R.string.create_playlist),
+							"",
+							0,
+							null,
+							null,
+							null,
+							null
+						)
+					))
 					items.addAll(playlists.data ?: emptyList())
 					(binding.recyclerLibrary.adapter as RendererRecyclerAdapter).updateUserData(
 						playlists.userData

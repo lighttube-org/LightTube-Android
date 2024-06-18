@@ -15,14 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubePlaylist
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
+import dev.kuylar.lighttube.api.models.renderers.MessageRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.VideoRendererData
 import dev.kuylar.lighttube.databinding.FragmentPlaylistBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
@@ -98,22 +99,22 @@ class PlaylistFragment : Fragment() {
 					val start = items.size
 					(binding.recyclerPlaylist.adapter!! as RendererRecyclerAdapter).updateUserData(playlist.userData)
 					if (initial) {
-						// TODO: make this return renderercontainer
-						//items.add(0, playlist.data!!.getAsRenderer(api))
+						items.add(0, playlist.data!!.getAsRenderer(api))
 						runOnUiThread {
-							fillSidebar(playlist.data!!)
+							fillSidebar(playlist.data)
 						}
 					}
-					// TODO: add alerts
-					//playlist.data!!.alerts.forEach {
-					//	items.add(JsonObject().apply {
-					//		addProperty("type", "playlistAlertRenderer")
-					//		addProperty("text", it)
-					//	})
-					//}
-					items.addAll(playlist.data!!.contents.map {
-						//TODO: somehow add playlist id to this
-//						it.addProperty("playlistId", this@PlaylistFragment.id)
+					playlist.data!!.alerts.forEach {
+						items.add(
+							RendererContainer(
+								"message",
+								"playlistAlertRenderer",
+								MessageRendererData(it)
+							)
+						)
+					}
+					items.addAll(playlist.data.contents.map {
+						it.extras["playlistId"] = this@PlaylistFragment.id
 						it
 					})
 					contKey = playlist.data.continuation
@@ -181,14 +182,13 @@ class PlaylistFragment : Fragment() {
 			.load(Utils.getBestImageUrl(playlist.sidebar.thumbnails))
 			.into(binding.playlistInfo.playlistThumbnail)
 
+		val firstVid = playlist.contents.first { it.type == "video" }.data as VideoRendererData
 		binding.playlistInfo.buttonPlayAll.setOnClickListener {
-			// todo: dont use jsonobjects
-			//activity.getPlayer().playVideo(playlist.contents.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(firstVid.videoId)
 		}
 
 		binding.playlistInfo.buttonShuffle.setOnClickListener {
-			// todo: dont use jsonobjects
-			//activity.getPlayer().playVideo(playlist.contents.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(firstVid.videoId)
 		}
 
 		if (playlist.editable) {

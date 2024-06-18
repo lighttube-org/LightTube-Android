@@ -93,7 +93,7 @@ class VideoInfoFragment : Fragment() {
 	private fun fillData(video: LightTubeVideo, userData: UserData?) {
 		player.setChapters(video.id, video.chapters)
 		// todo: video info as renderercontainer
-		// items.add(video.getAsRenderer())
+		items.add(video.getAsRenderer())
 		items.addAll(video.recommended)
 		adapter = RendererRecyclerAdapter(items)
 		adapter.updateUserData(userData)
@@ -135,11 +135,10 @@ class VideoInfoFragment : Fragment() {
 	}
 
 	fun showCommentsButton(firstComment: Triple<String, String, Int>?) {
-		// todo: idek whats wrong here
-		//val video = Gson().fromJson(items[0], LightTubeVideo::class.java)
-		//video.showCommentsButton = true
-		//video.firstComment = firstComment
-		//items[0] = video.getAsRenderer()
+		val video = items[0].data as LightTubeVideo
+		video.showCommentsButton = true
+		video.firstComment = firstComment
+		items[0] = video.getAsRenderer()
 		adapter.notifyItemChanged(0)
 	}
 

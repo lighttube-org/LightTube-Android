@@ -1,10 +1,8 @@
 package dev.kuylar.lighttube.api.models
 
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.renderers.IRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.LayoutChannelHeaderBinding
 
@@ -13,7 +11,7 @@ data class LightTubeChannel(
 	val enabledTabs: List<ChannelTab>,
 	val metadata: ChannelMetadata? = null,
 	val contents: List<RendererContainer>
-) {
+): IRendererData {
 	data class Header(
 		val id: String,
 		val avatars: List<LightTubeImage>,
@@ -72,10 +70,11 @@ data class LightTubeChannel(
 			)
 	}
 
-	fun getAsRenderer(): JsonObject {
-		val gson = Gson()
-		val asJson = gson.fromJson(gson.toJson(this), JsonObject::class.java)
-		asJson.add("type", JsonPrimitive("channelInfoRenderer"))
-		return asJson
+	fun getAsRenderer(): RendererContainer {
+		return RendererContainer(
+			"channelInfoRenderer",
+			"channelInfoRenderer",
+			this
+		)
 	}
 }

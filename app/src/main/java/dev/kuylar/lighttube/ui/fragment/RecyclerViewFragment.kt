@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
@@ -19,6 +18,7 @@ import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.ContinuationRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentRecyclerviewBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
@@ -86,8 +86,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 					contKey = continuation
 					runOnUiThread {
 						setLoading(false)
-						// todo: renderercontainer
-						//items.removeIf { it.getAsJsonPrimitive("type").asString == "continuationItemRenderer" }
+						items.removeIf { it.type == "continuation" }
 						binding.recycler.adapter!!.notifyItemRemoved(items.size)
 
 						val start = items.size
@@ -150,9 +149,12 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 				if (initial) userData = channel.userData
 				else userData!!.channels.putAll(channel.userData?.channels ?: emptyMap())
 				val contents = ArrayList(channel.data!!.contents)
-				//if (initial && params?.lowercase() == "home")
-				//	contents.add(0, channel.data.getAsRenderer()) // todo: return renderercontainer
-				return Pair(Pair(contents, channel.userData), null /* channel.data.continuation */)
+				if (initial && params?.lowercase() == "home")
+					contents.add(0, channel.data.getAsRenderer())
+				val continuationRenderer = channel.data.contents.lastOrNull { it.type == "continuation" }
+				val continuationRendererData =
+					if (continuationRenderer != null) continuationRenderer.data as ContinuationRendererData else null
+				return Pair(Pair(contents, channel.userData), continuationRendererData?.continuationToken)
 			}
 
 			else -> {

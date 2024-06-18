@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.SortOrder
+import dev.kuylar.lighttube.api.models.renderers.CommentRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentVideoCommentsBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
@@ -75,17 +77,17 @@ class VideoCommentsFragment : Fragment() {
 					SortOrder.TopComments
 				) else api.continueComments(commentsContinuation!!)
 				if (initial) with(comments.data!!.results[0]) {
-					//todo: renderercontaienr
-//					if (this.getAsJsonObject("owner") != null)
-//						player.showCommentsButton(
-//							this.getAsJsonObject("owner").getAsJsonPrimitive("avatar").asString,
-//							this.getAsJsonPrimitive("content").asString,
-//							comments.data.contents.size
-//						)
-//					else {
-//						player.showCommentsButton()
-//						loading = false
-//					}
+					val comment = this.data as CommentRendererData
+					try {
+						player.showCommentsButton(
+							Utils.getBestImageUrl(comment.owner.avatar),
+							comment.content,
+							comments.data.results.size // todo: get this from *somewhere*
+						)
+					} catch (_: Exception) {
+						player.showCommentsButton()
+					}
+					loading = false
 				}
 				val start = items.size
 				items.addAll(comments.data!!.results)

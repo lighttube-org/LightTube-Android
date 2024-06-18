@@ -1,8 +1,5 @@
 package dev.kuylar.lighttube.api.models
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import dev.kuylar.lighttube.api.models.renderers.IRendererData
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import java.util.Date
@@ -28,10 +25,11 @@ data class LightTubeVideo(
 ): IRendererData {
 	var showCommentsButton: Boolean = false
 	var firstComment: Triple<String, String, Int>? = null
-	fun getAsRenderer() : JsonObject {
-		val gson = Gson()
-		val asJson = gson.fromJson(gson.toJson(this), JsonObject::class.java)
-		asJson.add("type", JsonPrimitive("slimVideoInfoRenderer"))
-		return asJson
+	fun getAsRenderer() : RendererContainer {
+		return RendererContainer(
+			"slimVideoInfoRenderer",
+			"slimVideoInfoRenderer",
+			this
+		)
 	}
 }

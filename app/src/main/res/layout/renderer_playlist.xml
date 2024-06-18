@@ -61,7 +61,7 @@
 			tools:text="Channel Title" />
 
 		<LinearLayout
-			android:id="@+id/playlist_duration"
+			android:id="@+id/playlist_icon_container"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:background="@drawable/playlist_count_background"
