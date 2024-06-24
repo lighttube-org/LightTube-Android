@@ -26,6 +26,7 @@ import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererChannelInfoBinding
+import dev.kuylar.lighttube.databinding.RendererChannelLandscapeBinding
 import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
 import dev.kuylar.lighttube.databinding.RendererMessageBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
@@ -219,11 +220,20 @@ class Utils {
 				)
 
 				"channel" -> ChannelRenderer(
-					RendererChannelBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
+					if (landscape)
+						RendererChannelBinding.bind(
+							RendererChannelLandscapeBinding.inflate(
+								inflater,
+								parent,
+								false
+							).root
+						)
+					else
+						RendererChannelBinding.inflate(
+							inflater,
+							parent,
+							false
+						)
 				)
 
 				"message" -> MessageRenderer(
