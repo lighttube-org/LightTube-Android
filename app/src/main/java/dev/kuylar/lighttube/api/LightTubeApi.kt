@@ -2,8 +2,8 @@ package dev.kuylar.lighttube.api
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.ContinuationContainer
 import dev.kuylar.lighttube.api.models.InstanceInfo
@@ -22,7 +22,6 @@ import dev.kuylar.lighttube.api.models.SubscriptionChannel
 import dev.kuylar.lighttube.api.models.UpdateSubscriptionsResponse
 import dev.kuylar.lighttube.api.models.UserPlaylist
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
-import dev.kuylar.lighttube.api.models.renderers.RendererSerializer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -36,10 +35,7 @@ import java.net.URLEncoder
 class LightTubeApi {
 	private val tag = "LightTubeApi"
 	private val client = OkHttpClient()
-	private val gson = GsonBuilder().apply {
-		setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
-		registerTypeAdapter(RendererContainer::class.java, RendererSerializer())
-	}.create()
+	private val gson = Utils.gson
 	var currentUser: LightTubeUserInfo? = null
 
 	val host: String

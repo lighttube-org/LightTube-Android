@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubeVideo
@@ -103,7 +103,7 @@ class VideoInfoFragment : Fragment() {
 		binding.recyclerRecommended.itemAnimator = null
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
-			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Gson().toJson(video))))
+			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Utils.gson.toJson(video))))
 			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("id", video.id)))
 		}.commit()
 
@@ -136,6 +136,7 @@ class VideoInfoFragment : Fragment() {
 
 	fun showCommentsButton(firstComment: Triple<String, String, Int>?) {
 		val video = items[0].data as LightTubeVideo
+		if (video.commentsErrorMessage != null) return
 		video.showCommentsButton = true
 		video.firstComment = firstComment
 		items[0] = video.getAsRenderer()

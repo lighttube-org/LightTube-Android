@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.google.gson.Gson
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.ui.fragment.RecyclerViewFragment
@@ -26,7 +26,7 @@ class ChannelAdapter(
 			putString("args", channelId)
 			putString("params", enabledTabs[i])
 			if (enabledTabs[i] == "home")
-				putString("initialData", Gson().toJson(home))
+				putString("initialData", Utils.gson.toJson(home))
 		}
 		return fragment
 	}

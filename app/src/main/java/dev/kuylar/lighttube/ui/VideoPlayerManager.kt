@@ -408,10 +408,12 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 	}
 
 	fun showCommentsButton(firstCommentAvatar: String, firstCommentText: String, commentCount: Int) {
-		try {
-			(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
-			(fragmentManager.findFragmentById(R.id.player_video_info) as LandscapeVideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
-		} catch (_: Exception) { }
+		activity.runOnUiThread {
+			try {
+				(fragmentManager.findFragmentById(R.id.player_recommendations) as VideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
+				(fragmentManager.findFragmentById(R.id.player_video_info) as LandscapeVideoInfoFragment).showCommentsButton(Triple(firstCommentAvatar, firstCommentText, commentCount))
+			} catch (_: Exception) { }
+		}
 	}
 
 	fun setSheets(details: Boolean, comments: Boolean) {
@@ -438,8 +440,7 @@ class VideoPlayerManager(private val activity: MainActivity) : Player.Listener,
 			timeBar.chapters =
 				chapters
 		} else {
-			timeBar.chapters =
-				listOf(VideoChapter(0.0, "", emptyList()))
+			timeBar.chapters = listOf(VideoChapter(0.0, ""/*, emptyList()*/))
 		}
 	}
 

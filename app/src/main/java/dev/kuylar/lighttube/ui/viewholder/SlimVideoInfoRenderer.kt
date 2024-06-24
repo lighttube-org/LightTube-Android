@@ -1,7 +1,6 @@
 package dev.kuylar.lighttube.ui.viewholder
 
 import android.content.Intent
-import android.icu.text.DecimalFormat
 import android.text.Html
 import android.view.View
 import androidx.core.os.bundleOf
@@ -31,11 +30,23 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			)
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
-		binding.channelSubscribers.text = DecimalFormat.getInstance().format(video.channel.subscribers)
-		binding.videoViews.text = DecimalFormat.getInstance().format(video.viewCount)
+		binding.channelSubscribers.text = binding.root.context.resources.getQuantityString(
+			R.plurals.template_subscribers,
+			video.channel.subscribers ?: 0,
+			Utils.toShortInt(binding.root.context, video.channel.subscribers?.toLong() ?: 0)
+		)
+		binding.videoViews.text = binding.root.context.resources.getQuantityString(
+			R.plurals.video_info_views,
+			video.viewCount.toInt(),
+			Utils.toShortInt(activity, video.viewCount)
+		)
 		binding.videoUploaded.text = video.dateText
-		binding.buttonLike.text = DecimalFormat.getInstance().format(video.likeCount)
-		if (video.showCommentsButton) {
+		binding.buttonLike.text = Utils.toShortInt(binding.root.context, video.likeCount)
+		if (video.commentsErrorMessage != null) {
+			binding.spinnerComments.visibility = View.GONE
+			binding.textCommentsLoading.text =
+				Html.fromHtml(video.commentsErrorMessage, Html.FROM_HTML_MODE_LEGACY)
+		} else if (video.showCommentsButton) {
 			if (video.firstComment != null) {
 				binding.commentsLoading.visibility = View.GONE
 				binding.commentsFirst.visibility = View.VISIBLE
@@ -46,8 +57,10 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 				binding.commentText.text =
 					Html.fromHtml(video.firstComment!!.second, Html.FROM_HTML_MODE_LEGACY)
 				binding.commentsCountBullet.visibility = View.VISIBLE
-				binding.commentsCount.text = video.commentCount?.toString()?.takeIf { it.isNotEmpty() }
-					?: "${video.firstComment!!.third}+"
+				binding.commentsCount.text = if (video.commentsCount != null)
+					Utils.toShortInt(activity, video.commentsCount.toLong())
+				else
+					"${video.firstComment!!.third}+"
 				binding.cardComments.setOnClickListener {
 					activity.getPlayer().setSheets(details = false, comments = true)
 				}
@@ -109,7 +122,7 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			val dislikes = Utils.getDislikeCount(video.id)
 			if (dislikes != -1L)
 				activity.runOnUiThread {
-					binding.buttonDislike.text = dislikes.toString()
+					binding.buttonDislike.text = Utils.toShortInt(binding.root.context, dislikes)
 				}
 		}
 	}

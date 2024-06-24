@@ -36,6 +36,11 @@ class RendererSerializer : JsonDeserializer<RendererContainer> {
 				ChannelRendererData::class.java
 			)
 
+			"comment" -> context?.deserialize(
+				obj.getAsJsonObject("data"),
+				CommentRendererData::class.java
+			)
+
 			else -> {
 				type = "exception"
 				ExceptionRendererData(

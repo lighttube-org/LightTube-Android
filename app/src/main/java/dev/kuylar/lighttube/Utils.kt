@@ -24,14 +24,17 @@ import dev.kuylar.lighttube.api.models.LightTubeImage
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.RendererSerializer
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererChannelInfoBinding
 import dev.kuylar.lighttube.databinding.RendererChannelLandscapeBinding
+import dev.kuylar.lighttube.databinding.RendererCommentBinding
 import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
 import dev.kuylar.lighttube.databinding.RendererMessageBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
+import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
 import dev.kuylar.lighttube.databinding.RendererVideoLandscapeBinding
@@ -39,12 +42,14 @@ import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
 import dev.kuylar.lighttube.ui.viewholder.ChannelInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
+import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
 import dev.kuylar.lighttube.ui.viewholder.ItemSectionRenderer
 import dev.kuylar.lighttube.ui.viewholder.MessageRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistVideoRenderer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
+import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
 import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
 import okhttp3.OkHttpClient
@@ -60,7 +65,10 @@ import kotlin.random.Random
 class Utils {
 	companion object {
 		val http = OkHttpClient()
-		val gson = Gson()
+		val gson: Gson = GsonBuilder().apply {
+			setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+			registerTypeAdapter(RendererContainer::class.java, RendererSerializer())
+		}.create()
 
 		fun getBestImageUrl(images: List<LightTubeImage>?): String {
 			if (images == null) return ""
@@ -236,6 +244,14 @@ class Utils {
 						)
 				)
 
+				"comment" -> CommentRenderer(
+					RendererCommentBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
 				"message" -> MessageRenderer(
 					RendererMessageBinding.inflate(
 						inflater,
@@ -275,6 +291,14 @@ class Utils {
 				"exception" -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 
 				// LTA special renderers
+
+				"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(
+					RendererSlimVideoInfoBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
 
 				"playlistInfoRenderer" -> PlaylistInfoRenderer(
 					RendererPlaylistInfoBinding.inflate(

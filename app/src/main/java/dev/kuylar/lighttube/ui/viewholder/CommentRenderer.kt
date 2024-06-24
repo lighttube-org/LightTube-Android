@@ -17,20 +17,23 @@ class CommentRenderer(val binding: RendererCommentBinding) : RendererViewHolder(
 		if (item.pinned)
 			binding.commentPinned.visibility = View.VISIBLE
 
-		binding.commentAuthor.text = item.owner.title
-		if (item.owner.badges?.isNotEmpty() == true)
-		binding.commentAuthor.setCompoundDrawables(
-			null,
-			null,
-			ContextCompat.getDrawable(binding.root.context, R.drawable.ic_verified),
-			null
+		binding.commentHeader.text = binding.root.context.getString(
+			R.string.template_comment_header,
+			item.owner.title,
+			item.publishedTimeText
 		)
+		if (item.owner.badges?.isNotEmpty() == true)
+			binding.commentHeader.setCompoundDrawables(
+				null,
+				null,
+				ContextCompat.getDrawable(binding.root.context, R.drawable.ic_verified),
+				null
+			)
 		if (item.owner.avatar != null)
 			Glide.with(binding.root)
 				.load(Utils.getBestImageUrl(item.owner.avatar))
 				.into(binding.commentAvatar)
 
-		binding.commentDate.text = item.publishedTimeText
 		binding.commentBody.text = Html.fromHtml(item.content, Html.FROM_HTML_MODE_LEGACY)
 
 		binding.commentLikeCount.text = item.likeCountText

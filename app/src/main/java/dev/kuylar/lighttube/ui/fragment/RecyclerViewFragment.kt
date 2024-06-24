@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
@@ -141,7 +140,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 		when (type) {
 			"channel" -> {
 				val channel =
-					if (initial && initialData != null) Gson().fromJson(
+					if (initial && initialData != null) Utils.gson.fromJson(
 						initialData,
 						object : TypeToken<ApiResponse<LightTubeChannel>>() {})!!
 					else if (initial) api.getChannel(args, params ?: "home")
