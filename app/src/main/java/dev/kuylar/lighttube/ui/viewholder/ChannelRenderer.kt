@@ -23,15 +23,25 @@ class ChannelRenderer(val binding: RendererChannelBinding) : RendererViewHolder(
 				notifications = false
 			)
 		binding.channelTitle.text = item.title
-		if (renderer.originalType == "gridChannelRenderer") {
-			binding.channelHandle.text = item.videoCountText
-			binding.channelSubscribers.text =
-				item.subscriberCountText
-		} else {
+
+		val subscribersText = context.resources.getQuantityString(
+			R.plurals.template_subscribers,
+			item.subscriberCount.toInt(),
+			Utils.toShortInt(context, item.subscriberCount)
+		)
+
+		if (item.handle != null) {
 			binding.channelHandle.text = item.handle
-			binding.channelSubscribers.text =
-				item.subscriberCountText
+			binding.channelSubscribers.text = subscribersText
+		} else {
+			binding.channelHandle.text = subscribersText
+			binding.channelSubscribers.text = context.resources.getQuantityString(
+				R.plurals.template_videos,
+				item.videoCount.toInt(),
+				Utils.toShortInt(context, item.videoCount)
+			)
 		}
+
 		Glide
 			.with(binding.root)
 			.load(Utils.getBestImageUrl(item.avatar))

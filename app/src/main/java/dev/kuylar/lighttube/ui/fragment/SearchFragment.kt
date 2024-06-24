@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
@@ -70,7 +69,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 			try {
 				val feed = if (initial) api.search(query) else api.continueSearch(contKey!!)
 				val start = items.size
-				items.addAll(feed.data!!.searchResults)
+				items.addAll(feed.data!!.results)
 				contKey = feed.data.continuation
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
@@ -78,7 +77,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 					(binding.recyclerSearch.adapter!! as RendererRecyclerAdapter).updateUserData(feed.userData)
 					binding.recyclerSearch.adapter!!.notifyItemRangeInserted(
 						start,
-						feed.data.searchResults.size
+						feed.data.results.size
 					)
 					loading = false
 				}

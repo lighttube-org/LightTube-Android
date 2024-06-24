@@ -88,7 +88,6 @@
 				android:id="@+id/playlist_video_count"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/template_videos"
 				android:textColor="#fff" />
 		</LinearLayout>
 

@@ -22,8 +22,9 @@ class PlaylistRenderer(val binding: RendererPlaylistBinding) :
 		val item = renderer.data as PlaylistRendererData
 
 		binding.playlistTitle.text = item.title
-		binding.playlistVideoCount.text = binding.root.context.getString(
-			R.string.template_videos,
+		binding.playlistVideoCount.text = binding.root.context.resources.getQuantityString(
+			R.plurals.template_videos,
+			item.videoCount.toInt(),
 			DecimalFormat().format(item.videoCount)
 		)
 

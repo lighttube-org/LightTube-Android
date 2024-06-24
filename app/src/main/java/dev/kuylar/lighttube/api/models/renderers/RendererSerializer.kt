@@ -31,6 +31,11 @@ class RendererSerializer : JsonDeserializer<RendererContainer> {
 				PlaylistRendererData::class.java
 			)
 
+			"channel" -> context?.deserialize(
+				obj.getAsJsonObject("data"),
+				ChannelRendererData::class.java
+			)
+
 			else -> {
 				type = "exception"
 				ExceptionRendererData(

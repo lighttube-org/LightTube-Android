@@ -66,7 +66,17 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="template_instance_info">v%s | Accounts: %s | Proxy: %s</string>
 	<string name="template_feed_video_subtitle">%s • %s views • %s</string>
 	<string name="template_channel_subtitle">%s • %s</string>
-	<string name="template_videos">%s videos</string>
+	<plurals name="template_videos">
+		<item quantity="one">%s video</item>
+		<item quantity="other">%s videos</item>
+	</plurals>
+	<plurals name="template_subscribers">
+		<item quantity="one">%s subscriber</item>
+		<item quantity="other">%s subscribers</item>
+	</plurals>
+	<string name="template_shortint_thousand">%sK</string>
+	<string name="template_shortint_million">%sM</string>
+	<string name="template_shortint_billion">%sB</string>
 
 	<!-- General -->
 	<string name="enabled">Enabled</string>
