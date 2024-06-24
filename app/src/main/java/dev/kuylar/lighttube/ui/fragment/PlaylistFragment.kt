@@ -137,7 +137,7 @@ class PlaylistFragment : Fragment() {
 							R.string.error_connection,
 							Snackbar.LENGTH_INDEFINITE
 						)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
@@ -155,7 +155,7 @@ class PlaylistFragment : Fragment() {
 							Snackbar.LENGTH_INDEFINITE
 						)
 						sb.setTextMaxLines(2)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
