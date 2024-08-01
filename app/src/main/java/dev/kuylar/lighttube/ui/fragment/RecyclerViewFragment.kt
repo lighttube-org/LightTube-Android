@@ -65,7 +65,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 		binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
-				if (!recyclerView.canScrollVertically(1)) {
+				if (!recyclerView.canScrollVertically(1) && contKey != null) {
 					loadMore(false)
 				}
 			}
@@ -89,12 +89,13 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 						binding.recycler.adapter!!.notifyItemRemoved(items.size)
 
 						val start = items.size
-						items.addAll(newItems.first)
 						(binding.recycler.adapter!! as RendererRecyclerAdapter).updateUserData(newItems.second)
-						binding.recycler.adapter!!.notifyItemRangeInserted(
-							start,
-							newItems.first.size
-						)
+						items.addAll(newItems.first)
+						//binding.recycler.adapter!!.notifyItemRangeInserted(
+						//	start,
+						//	newItems.first.size
+						//)
+						binding.recycler.adapter!!.notifyDataSetChanged()
 
 						loading = false
 					}

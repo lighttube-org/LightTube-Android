@@ -12,6 +12,7 @@ class ItemSectionRenderer(val binding: RendererItemSectionBinding) :
 	RendererViewHolder(binding.root) {
 	override fun bind(renderer: RendererContainer, userData: UserData?) {
 		val item = renderer.data as ContainerRendererData
+		binding.root.removeAllViews()
 		if (item.items.isNotEmpty()) {
 			item.items.forEach {
 				val holder = Utils.getViewHolder(
