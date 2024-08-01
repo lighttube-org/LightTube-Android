@@ -8,7 +8,7 @@ import dev.kuylar.lighttube.databinding.RendererChannelInfoBinding
 class ChannelInfoRenderer(private val binding: RendererChannelInfoBinding) :
 	RendererViewHolder(binding.root) {
 	override fun bind(renderer: RendererContainer, userData: UserData?) {
-		val channel = renderer as LightTubeChannel
+		val channel = renderer.data as LightTubeChannel
 		channel.fillBinding(binding.header, userData)
 	}
 }

@@ -41,6 +41,11 @@ class RendererSerializer : JsonDeserializer<RendererContainer> {
 				CommentRendererData::class.java
 			)
 
+			"container" -> context?.deserialize(
+				obj.getAsJsonObject("data"),
+				ContainerRendererData::class.java
+			)
+
 			else -> {
 				type = "exception"
 				ExceptionRendererData(

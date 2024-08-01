@@ -1,5 +1,6 @@
 package dev.kuylar.lighttube.api.models
 
+import android.text.Html
 import com.bumptech.glide.Glide
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.renderers.IRendererData
@@ -8,7 +9,7 @@ import dev.kuylar.lighttube.databinding.LayoutChannelHeaderBinding
 
 data class LightTubeChannel(
 	val header: Header? = null,
-	val enabledTabs: List<ChannelTab>,
+	val tabs: List<ChannelTab>,
 	val metadata: ChannelMetadata? = null,
 	val contents: List<RendererContainer>
 ): IRendererData {
@@ -31,7 +32,7 @@ data class LightTubeChannel(
 	)
 
 	data class ChannelTab(
-		val tab: Int,
+		val tab: String,
 		val title: String,
 		val params: String,
 		val selected: Boolean
@@ -61,7 +62,7 @@ data class LightTubeChannel(
 		binding.stats.text = arrayOf(header?.subscriberCountText, header?.videoCountText).joinToString(" • ")
 		//todo: onclick
 		binding.tagline.text = header?.tagline
-		binding.links.text = arrayOf(header?.primaryLink, header?.secondaryLink).joinToString(" ")
+		binding.links.text = arrayOf(header?.primaryLink, header?.secondaryLink).joinToString(" ") { Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
 		if (userData != null && userData.channels.containsKey(metadata?.id))
 			Utils.updateSubscriptionButton(
 				binding.root.context,

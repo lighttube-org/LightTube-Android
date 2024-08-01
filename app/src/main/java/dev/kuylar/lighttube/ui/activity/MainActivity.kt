@@ -211,6 +211,8 @@ class MainActivity : AppCompatActivity() {
 
 		if (intent != null)
 			handleDeepLinks(intent.action, intent.data)
+
+		navController.navigate(R.id.navigation_channel, bundleOf(Pair("id", "UCtMVHI3AJD4Qk4hcbZnI9ZQ")))
 	}
 
 	override fun onConfigurationChanged(newConfig: Configuration) {
