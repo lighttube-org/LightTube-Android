@@ -30,7 +30,8 @@ class VideoRenderer(val binding: RendererVideoBinding) : RendererViewHolder(bind
 
 		Glide
 			.with(binding.root)
-			.load(Utils.getBestImageUrl(item.thumbnails))
+			.load(Utils.getBestImageUrl(item.thumbnails).takeIf { it.isNotEmpty() }
+				?: "https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg")
 			.into(binding.videoThumbnail)
 
 		if (item.author?.avatar != null)
