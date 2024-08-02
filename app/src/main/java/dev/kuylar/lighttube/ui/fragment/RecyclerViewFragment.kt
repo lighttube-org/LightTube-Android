@@ -91,11 +91,10 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 						val start = items.size
 						(binding.recycler.adapter!! as RendererRecyclerAdapter).updateUserData(newItems.second)
 						items.addAll(newItems.first)
-						//binding.recycler.adapter!!.notifyItemRangeInserted(
-						//	start,
-						//	newItems.first.size
-						//)
-						binding.recycler.adapter!!.notifyDataSetChanged()
+						binding.recycler.adapter!!.notifyItemRangeInserted(
+							start,
+							newItems.first.size
+						)
 
 						loading = false
 					}
