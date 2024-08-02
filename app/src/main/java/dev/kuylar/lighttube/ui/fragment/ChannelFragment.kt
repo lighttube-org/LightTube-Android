@@ -58,7 +58,7 @@ class ChannelFragment : Fragment() {
 					ChannelAdapter(
 						childFragmentManager,
 						id,
-						ArrayList(channel.data!!.tabs.filter { it.params != "search" }.map { it.title }),
+						ArrayList(channel.data!!.tabs.filter { it.params != "search" }),
 						channel
 					)
 				val viewPager = binding.channelPager

@@ -12,7 +12,7 @@ import dev.kuylar.lighttube.ui.fragment.RecyclerViewFragment
 class ChannelAdapter(
 	fm: FragmentManager,
 	private val channelId: String,
-	private val enabledTabs: ArrayList<String>,
+	private val enabledTabs: ArrayList<LightTubeChannel.ChannelTab>,
 	private val home: ApiResponse<LightTubeChannel>
 ) :
 	FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -24,14 +24,14 @@ class ChannelAdapter(
 		fragment.arguments = Bundle().apply {
 			putString("type", "channel")
 			putString("args", channelId)
-			putString("params", enabledTabs[i])
-			if (enabledTabs[i] == "home")
+			putString("params", enabledTabs[i].params)
+			if (enabledTabs[i].params == "home")
 				putString("initialData", Utils.gson.toJson(home))
 		}
 		return fragment
 	}
 
 	override fun getPageTitle(position: Int): CharSequence {
-		return enabledTabs[position]
+		return enabledTabs[position].title
 	}
 }
