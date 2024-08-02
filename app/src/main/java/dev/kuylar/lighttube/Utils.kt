@@ -34,6 +34,7 @@ import dev.kuylar.lighttube.databinding.RendererMessageBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
+import dev.kuylar.lighttube.databinding.RendererShelfBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
@@ -49,6 +50,7 @@ import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistVideoRenderer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
+import dev.kuylar.lighttube.ui.viewholder.ShelfRenderer
 import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
 import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
@@ -275,6 +277,16 @@ class Utils {
 						"gridRenderer" -> {
 							ItemSectionRenderer(
 								RendererItemSectionBinding.inflate(
+									inflater,
+									parent,
+									false
+								)
+							)
+						}
+
+						"shelfRenderer" -> {
+							ShelfRenderer(
+								RendererShelfBinding.inflate(
 									inflater,
 									parent,
 									false

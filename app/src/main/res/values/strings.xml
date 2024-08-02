@@ -78,6 +78,7 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="template_shortint_million">%sM</string>
 	<string name="template_shortint_billion">%sB</string>
 	<string name="template_comment_header">%s • %s</string>
+	<string name="template_shelf_expand">+%d more</string>
 
 	<!-- General -->
 	<string name="enabled">Enabled</string>
@@ -98,6 +99,7 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="subscribed">Subscribed</string>
 	<string name="pause">Pause</string>
 	<string name="play">Play</string>
+	<string name="show_less">Show less</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>

@@ -1,8 +1,10 @@
 package dev.kuylar.lighttube.ui.adapter
 
 import android.content.res.Configuration
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.RecyclerView
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.UserData
@@ -20,6 +22,12 @@ class RendererRecyclerAdapter(
 	private val portraitOnlyRenderers =
 		arrayOf("slimVideoInfoRenderer", "playlistInfoRenderer", "channelInfoRenderer")
 
+	private val flags = ArrayList<String>()
+	private var expandable = false
+	private var collapsedItemCount = 1
+	var isExpanded = true
+		private set
+
 	// forgive me other android devs that obviously
 	// know better than me, but i had to do this :(
 	override fun getItemViewType(position: Int): Int {
@@ -30,11 +38,16 @@ class RendererRecyclerAdapter(
 		val inflater = LayoutInflater.from(parent.context)
 		return Utils.getViewHolder(
 			rendererList[position], inflater!!, parent,
-			parent.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+			 if (flags.contains("forcePortrait")) false else parent.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 		)
 	}
 
-	override fun getItemCount(): Int = rendererList.size
+	override fun getItemCount(): Int {
+		return if (expandable && !isExpanded)
+			rendererList.size.coerceAtMost(collapsedItemCount)
+		else
+			rendererList.size
+	}
 
 	// todo: try/catch this
 	override fun onBindViewHolder(holder: RendererViewHolder, position: Int) {
@@ -55,6 +68,27 @@ class RendererRecyclerAdapter(
 				if (uiIsLandscape) 0 else RecyclerView.LayoutParams.WRAP_CONTENT
 			)
 		}
+
+		if (flags.contains("smaller")) {
+			val res = holder.itemView.context.resources
+			val p = RecyclerView.LayoutParams(
+				Math.round(res.displayMetrics.widthPixels * .8).toInt().coerceAtMost(
+					TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 240f, res.displayMetrics)
+						.toInt()
+				),
+				holder.itemView.layoutParams.height
+			)
+			p.updateMargins(
+				TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, res.displayMetrics)
+					.toInt(),
+				0,
+				TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, res.displayMetrics)
+					.toInt(),
+				TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, res.displayMetrics)
+					.toInt()
+			)
+			holder.itemView.layoutParams = p;
+		}
 	}
 
 	fun updateUserData(newUserData: UserData?) {
@@ -71,5 +105,23 @@ class RendererRecyclerAdapter(
 		val firstElType = rendererList[0].type
 		if (portraitOnlyRenderers.contains(firstElType))
 			notifyItemChanged(0)
+	}
+
+	fun setExpandable(collapsedItemCount: Int) {
+		this.collapsedItemCount = collapsedItemCount
+		expandable = true
+		isExpanded = false
+	}
+
+	fun setExpanded(expanded: Boolean) {
+		if (isExpanded && !expanded)
+			notifyItemRangeRemoved(collapsedItemCount, rendererList.size - collapsedItemCount)
+		else if (!isExpanded && expanded)
+			notifyItemRangeInserted(collapsedItemCount, rendererList.size - collapsedItemCount)
+		isExpanded = expanded
+	}
+
+	fun setFlag(flag: String) {
+		flags.add(flag)
 	}
 }
