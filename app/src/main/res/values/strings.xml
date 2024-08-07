@@ -100,6 +100,8 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="pause">Pause</string>
 	<string name="play">Play</string>
 	<string name="show_less">Show less</string>
+	<string name="dismiss">Dismiss</string>
+	<string name="instance_alert">Alert from instance</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>

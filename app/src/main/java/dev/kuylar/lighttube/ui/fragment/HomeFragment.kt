@@ -57,6 +57,21 @@ class HomeFragment : Fragment() {
 					sp.edit {
 						putStringSet("cachedMotds", info.motd.toMutableSet())
 					}
+					if (info.alert != null) {
+						val hash = info.alert.hashCode()
+						if (sp.getInt("lastAlertHash", 0) != hash) {
+							MaterialAlertDialogBuilder(requireContext()).apply {
+								setTitle(R.string.instance_alert)
+								setMessage(info.alert)
+								setPositiveButton(R.string.dismiss) { dialog, _ ->
+									dialog.dismiss()
+									sp.edit {
+										putInt("lastAlertHash", hash)
+									}
+								}
+							}.show()
+						}
+					}
 				}
 			} catch (e: IOException) {
 				a.runOnUiThread {
