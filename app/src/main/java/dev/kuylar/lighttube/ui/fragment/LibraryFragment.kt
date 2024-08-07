@@ -87,7 +87,7 @@ class LibraryFragment : Fragment() {
 							R.string.error_connection,
 							Snackbar.LENGTH_INDEFINITE
 						)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadData()
 							sb.dismiss()
@@ -103,7 +103,7 @@ class LibraryFragment : Fragment() {
 							Snackbar.LENGTH_INDEFINITE
 						)
 						sb.setTextMaxLines(2)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadData()
 							sb.dismiss()

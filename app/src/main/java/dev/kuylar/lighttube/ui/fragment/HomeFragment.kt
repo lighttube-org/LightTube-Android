@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
 				a.runOnUiThread {
 					a.setLoading(false)
 					val sb = Snackbar.make(binding.root, R.string.error_connection, Snackbar.LENGTH_INDEFINITE)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_close) {
 						sb.dismiss()
 					}

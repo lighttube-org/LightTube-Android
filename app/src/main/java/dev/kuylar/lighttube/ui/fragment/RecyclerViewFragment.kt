@@ -107,7 +107,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 							R.string.error_connection,
 							Snackbar.LENGTH_INDEFINITE
 						)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()

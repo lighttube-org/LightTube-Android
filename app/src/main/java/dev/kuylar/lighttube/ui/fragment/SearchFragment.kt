@@ -91,7 +91,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 						R.string.error_connection,
 						Snackbar.LENGTH_INDEFINITE
 					)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_retry) {
 						loadMore(initial)
 						sb.dismiss()
@@ -109,7 +109,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 						Snackbar.LENGTH_INDEFINITE
 					)
 					sb.setTextMaxLines(2)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_retry) {
 						loadMore(initial)
 						sb.dismiss()
