@@ -52,7 +52,8 @@ class HomeFragment : Fragment() {
 							}
 						}.show()
 					}
-					binding.homeMotd.text = Utils.randomMotd(info.motd)
+					if (!info.motd.contains(binding.homeMotd.text))
+						binding.homeMotd.text = Utils.randomMotd(info.motd)
 					sp.edit {
 						putStringSet("cachedMotds", info.motd.toMutableSet())
 					}
