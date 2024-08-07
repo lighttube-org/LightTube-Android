@@ -124,7 +124,6 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 							Snackbar.LENGTH_INDEFINITE
 						)
 						sb.setTextMaxLines(2)
-						sb.setAnchorView(R.id.nav_view)
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
@@ -148,7 +147,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 				if (initial) userData = channel.userData
 				else userData!!.channels.putAll(channel.userData?.channels ?: emptyMap())
 				val contents = ArrayList(channel.data!!.contents)
-				if (initial && params?.lowercase() == "home")
+				if (initial && params?.lowercase() == "featured")
 					contents.add(0, channel.data.getAsRenderer())
 				val continuationRenderer = channel.data.contents.lastOrNull { it.type == "continuation" }
 				val continuationRendererData =

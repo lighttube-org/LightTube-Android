@@ -62,7 +62,7 @@ data class LightTubeChannel(
 		binding.stats.text = arrayOf(header?.subscriberCountText, header?.videoCountText).joinToString(" • ")
 		//todo: onclick
 		binding.tagline.text = header?.tagline
-		binding.links.text = arrayOf(header?.primaryLink, header?.secondaryLink).joinToString(" ") { Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
+		binding.links.text = arrayOf(header?.primaryLink ?: "", header?.secondaryLink ?: "").joinToString(" ") { Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY) }
 		if (userData != null && userData.channels.containsKey(metadata?.id))
 			Utils.updateSubscriptionButton(
 				binding.root.context,
