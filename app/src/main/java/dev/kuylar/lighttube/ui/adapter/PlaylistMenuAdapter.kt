@@ -3,25 +3,27 @@ package dev.kuylar.lighttube.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.JsonObject
+import dev.kuylar.lighttube.api.models.renderers.PlaylistRendererData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.ItemMenuPlaylistBinding
 
 class PlaylistMenuAdapter(
-	private val items: List<JsonObject>,
+	private val items: List<RendererContainer>,
 	private val layoutInflater: LayoutInflater,
 	private val onClick: (id: String, title: String) -> Unit
 ) : RecyclerView.Adapter<PlaylistMenuAdapter.ViewHolder>() {
 	class ViewHolder(private val binding: ItemMenuPlaylistBinding) :
 		RecyclerView.ViewHolder(binding.root) {
-		fun bind(playlist: JsonObject, onClick: (id: String, title: String) -> Unit) {
+		fun bind(renderer: RendererContainer, onClick: (id: String, title: String) -> Unit) {
+			val playlist = (renderer.data as PlaylistRendererData)
 			binding.root.setOnClickListener {
 				onClick(
-					playlist.getAsJsonPrimitive("id").asString,
-					playlist.getAsJsonPrimitive("title").asString
+					playlist.playlistId,
+					playlist.title
 				)
 			}
 
-			binding.playlistTitle.text = playlist.getAsJsonPrimitive("title").asString
+			binding.playlistTitle.text = playlist.title
 		}
 	}
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/shelf_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="8dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="4dp"
+		android:maxLines="1"
+		android:textAppearance="?textAppearanceTitleLarge"
+		tools:text="Title" />
+
+	<TextView
+		android:id="@+id/shelf_subtitle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="8dp"
+		android:layout_marginBottom="4dp"
+		android:maxLines="1"
+		tools:text="Subtitle" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recycler_shelf"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
+		tools:itemCount="1"
+		tools:listitem="@layout/renderer_video" />
+
+	<Button
+		android:id="@+id/shelf_expand_button"
+		style="@style/Widget.Material3.Button.OutlinedButton"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="8dp"
+		android:text="@string/template_shelf_expand" />
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="3dp"
+		android:layout_marginVertical="8dp"
+		android:background="?android:attr/listDivider" />
+</LinearLayout>

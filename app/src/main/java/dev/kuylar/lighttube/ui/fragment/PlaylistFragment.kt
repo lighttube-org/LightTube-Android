@@ -15,13 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubePlaylist
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
+import dev.kuylar.lighttube.api.models.renderers.MessageRendererData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.VideoRendererData
 import dev.kuylar.lighttube.databinding.FragmentPlaylistBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.adapter.RendererRecyclerAdapter
@@ -31,7 +33,7 @@ import kotlin.concurrent.thread
 class PlaylistFragment : Fragment() {
 	private lateinit var id: String
 	private lateinit var binding: FragmentPlaylistBinding
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var api: LightTubeApi
 	private var loading = false
 	private var contKey: String? = null
@@ -103,13 +105,16 @@ class PlaylistFragment : Fragment() {
 						}
 					}
 					playlist.data!!.alerts.forEach {
-						items.add(JsonObject().apply {
-							addProperty("type", "playlistAlertRenderer")
-							addProperty("text", it)
-						})
+						items.add(
+							RendererContainer(
+								"message",
+								"playlistAlertRenderer",
+								MessageRendererData(it)
+							)
+						)
 					}
-					items.addAll(playlist.data.videos.map {
-						it.addProperty("playlistId", this@PlaylistFragment.id)
+					items.addAll(playlist.data.contents.map {
+						it.extras["playlistId"] = this@PlaylistFragment.id
 						it
 					})
 					contKey = playlist.data.continuation
@@ -118,7 +123,7 @@ class PlaylistFragment : Fragment() {
 						setLoading(false)
 						binding.recyclerPlaylist.adapter!!.notifyItemRangeInserted(
 							start,
-							playlist.data.videos.size + 1
+							playlist.data.contents.size + 1
 						)
 						loading = false
 					}
@@ -132,7 +137,7 @@ class PlaylistFragment : Fragment() {
 							R.string.error_connection,
 							Snackbar.LENGTH_INDEFINITE
 						)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
@@ -150,7 +155,7 @@ class PlaylistFragment : Fragment() {
 							Snackbar.LENGTH_INDEFINITE
 						)
 						sb.setTextMaxLines(2)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
@@ -164,25 +169,26 @@ class PlaylistFragment : Fragment() {
 
 	private fun fillSidebar(playlist: LightTubePlaylist) {
 		val activity = binding.root.context as MainActivity
-		binding.playlistInfo.playlistTitle.text = playlist.title
-		binding.playlistInfo.playlistAuthor.text = playlist.channel.title
-		binding.playlistInfo.playlistVideoCount.text = playlist.videoCountText
-		if (playlist.description.isNullOrEmpty())
+		binding.playlistInfo.playlistTitle.text = playlist.sidebar.title
+		binding.playlistInfo.playlistAuthor.text = playlist.sidebar.channel.title
+		binding.playlistInfo.playlistVideoCount.text = playlist.sidebar.videoCountText
+		if (playlist.sidebar.description.isNullOrEmpty())
 			binding.playlistInfo.playlistDescription.visibility = View.GONE
 		else
-			binding.playlistInfo.playlistDescription.text = playlist.description
+			binding.playlistInfo.playlistDescription.text = playlist.sidebar.description
 
 		Glide
 			.with(activity)
-			.load(Utils.getBestImageUrl(playlist.thumbnails))
+			.load(Utils.getBestImageUrl(playlist.sidebar.thumbnails))
 			.into(binding.playlistInfo.playlistThumbnail)
 
+		val firstVid = playlist.contents.first { it.type == "video" }.data as VideoRendererData
 		binding.playlistInfo.buttonPlayAll.setOnClickListener {
-			activity.getPlayer().playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(firstVid.videoId)
 		}
 
 		binding.playlistInfo.buttonShuffle.setOnClickListener {
-			activity.getPlayer().playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(firstVid.videoId)
 		}
 
 		if (playlist.editable) {
@@ -192,8 +198,8 @@ class PlaylistFragment : Fragment() {
 						this,
 						layoutInflater,
 						getString(R.string.edit_playlist_title),
-						playlist.title,
-						playlist.description ?: "",
+						playlist.sidebar.title,
+						playlist.sidebar.description ?: "",
 						PlaylistVisibility.Private,
 						getString(R.string.edit_playlist_submit),
 						getString(R.string.edit_playlist_cancel),
@@ -214,7 +220,7 @@ class PlaylistFragment : Fragment() {
 
 				binding.playlistInfo.buttonDeletePlaylist.setOnClickListener {
 					MaterialAlertDialogBuilder(binding.playlistInfo.root.context)
-						.setTitle(getString(R.string.delete_playlist_title, playlist.title))
+						.setTitle(getString(R.string.delete_playlist_title, playlist.sidebar.title))
 						.setMessage(R.string.delete_playlist_body)
 						.setPositiveButton(R.string.delete_playlist) { dialog, _ ->
 							thread {

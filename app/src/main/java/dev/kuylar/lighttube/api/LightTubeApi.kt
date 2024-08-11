@@ -2,9 +2,8 @@ package dev.kuylar.lighttube.api
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.ContinuationContainer
 import dev.kuylar.lighttube.api.models.InstanceInfo
@@ -20,9 +19,9 @@ import dev.kuylar.lighttube.api.models.SearchResults
 import dev.kuylar.lighttube.api.models.SearchSuggestions
 import dev.kuylar.lighttube.api.models.SortOrder
 import dev.kuylar.lighttube.api.models.SubscriptionChannel
-import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
 import dev.kuylar.lighttube.api.models.UpdateSubscriptionsResponse
 import dev.kuylar.lighttube.api.models.UserPlaylist
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -36,9 +35,7 @@ import java.net.URLEncoder
 class LightTubeApi {
 	private val tag = "LightTubeApi"
 	private val client = OkHttpClient()
-	private val gson = GsonBuilder().apply {
-		setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
-	}.create()
+	private val gson = Utils.gson
 	var currentUser: LightTubeUserInfo? = null
 
 	val host: String
@@ -160,6 +157,15 @@ class LightTubeApi {
 	}
 
 	@Throws(LightTubeException::class, IOException::class)
+	fun continueRecommendations(continuation: String): ApiResponse<ContinuationContainer<RendererContainer>> {
+		return get(
+			object : TypeToken<ApiResponse<ContinuationContainer<RendererContainer>>>() {},
+			"comments",
+			hashMapOf(Pair("continuation", continuation))
+		)
+	}
+
+	@Throws(LightTubeException::class, IOException::class)
 	fun search(query: String, params: String? = null): ApiResponse<SearchResults> {
 		val data = hashMapOf(Pair("query", query))
 		if (params != null)
@@ -192,17 +198,17 @@ class LightTubeApi {
 	fun getComments(
 		videoId: String,
 		sortBy: SortOrder
-	): ApiResponse<ContinuationContainer<JsonObject>> {
+	): ApiResponse<ContinuationContainer<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
+			object : TypeToken<ApiResponse<ContinuationContainer<RendererContainer>>>() {},
 			"comments",
 			hashMapOf(Pair("id", videoId), Pair("sortBy", sortBy.toString()))
 		)
 	}
 
-	fun continueComments(continuation: String): ApiResponse<ContinuationContainer<JsonObject>> {
+	fun continueComments(continuation: String): ApiResponse<ContinuationContainer<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<ContinuationContainer<JsonObject>>>() {},
+			object : TypeToken<ApiResponse<ContinuationContainer<RendererContainer>>>() {},
 			"comments",
 			hashMapOf(Pair("continuation", continuation))
 		)
@@ -216,7 +222,7 @@ class LightTubeApi {
 			hashMapOf(Pair("id", id))
 		)
 		if (res.userData != null) {
-			res.userData.editable = res.userData.user?.ltChannelID == res.data?.channel?.id
+			res.userData.editable = res.userData.user?.ltChannelID == res.data?.sidebar?.channel?.id
 			res.userData.playlistId = res.data?.id
 		}
 		return res
@@ -288,18 +294,18 @@ class LightTubeApi {
 	fun getSubscriptionFeed(
 		skip: Int = 0,
 		limit: Int = 50
-	): ApiResponse<List<SubscriptionFeedItem>> {
+	): ApiResponse<List<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<List<SubscriptionFeedItem>>>() {},
+			object : TypeToken<ApiResponse<List<RendererContainer>>>() {},
 			"feed",
 			hashMapOf(Pair("skip", skip.toString()), Pair("limit", limit.toString()))
 		)
 	}
 
 	@Throws(LightTubeException::class, IOException::class)
-	fun getLibraryPlaylists(): ApiResponse<List<JsonObject>> {
+	fun getLibraryPlaylists(): ApiResponse<List<RendererContainer>> {
 		return get(
-			object : TypeToken<ApiResponse<List<JsonObject>>>() {},
+			object : TypeToken<ApiResponse<List<RendererContainer>>>() {},
 			"playlists"
 		)
 	}

@@ -13,7 +13,8 @@
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:paddingBottom="10dp">
 
 		<com.google.android.material.imageview.ShapeableImageView
 			android:id="@+id/playlist_thumbnail"
@@ -51,7 +52,6 @@
 			android:layout_height="wrap_content"
 			android:layout_marginHorizontal="8dp"
 			android:layout_marginTop="4dp"
-			android:layout_marginBottom="10dp"
 			android:ellipsize="end"
 			android:maxLines="2"
 			app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +61,7 @@
 			tools:text="Channel Title" />
 
 		<LinearLayout
-			android:id="@+id/playlist_duration"
+			android:id="@+id/playlist_icon_container"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:background="@drawable/playlist_count_background"
@@ -91,7 +91,6 @@
 				android:id="@+id/playlist_video_count"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/template_videos"
 				android:textColor="#fff" />
 		</LinearLayout>
 

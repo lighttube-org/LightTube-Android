@@ -91,11 +91,23 @@ class LandscapeVideoInfoFragment : Fragment() {
 		val activity = activity as MainActivity
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
-		binding.channelSubscribers.text = video.channel.subscribers
-		binding.videoViews.text = video.viewCount
+		binding.channelSubscribers.text = binding.root.context.resources.getQuantityString(
+			R.plurals.template_subscribers,
+			video.channel.subscribers ?: 0,
+			Utils.toShortInt(binding.root.context, video.channel.subscribers?.toLong() ?: 0)
+		)
+		binding.videoViews.text = binding.root.context.resources.getQuantityString(
+			R.plurals.video_info_views,
+			video.viewCount.toInt(),
+			Utils.toShortInt(activity, video.viewCount)
+		)
 		binding.videoUploaded.text = video.dateText
-		binding.buttonLike.text = video.likeCount
-		if (video.showCommentsButton) {
+		binding.buttonLike.text = Utils.toShortInt(binding.root.context, video.likeCount)
+		if (video.commentsErrorMessage != null) {
+			binding.spinnerComments.visibility = View.GONE
+			binding.textCommentsLoading.text =
+				Html.fromHtml(video.commentsErrorMessage, Html.FROM_HTML_MODE_LEGACY)
+		} else if (video.showCommentsButton) {
 			if (video.firstComment != null) {
 				binding.commentsLoading.visibility = View.GONE
 				binding.commentsFirst.visibility = View.VISIBLE
@@ -106,8 +118,10 @@ class LandscapeVideoInfoFragment : Fragment() {
 				binding.commentText.text =
 					Html.fromHtml(video.firstComment!!.second, Html.FROM_HTML_MODE_LEGACY)
 				binding.commentsCountBullet.visibility = View.VISIBLE
-				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
-					?: "${video.firstComment!!.third}+"
+				binding.commentsCount.text = if (video.commentsCount != null)
+					Utils.toShortInt(activity, video.commentsCount.toLong())
+				else
+					"${video.firstComment!!.third}+"
 				binding.cardComments.setOnClickListener {
 					activity.getPlayer().setSheets(details = false, comments = true)
 				}
@@ -119,7 +133,7 @@ class LandscapeVideoInfoFragment : Fragment() {
 
 		Glide
 			.with(activity)
-			.load(video.channel.avatar)
+			.load(Utils.getBestImageUrl(video.channel.avatar))
 			.into(binding.channelAvatar)
 
 		binding.videoDetails.setOnClickListener {
@@ -169,7 +183,7 @@ class LandscapeVideoInfoFragment : Fragment() {
 			val dislikes = Utils.getDislikeCount(video.id)
 			if (dislikes != -1L)
 				activity.runOnUiThread {
-					binding.buttonDislike.text = dislikes.toString()
+					binding.buttonDislike.text = Utils.toShortInt(binding.root.context, dislikes)
 				}
 		}
 	}
@@ -185,8 +199,10 @@ class LandscapeVideoInfoFragment : Fragment() {
 			binding.commentText.text =
 				Html.fromHtml(firstComment.second, Html.FROM_HTML_MODE_LEGACY)
 			binding.commentsCountBullet.visibility = View.VISIBLE
-			binding.commentsCount.text =
-				video.commentCount?.takeIf { it.isNotEmpty() } ?: "${firstComment.third}+"
+			binding.commentsCount.text = if (video.commentsCount != null)
+				Utils.toShortInt(requireContext(), video.commentsCount!!.toLong())
+			else
+				"${video.firstComment!!.third}+"
 			binding.cardComments.setOnClickListener {
 				(activity as MainActivity).getPlayer().setSheets(details = false, comments = true)
 			}

@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonArray
-import com.google.gson.JsonNull
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.renderers.PlaylistRendererData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentLibraryBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -21,7 +20,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class LibraryFragment : Fragment() {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var api: LightTubeApi
 	private lateinit var player: VideoPlayerManager
 	private lateinit var binding: FragmentLibraryBinding
@@ -54,26 +53,21 @@ class LibraryFragment : Fragment() {
 			thread {
 				try {
 					val playlists = api.getLibraryPlaylists()
-					items.add(0, JsonObject().apply {
-						addProperty("type", "gridPlaylistRenderer")
-						addProperty("id", "!ACTION_NewPlaylist")
-						addProperty("title", getString(R.string.create_playlist))
-						addProperty("videoCount", 0)
-						add("thumbnails", JsonArray().apply {
-							add(JsonObject().apply {
-								addProperty("width", 0)
-								addProperty("height", 0)
-								addProperty("url", "")
-							})
-						})
-						add("channel", JsonObject().apply {
-							add("id", JsonNull.INSTANCE)
-							add("title", JsonNull.INSTANCE)
-							add("avatar", JsonNull.INSTANCE)
-							add("subscribers", JsonNull.INSTANCE)
-							add("badges", JsonArray(0))
-						})
-					})
+					items.add(0, RendererContainer(
+						"playlist",
+						"gridPlaylistRenderer",
+						PlaylistRendererData(
+							"!ACTION_NewPlaylist",
+							emptyList(),
+							getString(R.string.create_playlist),
+							"",
+							0,
+							null,
+							null,
+							null,
+							null
+						)
+					))
 					items.addAll(playlists.data ?: emptyList())
 					(binding.recyclerLibrary.adapter as RendererRecyclerAdapter).updateUserData(
 						playlists.userData
@@ -93,7 +87,7 @@ class LibraryFragment : Fragment() {
 							R.string.error_connection,
 							Snackbar.LENGTH_INDEFINITE
 						)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadData()
 							sb.dismiss()
@@ -109,7 +103,7 @@ class LibraryFragment : Fragment() {
 							Snackbar.LENGTH_INDEFINITE
 						)
 						sb.setTextMaxLines(2)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadData()
 							sb.dismiss()

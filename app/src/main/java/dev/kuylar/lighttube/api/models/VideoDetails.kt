@@ -3,17 +3,26 @@ package dev.kuylar.lighttube.api.models
 import android.os.Bundle
 import androidx.media3.common.MediaMetadata
 import java.net.URLEncoder
+import java.util.Date
 
 class VideoDetails(
 	val id: String,
 	val title: String,
-	val author: Channel,
 	val keywords: List<String>,
 	val shortDescription: String,
-	val length: String,
+	val category: String,
 	val isLive: Boolean,
+	val isFallback: Boolean,
+	val allowRatings: Boolean,
+	val isFamilySafe: Boolean,
+	val thumbnails: List<LightTubeImage>,
+	val publishDate: Date,
+	val uploadDate: Date,
+	val liveStreamStartDate: Date,
+	val length: String,
+	val author: Channel,
+
 	val viewCount: Long,
-	val allowRatings: Boolean
 ) {
 	fun getMediaMetadata(formats: ArrayList<Format>, storyboard: Storyboard): MediaMetadata {
 		return MediaMetadata.Builder().apply {

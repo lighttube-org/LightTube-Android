@@ -1,6 +1,6 @@
 package dev.kuylar.lighttube.api.models
 
-class SearchSuggestions(
+data class SearchSuggestions(
 	val query: String,
 	val autocomplete: List<String>
 )

@@ -61,24 +61,25 @@ class SetupCustomInstanceFragment : Fragment() {
 	}
 
 	private fun fillData(instanceInfo: InstanceInfo, url: String) {
-		binding.instanceCard.root.setOnClickListener {
-			next(url, instanceInfo.allowsOauthApi)
-		}
 		binding.instanceCard.loading.visibility = View.GONE
 		binding.instanceCard.instanceTitle.text = url
-		binding.instanceCard.instanceDescription.text = if (instanceInfo.type != "lighttube")
+		binding.instanceCard.instanceDescription.text = if (instanceInfo.type != "lighttube/2.0")
 			getString(R.string.setup_instance_invalid, instanceInfo.type)
-		else if (instanceInfo.allowsApi)
+		else if (instanceInfo.config.allowsApi) {
+			binding.instanceCard.root.setOnClickListener {
+				next(url, instanceInfo.config.allowsOauthApi)
+			}
+			binding.instanceCard.instanceCloudflare.visibility = View.VISIBLE
+			binding.instanceCard.instanceCloudflare.setText(R.string.setup_instance_custom_select)
 			getString(
 				R.string.template_instance_info,
 				instanceInfo.version,
-				if (instanceInfo.allowsOauthApi) getString(R.string.enabled) else getString(R.string.disabled),
-				if (instanceInfo.allowsThirdPartyProxyUsage) getString(R.string.enabled) else getString(
+				if (instanceInfo.config.allowsOauthApi) getString(R.string.enabled) else getString(R.string.disabled),
+				if (instanceInfo.config.allowsThirdPartyProxyUsage) getString(R.string.enabled) else getString(
 					R.string.disabled)
 			)
+		}
 		else getString(R.string.setup_instance_api_disabled)
-		binding.instanceCard.instanceCloudflare.visibility = View.VISIBLE
-		binding.instanceCard.instanceCloudflare.setText(R.string.setup_instance_custom_select)
 	}
 
 	@SuppressLint("SetTextI18n")

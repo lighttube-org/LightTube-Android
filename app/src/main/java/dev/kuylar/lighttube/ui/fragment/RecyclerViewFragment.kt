@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
@@ -19,6 +17,8 @@ import dev.kuylar.lighttube.api.models.ApiResponse
 import dev.kuylar.lighttube.api.models.LightTubeChannel
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.ContinuationRendererData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentRecyclerviewBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -27,7 +27,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class RecyclerViewFragment : Fragment(), AdaptiveFragment {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private var userData: UserData? = null
 	private lateinit var binding: FragmentRecyclerviewBinding
 	private lateinit var player: VideoPlayerManager
@@ -65,7 +65,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 		binding.recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 				super.onScrollStateChanged(recyclerView, newState)
-				if (!recyclerView.canScrollVertically(1)) {
+				if (!recyclerView.canScrollVertically(1) && contKey != null) {
 					loadMore(false)
 				}
 			}
@@ -85,12 +85,12 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 					contKey = continuation
 					runOnUiThread {
 						setLoading(false)
-						items.removeIf { it.getAsJsonPrimitive("type").asString == "continuationItemRenderer" }
+						items.removeIf { it.type == "continuation" }
 						binding.recycler.adapter!!.notifyItemRemoved(items.size)
 
 						val start = items.size
-						items.addAll(newItems.first)
 						(binding.recycler.adapter!! as RendererRecyclerAdapter).updateUserData(newItems.second)
+						items.addAll(newItems.first)
 						binding.recycler.adapter!!.notifyItemRangeInserted(
 							start,
 							newItems.first.size
@@ -107,7 +107,7 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 							R.string.error_connection,
 							Snackbar.LENGTH_INDEFINITE
 						)
-						sb.setAnchorView(R.id.nav_view)
+						sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
@@ -124,7 +124,6 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 							Snackbar.LENGTH_INDEFINITE
 						)
 						sb.setTextMaxLines(2)
-						sb.setAnchorView(R.id.nav_view)
 						sb.setAction(R.string.action_retry) {
 							loadMore(initial)
 							sb.dismiss()
@@ -136,11 +135,11 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 		}
 	}
 
-	private fun getData(initial: Boolean): Pair<Pair<List<JsonObject>, UserData?>, String?> {
+	private fun getData(initial: Boolean): Pair<Pair<List<RendererContainer>, UserData?>, String?> {
 		when (type) {
 			"channel" -> {
 				val channel =
-					if (initial && initialData != null) Gson().fromJson(
+					if (initial && initialData != null) Utils.gson.fromJson(
 						initialData,
 						object : TypeToken<ApiResponse<LightTubeChannel>>() {})!!
 					else if (initial) api.getChannel(args, params ?: "home")
@@ -148,9 +147,12 @@ class RecyclerViewFragment : Fragment(), AdaptiveFragment {
 				if (initial) userData = channel.userData
 				else userData!!.channels.putAll(channel.userData?.channels ?: emptyMap())
 				val contents = ArrayList(channel.data!!.contents)
-				if (initial && params?.lowercase() == "home")
-					contents.add(0, channel.data.getAsRenderer()) // todo: add header
-				return Pair(Pair(contents, channel.userData), channel.data.continuation)
+				if (initial && params?.lowercase() == "featured")
+					contents.add(0, channel.data.getAsRenderer())
+				val continuationRenderer = channel.data.contents.lastOrNull { it.type == "continuation" }
+				val continuationRendererData =
+					if (continuationRenderer != null) continuationRenderer.data as ContinuationRendererData else null
+				return Pair(Pair(contents, channel.userData), continuationRendererData?.continuationToken)
 			}
 
 			else -> {

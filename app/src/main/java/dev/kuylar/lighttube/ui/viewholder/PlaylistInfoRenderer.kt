@@ -5,13 +5,13 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.LightTubePlaylist
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.VideoRendererData
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import kotlin.concurrent.thread
@@ -19,28 +19,29 @@ import kotlin.concurrent.thread
 
 class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 	RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject, userData: UserData?) {
+	override fun bind(renderer: RendererContainer, userData: UserData?) {
 		val activity = binding.root.context as MainActivity
-		val playlist = Gson().fromJson(item, LightTubePlaylist::class.java)
-		binding.playlistTitle.text = playlist.title
-		binding.playlistAuthor.text = playlist.channel.title
-		binding.playlistVideoCount.text = playlist.videoCountText
-		if (playlist.description.isNullOrEmpty())
+		val playlist = renderer.data as LightTubePlaylist
+		binding.playlistTitle.text = playlist.sidebar.title
+		binding.playlistAuthor.text = playlist.sidebar.channel.title
+		binding.playlistVideoCount.text = playlist.sidebar.videoCountText
+		if (playlist.sidebar.description.isNullOrEmpty())
 			binding.playlistDescription.visibility = View.GONE
 		else
-			binding.playlistDescription.text = playlist.description
+			binding.playlistDescription.text = playlist.sidebar.description
 
 		Glide
 			.with(activity)
-			.load(Utils.getBestImageUrl(playlist.thumbnails))
+			.load(Utils.getBestImageUrl(playlist.sidebar.thumbnails))
 			.into(binding.playlistThumbnail)
 
+		val firstVideo = playlist.contents.firstOrNull {it.type == "video"}?.data as VideoRendererData
 		binding.buttonPlayAll.setOnClickListener {
-			activity.getPlayer().playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(firstVideo.videoId)
 		}
 
 		binding.buttonShuffle.setOnClickListener {
-			activity.getPlayer().playVideo(playlist.videos.first().asJsonObject.getAsJsonPrimitive("id").asString)
+			activity.getPlayer().playVideo(firstVideo.videoId)
 		}
 
 		if (playlist.editable) {
@@ -50,8 +51,8 @@ class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 						this,
 						layoutInflater,
 						getString(R.string.edit_playlist_title),
-						playlist.title,
-						playlist.description ?: "",
+						playlist.sidebar.title,
+						playlist.sidebar.description ?: "",
 						PlaylistVisibility.Private,
 						getString(R.string.edit_playlist_submit),
 						getString(R.string.edit_playlist_cancel),
@@ -72,7 +73,7 @@ class PlaylistInfoRenderer(private val binding: RendererPlaylistInfoBinding) :
 
 				binding.buttonDeletePlaylist.setOnClickListener {
 					MaterialAlertDialogBuilder(binding.root.context)
-						.setTitle(getString(R.string.delete_playlist_title, playlist.title))
+						.setTitle(getString(R.string.delete_playlist_title, playlist.sidebar.title))
 						.setMessage(R.string.delete_playlist_body)
 						.setPositiveButton(R.string.delete_playlist) { dialog, _ ->
 							thread {

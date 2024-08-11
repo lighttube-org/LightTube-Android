@@ -4,35 +4,47 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.ChannelRendererData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 
 class ChannelRenderer(val binding: RendererChannelBinding) : RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject, userData: UserData?) {
+	override fun bind(renderer: RendererContainer, userData: UserData?) {
 		val context = (binding.root.context as Activity)
-		val id = item.getAsJsonPrimitive("id").asString
+		val item = renderer.data as ChannelRendererData
+		val id = item.channelId
 		var subscriptionInfo =
 			userData?.channels?.get(id) ?: SubscriptionInfo(
 				subscribed = false,
 				notifications = false
 			)
-		binding.channelTitle.text = item.getAsJsonPrimitive("title").asString
-		if (item.getAsJsonPrimitive("type").asString == "gridChannelRenderer") {
-			binding.channelHandle.text = item.getAsJsonPrimitive("videoCountText").asString
-			binding.channelSubscribers.text =
-				item.getAsJsonPrimitive("subscriberCountText").asString
+		binding.channelTitle.text = item.title
+
+		val subscribersText = context.resources.getQuantityString(
+			R.plurals.template_subscribers,
+			item.subscriberCount.toInt(),
+			Utils.toShortInt(context, item.subscriberCount)
+		)
+
+		if (item.handle != null) {
+			binding.channelHandle.text = item.handle
+			binding.channelSubscribers.text = subscribersText
 		} else {
-			binding.channelHandle.text = item.getAsJsonPrimitive("userHandle").asString
-			binding.channelSubscribers.text =
-				item.getAsJsonPrimitive("subscriberCountText").asString
+			binding.channelHandle.text = subscribersText
+			binding.channelSubscribers.text = context.resources.getQuantityString(
+				R.plurals.template_videos,
+				item.videoCount.toInt(),
+				Utils.toShortInt(context, item.videoCount)
+			)
 		}
+
 		Glide
 			.with(binding.root)
-			.load(Utils.getBestImageUrlJson(item.getAsJsonArray("avatars")))
+			.load(Utils.getBestImageUrl(item.avatar))
 			.into(binding.channelAvatar)
 
 		Utils.updateSubscriptionButton(

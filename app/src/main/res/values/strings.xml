@@ -66,7 +66,19 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="template_instance_info">v%s | Accounts: %s | Proxy: %s</string>
 	<string name="template_feed_video_subtitle">%s • %s views • %s</string>
 	<string name="template_channel_subtitle">%s • %s</string>
-	<string name="template_videos">%s videos</string>
+	<plurals name="template_videos">
+		<item quantity="one">%s video</item>
+		<item quantity="other">%s videos</item>
+	</plurals>
+	<plurals name="template_subscribers">
+		<item quantity="one">%s subscriber</item>
+		<item quantity="other">%s subscribers</item>
+	</plurals>
+	<string name="template_shortint_thousand">%sK</string>
+	<string name="template_shortint_million">%sM</string>
+	<string name="template_shortint_billion">%sB</string>
+	<string name="template_comment_header">%s • %s</string>
+	<string name="template_shelf_expand">+%d more</string>
 
 	<!-- General -->
 	<string name="enabled">Enabled</string>
@@ -74,6 +86,7 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="search">Search</string>
 	<string name="autoplay">Autoplay</string>
 	<string name="unknown_renderer">Unknown Renderer</string>
+	<string name="renderer_exception">Failed to render %s</string>
 	<string name="on">On</string>
 	<string name="off">Off</string>
 	<string name="unavailable">Unavailable</string>
@@ -86,12 +99,19 @@ Your data will be stored in the instance you chose (%s).</string>
 	<string name="subscribed">Subscribed</string>
 	<string name="pause">Pause</string>
 	<string name="play">Play</string>
+	<string name="show_less">Show less</string>
+	<string name="dismiss">Dismiss</string>
+	<string name="instance_alert">Alert from instance</string>
 
 	<!-- Video info -->
 	<string name="video_info_more">…more</string>
 	<string name="video_info_likes">Likes</string>
 	<string name="video_info_dislikes">Dislikes</string>
 	<string name="video_info_views">Views</string>
+	<plurals name="video_info_views">
+		<item quantity="one">%s view</item>
+		<item quantity="other">%s views</item>
+	</plurals>
 	<string name="video_info_channel_about">About</string>
 	<string name="video_info_channel_videos">Videos</string>
 	<string name="video_info_description">Description</string>
@@ -177,7 +197,6 @@ Your data will be stored in the instance you chose (%s).</string>
 	<!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>
 	<string name="lighttube_3_title">Unsupported instance</string>
-	<string name="lighttube_3_body">LightTube v3 is not supported in this version of the Android app. Check for updates in https://github.com/lighttube-org/LightTube-Android</string>
-	<string name="lighttube_3_github">Open GitHub</string>
+	<string name="lighttube_3_body">LightTube v2 is not supported in this version of the Android app. Either downgrade to an older version or switch to a different instance</string>
 	<string name="lighttube_3_instance">Change instance</string>
 </resources>

@@ -19,23 +19,22 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import dev.kuylar.lighttube.api.models.LightTubeImage
 import dev.kuylar.lighttube.api.models.PlaylistVisibility
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.RendererSerializer
 import dev.kuylar.lighttube.databinding.RendererChannelBinding
 import dev.kuylar.lighttube.databinding.RendererChannelInfoBinding
+import dev.kuylar.lighttube.databinding.RendererChannelLandscapeBinding
 import dev.kuylar.lighttube.databinding.RendererCommentBinding
-import dev.kuylar.lighttube.databinding.RendererContinuationBinding
-import dev.kuylar.lighttube.databinding.RendererGridPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererItemSectionBinding
 import dev.kuylar.lighttube.databinding.RendererMessageBinding
-import dev.kuylar.lighttube.databinding.RendererPlaylistAlertBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistInfoBinding
-import dev.kuylar.lighttube.databinding.RendererPlaylistLandscapeBinding
 import dev.kuylar.lighttube.databinding.RendererPlaylistVideoBinding
+import dev.kuylar.lighttube.databinding.RendererShelfBinding
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.databinding.RendererUnknownBinding
 import dev.kuylar.lighttube.databinding.RendererVideoBinding
@@ -44,17 +43,14 @@ import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.ManageSubscriptionFragment
 import dev.kuylar.lighttube.ui.viewholder.ChannelInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.ChannelRenderer
-import dev.kuylar.lighttube.ui.viewholder.ChannelVideoPlayerRenderer
 import dev.kuylar.lighttube.ui.viewholder.CommentRenderer
-import dev.kuylar.lighttube.ui.viewholder.ContinuationRenderer
-import dev.kuylar.lighttube.ui.viewholder.GridPlaylistRenderer
 import dev.kuylar.lighttube.ui.viewholder.ItemSectionRenderer
 import dev.kuylar.lighttube.ui.viewholder.MessageRenderer
-import dev.kuylar.lighttube.ui.viewholder.PlaylistAlertRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistRenderer
 import dev.kuylar.lighttube.ui.viewholder.PlaylistVideoRenderer
 import dev.kuylar.lighttube.ui.viewholder.RendererViewHolder
+import dev.kuylar.lighttube.ui.viewholder.ShelfRenderer
 import dev.kuylar.lighttube.ui.viewholder.SlimVideoInfoRenderer
 import dev.kuylar.lighttube.ui.viewholder.UnknownRenderer
 import dev.kuylar.lighttube.ui.viewholder.VideoRenderer
@@ -62,22 +58,28 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.security.MessageDigest
 import kotlin.concurrent.thread
-import kotlin.random.Random
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 
 class Utils {
 	companion object {
 		val http = OkHttpClient()
-		val gson = Gson()
+		val gson: Gson = GsonBuilder().apply {
+			setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+			registerTypeAdapter(RendererContainer::class.java, RendererSerializer())
+		}.create()
 
-		fun getBestImageUrl(images: List<LightTubeImage>): String {
-			return if (images.isNotEmpty())
-				images.maxBy { it.height }.url
+		fun getBestImageUrl(images: List<LightTubeImage>?): String {
+			if (images == null) return ""
+			val url: String
+			if (images.isNotEmpty())
+				url = images.maxBy { it.height }.url
 			else
-				""
+				return ""
+			return if (url.startsWith("http")) url else "https://$url"
 		}
 
 		fun getBestImageUrlJson(images: JsonArray): String {
@@ -188,52 +190,63 @@ class Utils {
 		}
 
 		fun getViewHolder(
-			renderer: JsonObject,
+			renderer: RendererContainer,
 			inflater: LayoutInflater,
 			parent: ViewGroup,
 			landscape: Boolean
 		): RendererViewHolder {
-			return when (renderer.getAsJsonPrimitive("type").asString) {
-				"videoRenderer" -> VideoRenderer(
-					if (landscape) RendererVideoBinding.bind(
-						RendererVideoLandscapeBinding.inflate(
-							inflater,
-							parent,
-							false
-						).root
-					) else
-						RendererVideoBinding.inflate(
+			return when (renderer.type) {
+				"video" -> {
+					// todo: this will be fixed in the api
+					if (renderer.originalType == "playlistVideoRenderer" || renderer.originalType == "playlistVideoContainer") {
+						PlaylistVideoRenderer(
+							RendererPlaylistVideoBinding.inflate(
+								inflater, parent, false
+							)
+						)
+					} else {
+						VideoRenderer(
+							if (renderer.originalType == "compactVideoRenderer" || !landscape) {
+								RendererVideoBinding.inflate(
+									inflater, parent, false
+								)
+							} else {
+								RendererVideoBinding.bind(
+									RendererVideoLandscapeBinding.inflate(
+										inflater, parent, false
+									).root
+								)
+							}
+						)
+					}
+				}
+
+				"playlist" -> PlaylistRenderer(
+					RendererPlaylistBinding.inflate(
+						inflater,
+						parent,
+						false
+					)
+				)
+
+				"channel" -> ChannelRenderer(
+					if (landscape)
+						RendererChannelBinding.bind(
+							RendererChannelLandscapeBinding.inflate(
+								inflater,
+								parent,
+								false
+							).root
+						)
+					else
+						RendererChannelBinding.inflate(
 							inflater,
 							parent,
 							false
 						)
 				)
 
-				"compactVideoRenderer" -> VideoRenderer(
-					RendererVideoBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
-				"channelRenderer" -> ChannelRenderer(
-					RendererChannelBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
-				"gridChannelRenderer" -> ChannelRenderer(
-					RendererChannelBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
-				"commentThreadRenderer" -> CommentRenderer(
+				"comment" -> CommentRenderer(
 					RendererCommentBinding.inflate(
 						inflater,
 						parent,
@@ -241,13 +254,55 @@ class Utils {
 					)
 				)
 
-				"continuationItemRenderer" -> ContinuationRenderer(
-					RendererContinuationBinding.inflate(
+				"message" -> MessageRenderer(
+					RendererMessageBinding.inflate(
 						inflater,
 						parent,
 						false
 					)
 				)
+
+				"container" -> {
+					when (renderer.originalType) {
+						"itemSectionRenderer" -> {
+							ItemSectionRenderer(
+								RendererItemSectionBinding.inflate(
+									inflater,
+									parent,
+									false
+								)
+							)
+						}
+
+						"gridRenderer" -> {
+							ItemSectionRenderer(
+								RendererItemSectionBinding.inflate(
+									inflater,
+									parent,
+									false
+								)
+							)
+						}
+
+						"shelfRenderer" -> {
+							ShelfRenderer(
+								RendererShelfBinding.inflate(
+									inflater,
+									parent,
+									false
+								)
+							)
+						}
+
+						else -> {
+							UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
+						}
+					}
+				}
+
+				"exception" -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
+
+				// LTA special renderers
 
 				"slimVideoInfoRenderer" -> SlimVideoInfoRenderer(
 					RendererSlimVideoInfoBinding.inflate(
@@ -255,29 +310,6 @@ class Utils {
 						parent,
 						false
 					)
-				)
-
-				"gridPlaylistRenderer" -> GridPlaylistRenderer(
-					RendererGridPlaylistBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
-				"playlistRenderer" -> PlaylistRenderer(
-					if (landscape) RendererPlaylistBinding.bind(
-						RendererPlaylistLandscapeBinding.inflate(
-							inflater,
-							parent,
-							false
-						).root
-					) else
-						RendererPlaylistBinding.inflate(
-							inflater,
-							parent,
-							false
-						)
 				)
 
 				"playlistInfoRenderer" -> PlaylistInfoRenderer(
@@ -295,15 +327,7 @@ class Utils {
 						false
 					)
 				)
-
-				"playlistVideoRenderer" -> PlaylistVideoRenderer(
-					RendererPlaylistVideoBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
+/*
 				"playlistAlertRenderer" -> PlaylistAlertRenderer(
 					RendererPlaylistAlertBinding.inflate(
 						inflater,
@@ -311,54 +335,7 @@ class Utils {
 						false
 					)
 				)
-
-				"channelVideoPlayerRenderer" -> ChannelVideoPlayerRenderer(
-					if (landscape) RendererVideoBinding.bind(
-						RendererVideoLandscapeBinding.inflate(
-							inflater,
-							parent,
-							false
-						).root
-					) else
-						RendererVideoBinding.inflate(
-							inflater,
-							parent,
-							false
-						)
-				)
-
-				"messageRenderer" -> MessageRenderer(
-					RendererMessageBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
-				// i hate these
-				"richItemRenderer" -> getViewHolder(
-					renderer.getAsJsonObject("content"),
-					inflater,
-					parent,
-					landscape
-				)
-
-				"itemSectionRenderer" -> ItemSectionRenderer(
-					RendererItemSectionBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
-				"gridRenderer" -> ItemSectionRenderer(
-					RendererItemSectionBinding.inflate(
-						inflater,
-						parent,
-						false
-					)
-				)
-
+*/
 				else -> UnknownRenderer(RendererUnknownBinding.inflate(inflater, parent, false))
 			}
 		}
@@ -540,6 +517,23 @@ class Utils {
 			if (width < 300)
 				width = 300f
 			return dpToPx(width, activity).roundToInt()
+		}
+
+		fun toShortInt(context: Context, value: Long): String {
+			val locale = context.resources.configuration.locales.get(0)
+			val shortStr = when {
+				value > 1000000000L -> String.format(locale, "%.2f", value / 1000000000f)
+				value > 1000000L    -> String.format(locale, "%.2f", value / 1000000f)
+				value > 1000L       -> String.format(locale, "%.2f", value / 1000f)
+				else -> value.toString()
+			}.trimEnd('0', '.')
+			val id = when {
+				value > 1000000000L -> R.string.template_shortint_billion
+				value > 1000000L    -> R.string.template_shortint_million
+				value > 1000L       -> R.string.template_shortint_thousand
+				else -> null
+			}
+			return if (id != null) context.getString(id, shortStr) else if (shortStr.isNotEmpty()) shortStr else "0"
 		}
 	}
 }

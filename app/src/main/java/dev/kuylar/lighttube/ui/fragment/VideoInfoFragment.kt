@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
+import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentVideoInfoBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -25,7 +25,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 class VideoInfoFragment : Fragment() {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var id: String
 	private var playlistId: String? = null
 	private lateinit var detailsSheet: BottomSheetBehavior<FrameLayout>
@@ -92,6 +92,7 @@ class VideoInfoFragment : Fragment() {
 
 	private fun fillData(video: LightTubeVideo, userData: UserData?) {
 		player.setChapters(video.id, video.chapters)
+		// todo: video info as renderercontainer
 		items.add(video.getAsRenderer())
 		items.addAll(video.recommended)
 		adapter = RendererRecyclerAdapter(items)
@@ -102,7 +103,7 @@ class VideoInfoFragment : Fragment() {
 		binding.recyclerRecommended.itemAnimator = null
 
 		requireActivity().supportFragmentManager.beginTransaction().apply {
-			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Gson().toJson(video))))
+			replace(R.id.video_info_fragment, VideoDetailsFragment::class.java, bundleOf(Pair("video", Utils.gson.toJson(video))))
 			replace(R.id.comments_fragment, VideoCommentsFragment::class.java, bundleOf(Pair("id", video.id)))
 		}.commit()
 
@@ -134,7 +135,8 @@ class VideoInfoFragment : Fragment() {
 	}
 
 	fun showCommentsButton(firstComment: Triple<String, String, Int>?) {
-		val video = Gson().fromJson(items[0], LightTubeVideo::class.java)
+		val video = items[0].data as LightTubeVideo
+		if (video.commentsErrorMessage != null) return
 		video.showCommentsButton = true
 		video.firstComment = firstComment
 		items[0] = video.getAsRenderer()

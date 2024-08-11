@@ -12,7 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
-import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentSubscriptionsBinding
 import dev.kuylar.lighttube.ui.AdaptiveUtils
 import dev.kuylar.lighttube.ui.VideoPlayerManager
@@ -23,7 +23,7 @@ import kotlin.concurrent.thread
 
 
 class SubscriptionsFragment : Fragment(), AdaptiveFragment {
-	private val items: MutableList<SubscriptionFeedItem> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var binding: FragmentSubscriptionsBinding
 	private lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
@@ -84,7 +84,7 @@ class SubscriptionsFragment : Fragment(), AdaptiveFragment {
 						R.string.error_connection,
 						Snackbar.LENGTH_INDEFINITE
 					)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_retry) {
 						loadMore()
 						sb.dismiss()
@@ -102,7 +102,7 @@ class SubscriptionsFragment : Fragment(), AdaptiveFragment {
 						Snackbar.LENGTH_INDEFINITE
 					)
 					sb.setTextMaxLines(2)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_retry) {
 						loadMore()
 						sb.dismiss()

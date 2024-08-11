@@ -7,13 +7,12 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.models.LightTubeVideo
 import dev.kuylar.lighttube.api.models.SubscriptionInfo
 import dev.kuylar.lighttube.api.models.UserData
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.RendererSlimVideoInfoBinding
 import dev.kuylar.lighttube.ui.activity.MainActivity
 import dev.kuylar.lighttube.ui.fragment.AddVideoToPlaylistFragment
@@ -21,9 +20,9 @@ import kotlin.concurrent.thread
 
 open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBinding) :
 	RendererViewHolder(binding.root) {
-	override fun bind(item: JsonObject, userData: UserData?) {
+	override fun bind(renderer: RendererContainer, userData: UserData?) {
 		val activity = binding.root.context as MainActivity
-		val video = Gson().fromJson(item, LightTubeVideo::class.java)
+		val video = renderer.data as LightTubeVideo
 		var subscriptionInfo =
 			userData?.channels?.get(video.channel.id) ?: SubscriptionInfo(
 				subscribed = false,
@@ -31,11 +30,23 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			)
 		binding.videoTitle.text = video.title
 		binding.channelTitle.text = video.channel.title
-		binding.channelSubscribers.text = video.channel.subscribers
-		binding.videoViews.text = video.viewCount
+		binding.channelSubscribers.text = binding.root.context.resources.getQuantityString(
+			R.plurals.template_subscribers,
+			video.channel.subscribers ?: 0,
+			Utils.toShortInt(binding.root.context, video.channel.subscribers?.toLong() ?: 0)
+		)
+		binding.videoViews.text = binding.root.context.resources.getQuantityString(
+			R.plurals.video_info_views,
+			video.viewCount.toInt(),
+			Utils.toShortInt(activity, video.viewCount)
+		)
 		binding.videoUploaded.text = video.dateText
-		binding.buttonLike.text = video.likeCount
-		if (video.showCommentsButton) {
+		binding.buttonLike.text = Utils.toShortInt(binding.root.context, video.likeCount)
+		if (video.commentsErrorMessage != null) {
+			binding.spinnerComments.visibility = View.GONE
+			binding.textCommentsLoading.text =
+				Html.fromHtml(video.commentsErrorMessage, Html.FROM_HTML_MODE_LEGACY)
+		} else if (video.showCommentsButton) {
 			if (video.firstComment != null) {
 				binding.commentsLoading.visibility = View.GONE
 				binding.commentsFirst.visibility = View.VISIBLE
@@ -46,8 +57,10 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 				binding.commentText.text =
 					Html.fromHtml(video.firstComment!!.second, Html.FROM_HTML_MODE_LEGACY)
 				binding.commentsCountBullet.visibility = View.VISIBLE
-				binding.commentsCount.text = video.commentCount?.takeIf { it.isNotEmpty() }
-					?: "${video.firstComment!!.third}+"
+				binding.commentsCount.text = if (video.commentsCount != null)
+					Utils.toShortInt(activity, video.commentsCount.toLong())
+				else
+					"${video.firstComment!!.third}+"
 				binding.cardComments.setOnClickListener {
 					activity.getPlayer().setSheets(details = false, comments = true)
 				}
@@ -59,7 +72,7 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 
 		Glide
 			.with(activity)
-			.load(video.channel.avatar)
+			.load(Utils.getBestImageUrl(video.channel.avatar))
 			.into(binding.channelAvatar)
 
 		binding.videoDetails.setOnClickListener {
@@ -109,7 +122,7 @@ open class SlimVideoInfoRenderer(private val binding: RendererSlimVideoInfoBindi
 			val dislikes = Utils.getDislikeCount(video.id)
 			if (dislikes != -1L)
 				activity.runOnUiThread {
-					binding.buttonDislike.text = dislikes.toString()
+					binding.buttonDislike.text = Utils.toShortInt(binding.root.context, dislikes)
 				}
 		}
 	}

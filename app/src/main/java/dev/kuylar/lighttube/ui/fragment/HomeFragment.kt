@@ -2,7 +2,6 @@ package dev.kuylar.lighttube.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,29 +42,42 @@ class HomeFragment : Fragment() {
 				val info = a.getApi().getInstanceInfo()
 				a.runOnUiThread {
 					a.setLoading(false)
-					if (info.type == "lighttube/2.0") {
+					if (info.type != "lighttube/2.0") {
 						MaterialAlertDialogBuilder(requireContext()).apply {
 							setTitle(R.string.lighttube_3_title)
 							setMessage(R.string.lighttube_3_body)
 							setCancelable(false)
-							setPositiveButton(R.string.lighttube_3_github) { dialog, _ ->
-								startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/lighttube-org/LightTube-Android")))
-							}
 							setNegativeButton(R.string.lighttube_3_instance) { dialog, _ ->
 								startActivity(Intent(requireContext(), SetupActivity::class.java))
 							}
 						}.show()
 					}
-					binding.homeMotd.text = Utils.randomMotd(info.motd)
+					if (!info.motd.contains(binding.homeMotd.text))
+						binding.homeMotd.text = Utils.randomMotd(info.motd)
 					sp.edit {
 						putStringSet("cachedMotds", info.motd.toMutableSet())
+					}
+					if (info.alert != null) {
+						val hash = info.alert.hashCode()
+						if (sp.getInt("lastAlertHash", 0) != hash) {
+							MaterialAlertDialogBuilder(requireContext()).apply {
+								setTitle(R.string.instance_alert)
+								setMessage(info.alert)
+								setPositiveButton(R.string.dismiss) { dialog, _ ->
+									dialog.dismiss()
+									sp.edit {
+										putInt("lastAlertHash", hash)
+									}
+								}
+							}.show()
+						}
 					}
 				}
 			} catch (e: IOException) {
 				a.runOnUiThread {
 					a.setLoading(false)
 					val sb = Snackbar.make(binding.root, R.string.error_connection, Snackbar.LENGTH_INDEFINITE)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_close) {
 						sb.dismiss()
 					}

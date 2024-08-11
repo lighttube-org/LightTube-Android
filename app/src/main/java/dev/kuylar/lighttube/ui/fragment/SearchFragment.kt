@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonObject
 import dev.kuylar.lighttube.R
 import dev.kuylar.lighttube.Utils
 import dev.kuylar.lighttube.api.LightTubeApi
 import dev.kuylar.lighttube.api.models.LightTubeException
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
 import dev.kuylar.lighttube.databinding.FragmentSearchBinding
 import dev.kuylar.lighttube.ui.VideoPlayerManager
 import dev.kuylar.lighttube.ui.activity.MainActivity
@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 
 
 class SearchFragment : Fragment(), AdaptiveFragment {
-	private val items: MutableList<JsonObject> = mutableListOf()
+	private val items: MutableList<RendererContainer> = mutableListOf()
 	private lateinit var binding: FragmentSearchBinding
 	private lateinit var player: VideoPlayerManager
 	private lateinit var api: LightTubeApi
@@ -69,15 +69,15 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 			try {
 				val feed = if (initial) api.search(query) else api.continueSearch(contKey!!)
 				val start = items.size
-				items.addAll(feed.data!!.searchResults)
-				contKey = feed.data.continuationKey
+				items.addAll(feed.data!!.results)
+				contKey = feed.data.continuation
 				if (activity == null) return@thread
 				activity?.runOnUiThread {
 					(activity as MainActivity).setLoading(false)
 					(binding.recyclerSearch.adapter!! as RendererRecyclerAdapter).updateUserData(feed.userData)
 					binding.recyclerSearch.adapter!!.notifyItemRangeInserted(
 						start,
-						feed.data.searchResults.size
+						feed.data.results.size
 					)
 					loading = false
 				}
@@ -91,7 +91,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 						R.string.error_connection,
 						Snackbar.LENGTH_INDEFINITE
 					)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_retry) {
 						loadMore(initial)
 						sb.dismiss()
@@ -109,7 +109,7 @@ class SearchFragment : Fragment(), AdaptiveFragment {
 						Snackbar.LENGTH_INDEFINITE
 					)
 					sb.setTextMaxLines(2)
-					sb.setAnchorView(R.id.nav_view)
+					sb.setAnchorView(activity?.findViewById(R.id.nav_view))
 					sb.setAction(R.string.action_retry) {
 						loadMore(initial)
 						sb.dismiss()

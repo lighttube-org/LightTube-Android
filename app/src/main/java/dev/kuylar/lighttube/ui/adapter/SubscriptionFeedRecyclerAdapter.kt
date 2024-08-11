@@ -7,14 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import dev.kuylar.lighttube.R
-import dev.kuylar.lighttube.api.models.SubscriptionFeedItem
+import dev.kuylar.lighttube.Utils
+import dev.kuylar.lighttube.api.models.renderers.RendererContainer
+import dev.kuylar.lighttube.api.models.renderers.VideoRendererData
 import dev.kuylar.lighttube.databinding.ItemSubscriptionVideoBinding
 import java.text.DecimalFormat
 
 class SubscriptionFeedRecyclerAdapter(
-	val items: MutableList<SubscriptionFeedItem>,
-	val playVideoCallback: ((String) -> Unit)) :
-Adapter<SubscriptionFeedRecyclerAdapter.ViewHolder>() {
+	val items: MutableList<RendererContainer>,
+	private val playVideoCallback: ((String) -> Unit)
+) :
+	Adapter<SubscriptionFeedRecyclerAdapter.ViewHolder>() {
 	private lateinit var binding: ItemSubscriptionVideoBinding
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
@@ -35,25 +38,27 @@ Adapter<SubscriptionFeedRecyclerAdapter.ViewHolder>() {
 		private val playVideoCallback: (String) -> Unit
 	) :
 		RecyclerView.ViewHolder(binding.root) {
-		fun bind(item: SubscriptionFeedItem) {
+		fun bind(renderer: RendererContainer) {
 			val c = binding.root.context
+			if (renderer.data !is VideoRendererData) return
+			val item = renderer.data
 			binding.videoTitle.text = item.title
 			binding.videoSubtitle.text = c.getString(
 				R.string.template_feed_video_subtitle,
-				item.channelName,
+				item.author?.title,
 				DecimalFormat().format(item.viewCount),
 				DateUtils.getRelativeTimeSpanString(
-					item.publishedDate.time,
+					item.exactPublishDate?.time ?: 0,
 					System.currentTimeMillis(),
 					DateUtils.MINUTE_IN_MILLIS
 				)
 			)
 			Glide
 				.with(binding.root)
-				.load(item.thumbnail)
+				.load(Utils.getBestImageUrl(item.thumbnails))
 				.into(binding.videoThumbnail)
 			binding.root.setOnClickListener {
-				playVideoCallback.invoke(item.id)
+				playVideoCallback.invoke(item.videoId)
 			}
 		}
 	}
